@@ -1,0 +1,1189 @@
+{
+  "results": [
+    {
+      "model": "mistralai/mistral-7b-instruct:free",
+      "test_type": "emoji_to_text",
+      "input": "\ud83c\udf55\ud83d\ude0d\ud83d\udd25",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.653,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:56:52.207829"
+    },
+    {
+      "model": "mistralai/mistral-7b-instruct:free",
+      "test_type": "emoji_to_text",
+      "input": "\u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.505,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:56:52.717124"
+    },
+    {
+      "model": "mistralai/mistral-7b-instruct:free",
+      "test_type": "emoji_to_text",
+      "input": "\ud83d\udcbb\ud83d\ude80\ud83c\udf1f",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.507,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:56:53.227952"
+    },
+    {
+      "model": "mistralai/mistral-7b-instruct:free",
+      "test_type": "text_to_emoji",
+      "input": "I love eating pizza",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.578,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:56:53.811656"
+    },
+    {
+      "model": "mistralai/mistral-7b-instruct:free",
+      "test_type": "text_to_emoji",
+      "input": "Going skiing in the mountains",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.542,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:56:54.356940"
+    },
+    {
+      "model": "mistralai/mistral-7b-instruct:free",
+      "test_type": "text_to_emoji",
+      "input": "Excited about this new tech project",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.488,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:56:54.848720"
+    },
+    {
+      "model": "deepseek/deepseek-r1:free",
+      "test_type": "emoji_to_text",
+      "input": "\ud83c\udf55\ud83d\ude0d\ud83d\udd25",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.649,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:56:56.503540"
+    },
+    {
+      "model": "deepseek/deepseek-r1:free",
+      "test_type": "emoji_to_text",
+      "input": "\u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.62,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:56:57.125724"
+    },
+    {
+      "model": "deepseek/deepseek-r1:free",
+      "test_type": "emoji_to_text",
+      "input": "\ud83d\udcbb\ud83d\ude80\ud83c\udf1f",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.705,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:56:57.839249"
+    },
+    {
+      "model": "deepseek/deepseek-r1:free",
+      "test_type": "text_to_emoji",
+      "input": "I love eating pizza",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.615,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:56:58.460819"
+    },
+    {
+      "model": "deepseek/deepseek-r1:free",
+      "test_type": "text_to_emoji",
+      "input": "Going skiing in the mountains",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.63,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:56:59.095806"
+    },
+    {
+      "model": "deepseek/deepseek-r1:free",
+      "test_type": "text_to_emoji",
+      "input": "Excited about this new tech project",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.629,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:56:59.727191"
+    },
+    {
+      "model": "deepseek/deepseek-r1-distill-llama-70b:free",
+      "test_type": "emoji_to_text",
+      "input": "\ud83c\udf55\ud83d\ude0d\ud83d\udd25",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.619,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:01.349241"
+    },
+    {
+      "model": "deepseek/deepseek-r1-distill-llama-70b:free",
+      "test_type": "emoji_to_text",
+      "input": "\u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 4.456,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:05.807889"
+    },
+    {
+      "model": "deepseek/deepseek-r1-distill-llama-70b:free",
+      "test_type": "emoji_to_text",
+      "input": "\ud83d\udcbb\ud83d\ude80\ud83c\udf1f",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.931,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:06.744463"
+    },
+    {
+      "model": "deepseek/deepseek-r1-distill-llama-70b:free",
+      "test_type": "text_to_emoji",
+      "input": "I love eating pizza",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.968,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:07.714947"
+    },
+    {
+      "model": "deepseek/deepseek-r1-distill-llama-70b:free",
+      "test_type": "text_to_emoji",
+      "input": "Going skiing in the mountains",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 1.218,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:08.935584"
+    },
+    {
+      "model": "deepseek/deepseek-r1-distill-llama-70b:free",
+      "test_type": "text_to_emoji",
+      "input": "Excited about this new tech project",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 1.081,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:10.019021"
+    },
+    {
+      "model": "cognitivecomputations/dolphin3.0-mistral-24b:free",
+      "test_type": "emoji_to_text",
+      "input": "\ud83c\udf55\ud83d\ude0d\ud83d\udd25",
+      "output": "HTTP 404: No endpoints found for cognitivecomputations/dolphin3.0-mistral-24b:free.",
+      "latency_seconds": 0.656,
+      "status_code": 404,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:11.680907"
+    },
+    {
+      "model": "cognitivecomputations/dolphin3.0-mistral-24b:free",
+      "test_type": "emoji_to_text",
+      "input": "\u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f",
+      "output": "HTTP 404: No endpoints found for cognitivecomputations/dolphin3.0-mistral-24b:free.",
+      "latency_seconds": 0.743,
+      "status_code": 404,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:12.426552"
+    },
+    {
+      "model": "cognitivecomputations/dolphin3.0-mistral-24b:free",
+      "test_type": "emoji_to_text",
+      "input": "\ud83d\udcbb\ud83d\ude80\ud83c\udf1f",
+      "output": "HTTP 404: No endpoints found for cognitivecomputations/dolphin3.0-mistral-24b:free.",
+      "latency_seconds": 0.757,
+      "status_code": 404,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:13.186033"
+    },
+    {
+      "model": "cognitivecomputations/dolphin3.0-mistral-24b:free",
+      "test_type": "text_to_emoji",
+      "input": "I love eating pizza",
+      "output": "HTTP 404: No endpoints found for cognitivecomputations/dolphin3.0-mistral-24b:free.",
+      "latency_seconds": 1.461,
+      "status_code": 404,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:14.649904"
+    },
+    {
+      "model": "cognitivecomputations/dolphin3.0-mistral-24b:free",
+      "test_type": "text_to_emoji",
+      "input": "Going skiing in the mountains",
+      "output": "HTTP 404: No endpoints found for cognitivecomputations/dolphin3.0-mistral-24b:free.",
+      "latency_seconds": 0.754,
+      "status_code": 404,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:15.407030"
+    },
+    {
+      "model": "cognitivecomputations/dolphin3.0-mistral-24b:free",
+      "test_type": "text_to_emoji",
+      "input": "Excited about this new tech project",
+      "output": "HTTP 404: No endpoints found for cognitivecomputations/dolphin3.0-mistral-24b:free.",
+      "latency_seconds": 1.05,
+      "status_code": 404,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:16.469810"
+    },
+    {
+      "model": "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
+      "test_type": "emoji_to_text",
+      "input": "\ud83c\udf55\ud83d\ude0d\ud83d\udd25",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.945,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:18.418145"
+    },
+    {
+      "model": "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
+      "test_type": "emoji_to_text",
+      "input": "\u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.856,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:19.276677"
+    },
+    {
+      "model": "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
+      "test_type": "emoji_to_text",
+      "input": "\ud83d\udcbb\ud83d\ude80\ud83c\udf1f",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 1.081,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:20.360521"
+    },
+    {
+      "model": "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
+      "test_type": "text_to_emoji",
+      "input": "I love eating pizza",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 1.085,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:21.455990"
+    },
+    {
+      "model": "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
+      "test_type": "text_to_emoji",
+      "input": "Going skiing in the mountains",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 1.246,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:22.717772"
+    },
+    {
+      "model": "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
+      "test_type": "text_to_emoji",
+      "input": "Excited about this new tech project",
+      "output": "HTTP 429: Rate limit exceeded: free-models-per-day. Add 5 credits to unlock 1000 free model requests per day",
+      "latency_seconds": 0.92,
+      "status_code": 429,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:57:23.643411"
+    },
+    {
+      "model": "meta-llama/llama-3.2-3b-instruct",
+      "test_type": "emoji_to_text",
+      "input": "\ud83c\udf55\ud83d\ude0d\ud83d\udd25",
+      "output": "Here's the translation:\n\n\"This person is having an incredible pizza \ud83c\udf55 and is absolutely loving it (they can't get enough) \ud83d\ude0d, and it's getting to the point where it's extremely hot \ud83d\udd25.\"",
+      "latency_seconds": 1.453,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 45,
+        "completion_tokens": 46,
+        "total_tokens": 91
+      },
+      "timestamp": "2025-11-05T17:57:26.101312"
+    },
+    {
+      "model": "meta-llama/llama-3.2-3b-instruct",
+      "test_type": "emoji_to_text",
+      "input": "\u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f",
+      "output": "These emojis translate to: \"I'm going skiing at the mountain resort.\"\n\nHere's a breakdown of each emoji:\n\n\u2744\ufe0f: Snow or ice\n\ud83c\udfd4\ufe0f: Mountain or mountainous terrain\n\u26f7\ufe0f: Skis",
+      "latency_seconds": 1.452,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 48,
+        "completion_tokens": 50,
+        "total_tokens": 98
+      },
+      "timestamp": "2025-11-05T17:57:27.555734"
+    },
+    {
+      "model": "meta-llama/llama-3.2-3b-instruct",
+      "test_type": "emoji_to_text",
+      "input": "\ud83d\udcbb\ud83d\ude80\ud83c\udf1f",
+      "output": "Here's the translation:\n\n\"He is joining a space exploration project.\"",
+      "latency_seconds": 1.424,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 46,
+        "completion_tokens": 14,
+        "total_tokens": 60
+      },
+      "timestamp": "2025-11-05T17:57:28.982546"
+    },
+    {
+      "model": "meta-llama/llama-3.2-3b-instruct",
+      "test_type": "text_to_emoji",
+      "input": "I love eating pizza",
+      "output": "Here is the text converted to emojis:\n\n\u2764\ufe0f\ud83c\udf55",
+      "latency_seconds": 1.203,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 40,
+        "completion_tokens": 14,
+        "total_tokens": 54
+      },
+      "timestamp": "2025-11-05T17:57:30.198657"
+    },
+    {
+      "model": "meta-llama/llama-3.2-3b-instruct",
+      "test_type": "text_to_emoji",
+      "input": "Going skiing in the mountains",
+      "output": "\u2603\ufe0f \ud83c\udfd4\ufe0f \ud83c\udfc2",
+      "latency_seconds": 1.836,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 42,
+        "completion_tokens": 11,
+        "total_tokens": 53
+      },
+      "timestamp": "2025-11-05T17:57:32.039615"
+    },
+    {
+      "model": "meta-llama/llama-3.2-3b-instruct",
+      "test_type": "text_to_emoji",
+      "input": "Excited about this new tech project",
+      "output": "\ud83e\udd29\ud83d\udcc8\ud83d\udcbb",
+      "latency_seconds": 1.918,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 44,
+        "completion_tokens": 9,
+        "total_tokens": 53
+      },
+      "timestamp": "2025-11-05T17:57:33.960626"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "test_type": "emoji_to_text",
+      "input": "\ud83c\udf55\ud83d\ude0d\ud83d\udd25",
+      "output": "\n\nPizza \ud83d\ude0d So good it's \ud83d\udd25  (hot) \n",
+      "latency_seconds": 1.231,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 40,
+        "completion_tokens": 17,
+        "total_tokens": 57
+      },
+      "timestamp": "2025-11-05T17:57:36.196583"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "test_type": "emoji_to_text",
+      "input": "\u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f",
+      "output": "\n\nSnow-covered mountains, skiing. \n",
+      "latency_seconds": 1.197,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 42,
+        "completion_tokens": 12,
+        "total_tokens": 54
+      },
+      "timestamp": "2025-11-05T17:57:37.395943"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "test_type": "emoji_to_text",
+      "input": "\ud83d\udcbb\ud83d\ude80\ud83c\udf1f",
+      "output": "\ud83d\udcbb\ud83d\ude80\ud83c\udf1f  \ud83d\udcbb = computer, \ud83d\ude80= rocket, \ud83c\udf1f = star  \n\n**Possible translations:**\n\n* Launching a new computer project\n* Reaching for the stars with technology\n* Achieving success in the tech world \n\n\n\nLet me know if you have other emojis you'd like me to translate! \ud83d\ude0a \n",
+      "latency_seconds": 1.602,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 40,
+        "completion_tokens": 67,
+        "total_tokens": 107
+      },
+      "timestamp": "2025-11-05T17:57:39.001835"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "test_type": "text_to_emoji",
+      "input": "I love eating pizza",
+      "output": "\ud83c\udf55\ud83d\ude04\u2764\ufe0f  \n",
+      "latency_seconds": 1.222,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 39,
+        "completion_tokens": 7,
+        "total_tokens": 46
+      },
+      "timestamp": "2025-11-05T17:57:40.228106"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "test_type": "text_to_emoji",
+      "input": "Going skiing in the mountains",
+      "output": "\u26f7\ufe0f\ud83c\udfd4\ufe0f  \u2744\ufe0f \ud83d\udca8 \ud83c\udfbf \ud83c\udfc2 \n",
+      "latency_seconds": 1.243,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 40,
+        "completion_tokens": 16,
+        "total_tokens": 56
+      },
+      "timestamp": "2025-11-05T17:57:41.474818"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "test_type": "text_to_emoji",
+      "input": "Excited about this new tech project",
+      "output": "\ud83d\ude80\ud83d\udcbb\ud83e\udd29 \n",
+      "latency_seconds": 1.491,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 41,
+        "completion_tokens": 7,
+        "total_tokens": 48
+      },
+      "timestamp": "2025-11-05T17:57:42.971506"
+    },
+    {
+      "model": "mistralai/mistral-7b-instruct-v0.3",
+      "test_type": "emoji_to_text",
+      "input": "\ud83c\udf55\ud83d\ude0d\ud83d\udd25",
+      "output": " \"Pizza, delighted, fire\" (This could mean something like \"I'm delighted with this pizza, it's really good, it's spicy!\")",
+      "latency_seconds": 1.269,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 44,
+        "completion_tokens": 37,
+        "total_tokens": 81
+      },
+      "timestamp": "2025-11-05T17:57:45.246330"
+    },
+    {
+      "model": "mistralai/mistral-7b-instruct-v0.3",
+      "test_type": "emoji_to_text",
+      "input": "\u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f",
+      "output": " These emojis represent a winter scene with skiing: \u2744\ufe0f (snowflake) \ud83c\udfd4\ufe0f (mountain) \u26f7\ufe0f (ski) So, the text translation could be \"Winter mountain skiing.\"",
+      "latency_seconds": 1.333,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 51,
+        "completion_tokens": 56,
+        "total_tokens": 107
+      },
+      "timestamp": "2025-11-05T17:57:46.581825"
+    },
+    {
+      "model": "mistralai/mistral-7b-instruct-v0.3",
+      "test_type": "emoji_to_text",
+      "input": "\ud83d\udcbb\ud83d\ude80\ud83c\udf1f",
+      "output": " <s> [OUT] \"Tech startup\" or \"Launching a tech company\" or \"Tech innovation\" ",
+      "latency_seconds": 1.636,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 50,
+        "completion_tokens": 26,
+        "total_tokens": 76
+      },
+      "timestamp": "2025-11-05T17:57:48.221781"
+    },
+    {
+      "model": "mistralai/mistral-7b-instruct-v0.3",
+      "test_type": "text_to_emoji",
+      "input": "I love eating pizza",
+      "output": " \ud83c\udf55\ud83d\udc96\n\n<s> ",
+      "latency_seconds": 1.118,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 43,
+        "completion_tokens": 15,
+        "total_tokens": 58
+      },
+      "timestamp": "2025-11-05T17:57:49.342254"
+    },
+    {
+      "model": "mistralai/mistral-7b-instruct-v0.3",
+      "test_type": "text_to_emoji",
+      "input": "Going skiing in the mountains",
+      "output": " \u2744\ufe0f\ud83c\udfc2\ud83c\udfd4\ufe0f\n\n<s> ",
+      "latency_seconds": 2.201,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 44,
+        "completion_tokens": 25,
+        "total_tokens": 69
+      },
+      "timestamp": "2025-11-05T17:57:51.546154"
+    },
+    {
+      "model": "mistralai/mistral-7b-instruct-v0.3",
+      "test_type": "text_to_emoji",
+      "input": "Excited about this new tech project",
+      "output": " \ud83e\udd29\ud83d\udcbb\ud83d\ude80 Excited about this new tech project! \ud83d\ude80\ud83d\udcbb\ud83e\udd29",
+      "latency_seconds": 1.207,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 42,
+        "completion_tokens": 30,
+        "total_tokens": 72
+      },
+      "timestamp": "2025-11-05T17:57:52.761273"
+    },
+    {
+      "model": "mistralai/mistral-nemo",
+      "test_type": "emoji_to_text",
+      "input": "\ud83c\udf55\ud83d\ude0d\ud83d\udd25",
+      "output": "Pizza, Love, Fire",
+      "latency_seconds": 2.64,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 42,
+        "completion_tokens": 6,
+        "total_tokens": 48
+      },
+      "timestamp": "2025-11-05T17:57:56.407856"
+    },
+    {
+      "model": "mistralai/mistral-nemo",
+      "test_type": "emoji_to_text",
+      "input": "\u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f",
+      "output": "Snow-capped mountain with skiers",
+      "latency_seconds": 1.434,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 50,
+        "completion_tokens": 7,
+        "total_tokens": 57
+      },
+      "timestamp": "2025-11-05T17:57:57.845217"
+    },
+    {
+      "model": "mistralai/mistral-nemo",
+      "test_type": "emoji_to_text",
+      "input": "\ud83d\udcbb\ud83d\ude80\ud83c\udf1f",
+      "output": "\"Computer Rocket Star\"",
+      "latency_seconds": 1.132,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 42,
+        "completion_tokens": 5,
+        "total_tokens": 47
+      },
+      "timestamp": "2025-11-05T17:57:58.979981"
+    },
+    {
+      "model": "mistralai/mistral-nemo",
+      "test_type": "text_to_emoji",
+      "input": "I love eating pizza",
+      "output": "\ud83c\udf55\ud83d\ude0b",
+      "latency_seconds": 2.445,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 36,
+        "completion_tokens": 9,
+        "total_tokens": 45
+      },
+      "timestamp": "2025-11-05T17:58:01.428724"
+    },
+    {
+      "model": "mistralai/mistral-nemo",
+      "test_type": "text_to_emoji",
+      "input": "Going skiing in the mountains",
+      "output": "\ud83c\udfc2\u200d\u2642\ufe0f\ud83c\udfd4\ufe0f",
+      "latency_seconds": 5.656,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 36,
+        "completion_tokens": 17,
+        "total_tokens": 53
+      },
+      "timestamp": "2025-11-05T17:58:07.096810"
+    },
+    {
+      "model": "mistralai/mistral-nemo",
+      "test_type": "text_to_emoji",
+      "input": "Excited about this new tech project",
+      "output": "\ud83c\udf89\ud83d\udcbb\ud83d\ude80\ud83d\udca1\ud83e\udd29",
+      "latency_seconds": 5.294,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 39,
+        "completion_tokens": 21,
+        "total_tokens": 60
+      },
+      "timestamp": "2025-11-05T17:58:12.398819"
+    },
+    {
+      "model": "meta-llama/llama-3.1-8b-instruct",
+      "test_type": "emoji_to_text",
+      "input": "\ud83c\udf55\ud83d\ude0d\ud83d\udd25",
+      "output": "Here is the translation of the emojis to text:\n\n\"I love pizza!\"",
+      "latency_seconds": 1.127,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 45,
+        "completion_tokens": 14,
+        "total_tokens": 59
+      },
+      "timestamp": "2025-11-05T17:58:14.532115"
+    },
+    {
+      "model": "meta-llama/llama-3.1-8b-instruct",
+      "test_type": "emoji_to_text",
+      "input": "\u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f",
+      "output": "Here's the translation:\n\nA cold winter wonderland! \ud83c\udfd4\ufe0f represents a mountain or wilderness area, \u2744\ufe0f represents snow or ice, and \u26f7\ufe0f represents a snowboard or skier.\n\nTranslation: \"Skiing in the snow-covered mountains.\"",
+      "latency_seconds": 1.638,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 48,
+        "completion_tokens": 55,
+        "total_tokens": 103
+      },
+      "timestamp": "2025-11-05T17:58:16.173039"
+    },
+    {
+      "model": "meta-llama/llama-3.1-8b-instruct",
+      "test_type": "emoji_to_text",
+      "input": "\ud83d\udcbb\ud83d\ude80\ud83c\udf1f",
+      "output": "Here are the translations:\n\n\ud83d\udcbb = Computer (or more specifically, Desktop/getting to work)\n\ud83d\ude80 = Launch/Going to space or Exploding with excitement\n\ud83c\udf1f = Star/Shining WITH success or Awesomeness\n\nSo, the overall translation is \"Getting to work and blasting off with success (or feeling awesome)!\" \ud83d\ude80\ud83d\udcbb\ud83c\udf1f",
+      "latency_seconds": 1.906,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 45,
+        "completion_tokens": 79,
+        "total_tokens": 124
+      },
+      "timestamp": "2025-11-05T17:58:18.082125"
+    },
+    {
+      "model": "meta-llama/llama-3.1-8b-instruct",
+      "test_type": "text_to_emoji",
+      "input": "I love eating pizza",
+      "output": "Here is the translation:\n\n\u2764\ufe0f \ud83c\udf55",
+      "latency_seconds": 1.07,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 40,
+        "completion_tokens": 10,
+        "total_tokens": 50
+      },
+      "timestamp": "2025-11-05T17:58:19.155377"
+    },
+    {
+      "model": "meta-llama/llama-3.1-8b-instruct",
+      "test_type": "text_to_emoji",
+      "input": "Going skiing in the mountains",
+      "output": "\u26f7\ufe0f\ud83c\udfd4\ufe0f",
+      "latency_seconds": 1.265,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 41,
+        "completion_tokens": 9,
+        "total_tokens": 50
+      },
+      "timestamp": "2025-11-05T17:58:20.423347"
+    },
+    {
+      "model": "meta-llama/llama-3.1-8b-instruct",
+      "test_type": "text_to_emoji",
+      "input": "Excited about this new tech project",
+      "output": "Here's the text converted to emojis:\n\n Thrilled \ud83d\udca5 Tech \ud83d\udcbb Project \ud83d\udca1",
+      "latency_seconds": 1.162,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 43,
+        "completion_tokens": 19,
+        "total_tokens": 62
+      },
+      "timestamp": "2025-11-05T17:58:21.589066"
+    },
+    {
+      "model": "qwen/qwen-2.5-coder-32b-instruct",
+      "test_type": "emoji_to_text",
+      "input": "\ud83c\udf55\ud83d\ude0d\ud83d\udd25",
+      "output": "<think>\nOkay, let's see. The user wants me to translate the emojis \ud83c\udf55\ud83d\ude0d\ud83d\udd25 into text. So, first, I need to figure out what each of these emojis represents and then combine them into a coherent message.\n\nStarting with the first emoji: \ud83c\udf55. That's a pizza emoji. So probably refers to pizza or something related to it. \n\nNext is \ud83d\ude0d, which is the heart eyes face. This usually expresses love, affection, or infatuation. So someone is really loving something.\n\nThen there's \ud83d\udd25, the fire emoji. This can have a few meanings. It could represent something hot, being on fire, or maybe it's used to indicate something is really good, like \"on fire\" as in performing exceptionally well. \n\nPutting them together: Pizza, love, and fire. Maybe the person is expressing that they love pizza a lot, and maybe the pizza is really spicy or hot, hence the fire emoji. Alternatively, it could be that pizza is amazing and they love it so much it's \"on fire,\" like it's excellent. \n\nAnother angle: Maybe the fire emoji is used to emphasize the intensity of their love for pizza. So something like \"I love pizza so much it's like it's on fire!\" Or more casually, \"Love pizza, it's so hot!\" Depending on context, but since there's no context here, I should go with the most common interpretation. \n\nI should check if there's any common phrase or idiom that combines these. \"Hot pizza\" is a common phrase, but combining with love... So the translation could be \"Love pizza! So hot!\" or \"Pizza is so good, I love it with fire!\" Hmm, maybe \"Can't get enough of pizza\u2014it's love, like, straight fire!\" But the user wants clear and concise. \n\nProbably the safest is \"Love pizza! It's so hot \ud83d\udd25\" or \"Pizza is amazing\u2014love it with fire!\" But since the fire is an emoji after the heart eyes, maybe it's \"Love pizza! So hot!\" That's concise.\n\nAlternatively, if the fire is indicating popularity or being the best, then \"Pizza is love and on fire!\" \n\nI need to choose the most accurate and natural translation. Given that the emojis are in a sequence, maybe the intended translation is expressing that pizza is something they love a lot and it's really hot or popular. So combining the emojis into a sentence that captures that. \n\nFinal thought: The most straightforward translation would be \"Love pizza! It's so hot!\" or \"Pizza is amazing\u2014so in love with it!\" depending on whether the fire refers to temperature or intensity of emotion. Since the fire emoji can sometimes denote attractiveness or being impressive, maybe \"So\u7231\u4e0a pizza! It's on fire!\" but in English, that's less common. \n\nI think \"Love pizza! It's so hot!\" is concise and captures the emojis well.\n</think>\n\nThe emojis \ud83c\udf55\ud83d\ude0d\ud83d\udd25 can be translated to:  \n**\"Love pizza! It's so hot!\"**  \n\n*Alternatives based on context:  \n- \"Pizza is my fire!\" (slang for something you're passionate about)  \n- \"Can't get enough of pizza\u2014it's spicy-hot and amazing!\"*",
+      "latency_seconds": 8.688,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 40,
+        "completion_tokens": 670,
+        "total_tokens": 710
+      },
+      "timestamp": "2025-11-05T17:58:31.281676"
+    },
+    {
+      "model": "qwen/qwen-2.5-coder-32b-instruct",
+      "test_type": "emoji_to_text",
+      "input": "\u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f",
+      "output": "<think>\nAlright, let me try to translate these emojis: \u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f. \n\nFirst, \u2744\ufe0f is the snowflake emoji, which definitely represents snow. Then there's the mountain emoji \ud83c\udfd4\ufe0f, which I think looks like a peak rising from the ground. The last one is \u26f7\ufe0f, which looks like a ski, so that's probably related to skiing.\n\nPutting them together, the user is likely talking about winter activities. The snowflake suggests snow, the mountain is a place where skiing or snowboarding happens. So maybe \"Winter mountain skiing\"? Or \"Snowy mountain with skier\"? Let me check if there's a more concise way. Maybe \"Snowy mountain skiing\". Alternatively, \"Mountains, snow, and skiing\". Wait, the sequence is \u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f, so maybe first snow, then mountain, then skiing. So \"Snow on a mountain, skier\". But maybe the user wants a single sentence or phrase. Let me see. Maybe \"Winter skiing on a snowy mountain\". Or \"Snowflakes at the mountain; skier\". But that's a bit wordy. Maybe \"a snowy mountain with skier\". Hmm. Alternatively, the emojis are three in a row, so maybe it's \"Skiing on a snowy mountain\". That sounds good. Let me verify each emoji again. \u2744\ufe0f is snow, \ud83c\udfd4\ufe0f is a mountain, \u26f7\ufe0f is a person skiing. So the combination would indicate a winter scene where someone is skiing on a snowy mountain. So the translation would be \"Skiing on a snowy mountain\" or \"Winter hill skiing\". Alternatively, \"Winter scene with skiing\". But I think the most accurate is \"Skiing on a snowy mountain\". Let me check if there's another common phrase. Maybe \"Mountains, snow, and skis\". But that's not as natural. The emojis are in order: snow, mountain, skier. So the skiing is on the mountain, with snow. So the best translation is likely \"Skiing on a snowy mountain\".\n</think>\n\nWinter skiing on a snowy mountain.",
+      "latency_seconds": 5.478,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 42,
+        "completion_tokens": 442,
+        "total_tokens": 484
+      },
+      "timestamp": "2025-11-05T17:58:36.762058"
+    },
+    {
+      "model": "qwen/qwen-2.5-coder-32b-instruct",
+      "test_type": "emoji_to_text",
+      "input": "\ud83d\udcbb\ud83d\ude80\ud83c\udf1f",
+      "output": "<think>\nOkay, let's tackle this emoji translation. The user provided three emojis: \ud83d\udcbb, \ud83d\ude80, and \ud83c\udf1f. I need to figure out what they represent in text.\n\nFirst, \ud83d\udcbb is straightforward. It's a computer, so maybe \"Computer\" or \"Laptop\". The next one is \ud83d\ude80, which is a rocket. That's a classic symbol for innovation, speed, or launching something. Then there's \ud83c\udf1f, which is a star. Stars can symbolize excellence, achievement, or something shining.\n\nPutting them together, the user might be looking for a phrase that combines these elements. Maybe something like \"Powerful and fast laptop\" or \"Innovative computing experience\". Alternatively, it could be a product name or a tagline. Let me check if there are common translations for these emojis together. I know sometimes companies use emoji sequences in their branding. \n\nAlternatively, maybe it's a personal achievement or a project launch. The rocket could indicate launching a project, the computer the tech used, and the star the success or excellence. So a possible translation could be \"Rocket-powered computing excellence\" or \"Innovative tech with stellar performance\". \n\nI should make sure to keep it concise but clear. Let me think of a few possibilities and choose the most fitting. Since the user wants clear and concise translations, I should go with a phrase that uses all three elements effectively without being too wordy. Maybe \"Powerful computer with innovative speed and exceptional quality\" but that's a bit long. \n\nAlternatively, \"Fast computer launching stellar performance\" or \"Rocketing to excellence with cutting-edge tech\". Hmm. Wait, maybe the user wants a shorter phrase. Let me check if there's a standard interpretation. Alternatively, think of each emoji contributing a word. So \"Computer Rocket Star\" but that's not a phrase. Maybe combining their meanings: High-performance computer, innovative technology, and excellence. \n\nI think a good concise translation would be \"Powerful Computer, Rocket Speed, Stellar Performance\" to directly translate each emoji and use words that convey their meanings clearly. Alternatively, a phrase like \"Rocket-powered Computing with Stellar Excellence\" might flow better. \n\nYes, that's concise and uses all three emojis effectively. Let me go with that.\n</think>\n\n\"Rocket-powered computing with stellar excellence.\"",
+      "latency_seconds": 5.62,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 39,
+        "completion_tokens": 475,
+        "total_tokens": 514
+      },
+      "timestamp": "2025-11-05T17:58:42.386149"
+    },
+    {
+      "model": "qwen/qwen-2.5-coder-32b-instruct",
+      "test_type": "text_to_emoji",
+      "input": "I love eating pizza",
+      "output": "<think>\nOkay, the user wants to convert \"I love eating pizza\" into emojis. Let's break it down. \"I\" can be represented by the iconic \ud83e\uddcd emoji. \"Love\" is usually \u2764\ufe0f. For \"eating\", maybe \ud83c\udf7d\ufe0f for eating in general, and then \ud83c\udf55 for pizza. I should check if combining these makes sense. Let me make sure each part is clear. \ud83c\udf7d\ufe0f is specifically for eating, like a plate with a fork and knife, which fits \"eating\". \ud83c\udf55 is obviously pizza. Putting it all together: \ud83e\uddcd\u2764\ufe0f\ud83c\udf7d\ufe0f\ud83c\udf55. That should convey \"I love eating pizza\" in emojis. I think that works. Maybe the user is looking for a quick and clear translation without too many emojis. Let me confirm if there's a better emoji for the action of eating, but \ud83c\udf7d\ufe0f seems appropriate. I don't see any issues with this combination.\n</think>\n\n\ud83e\uddcd\u2764\ufe0f\ud83c\udf7d\ufe0f\ud83c\udf55",
+      "latency_seconds": 3.33,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 38,
+        "completion_tokens": 205,
+        "total_tokens": 243
+      },
+      "timestamp": "2025-11-05T17:58:45.720572"
+    },
+    {
+      "model": "qwen/qwen-2.5-coder-32b-instruct",
+      "test_type": "text_to_emoji",
+      "input": "Going skiing in the mountains",
+      "output": "\ud83c\udfbf\ud83c\udfd4\ufe0f",
+      "latency_seconds": 2.092,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 39,
+        "completion_tokens": 4,
+        "total_tokens": 43
+      },
+      "timestamp": "2025-11-05T17:58:47.815428"
+    },
+    {
+      "model": "qwen/qwen-2.5-coder-32b-instruct",
+      "test_type": "text_to_emoji",
+      "input": "Excited about this new tech project",
+      "output": "\ud83e\udd29\ud83d\udcbb\ud83c\udf1f\ud83d\ude80",
+      "latency_seconds": 2.253,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 41,
+        "completion_tokens": 5,
+        "total_tokens": 46
+      },
+      "timestamp": "2025-11-05T17:58:50.073387"
+    },
+    {
+      "model": "mistralai/mistral-small-3.1",
+      "test_type": "emoji_to_text",
+      "input": "\ud83c\udf55\ud83d\ude0d\ud83d\udd25",
+      "output": "HTTP 400: mistralai/mistral-small-3.1 is not a valid model ID",
+      "latency_seconds": 0.747,
+      "status_code": 400,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:58:51.824852"
+    },
+    {
+      "model": "mistralai/mistral-small-3.1",
+      "test_type": "emoji_to_text",
+      "input": "\u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f",
+      "output": "HTTP 400: mistralai/mistral-small-3.1 is not a valid model ID",
+      "latency_seconds": 0.723,
+      "status_code": 400,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:58:52.550597"
+    },
+    {
+      "model": "mistralai/mistral-small-3.1",
+      "test_type": "emoji_to_text",
+      "input": "\ud83d\udcbb\ud83d\ude80\ud83c\udf1f",
+      "output": "HTTP 400: mistralai/mistral-small-3.1 is not a valid model ID",
+      "latency_seconds": 0.796,
+      "status_code": 400,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:58:53.349464"
+    },
+    {
+      "model": "mistralai/mistral-small-3.1",
+      "test_type": "text_to_emoji",
+      "input": "I love eating pizza",
+      "output": "HTTP 400: mistralai/mistral-small-3.1 is not a valid model ID",
+      "latency_seconds": 0.837,
+      "status_code": 400,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:58:54.189451"
+    },
+    {
+      "model": "mistralai/mistral-small-3.1",
+      "test_type": "text_to_emoji",
+      "input": "Going skiing in the mountains",
+      "output": "HTTP 400: mistralai/mistral-small-3.1 is not a valid model ID",
+      "latency_seconds": 0.749,
+      "status_code": 400,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:58:54.940817"
+    },
+    {
+      "model": "mistralai/mistral-small-3.1",
+      "test_type": "text_to_emoji",
+      "input": "Excited about this new tech project",
+      "output": "HTTP 400: mistralai/mistral-small-3.1 is not a valid model ID",
+      "latency_seconds": 0.754,
+      "status_code": 400,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:58:55.697603"
+    },
+    {
+      "model": "google/gemini-flash-1.5-8b",
+      "test_type": "emoji_to_text",
+      "input": "\ud83c\udf55\ud83d\ude0d\ud83d\udd25",
+      "output": "HTTP 404: No endpoints found for google/gemini-flash-1.5-8b.",
+      "latency_seconds": 0.842,
+      "status_code": 404,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:58:57.546118"
+    },
+    {
+      "model": "google/gemini-flash-1.5-8b",
+      "test_type": "emoji_to_text",
+      "input": "\u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f",
+      "output": "HTTP 404: No endpoints found for google/gemini-flash-1.5-8b.",
+      "latency_seconds": 0.717,
+      "status_code": 404,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:58:58.266990"
+    },
+    {
+      "model": "google/gemini-flash-1.5-8b",
+      "test_type": "emoji_to_text",
+      "input": "\ud83d\udcbb\ud83d\ude80\ud83c\udf1f",
+      "output": "HTTP 404: No endpoints found for google/gemini-flash-1.5-8b.",
+      "latency_seconds": 0.708,
+      "status_code": 404,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:58:58.978066"
+    },
+    {
+      "model": "google/gemini-flash-1.5-8b",
+      "test_type": "text_to_emoji",
+      "input": "I love eating pizza",
+      "output": "HTTP 404: No endpoints found for google/gemini-flash-1.5-8b.",
+      "latency_seconds": 0.724,
+      "status_code": 404,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:58:59.704305"
+    },
+    {
+      "model": "google/gemini-flash-1.5-8b",
+      "test_type": "text_to_emoji",
+      "input": "Going skiing in the mountains",
+      "output": "HTTP 404: No endpoints found for google/gemini-flash-1.5-8b.",
+      "latency_seconds": 0.739,
+      "status_code": 404,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:59:00.446272"
+    },
+    {
+      "model": "google/gemini-flash-1.5-8b",
+      "test_type": "text_to_emoji",
+      "input": "Excited about this new tech project",
+      "output": "HTTP 404: No endpoints found for google/gemini-flash-1.5-8b.",
+      "latency_seconds": 0.721,
+      "status_code": 404,
+      "success": false,
+      "tokens": {},
+      "timestamp": "2025-11-05T17:59:01.170483"
+    },
+    {
+      "model": "qwen/qwen-2.5-72b-instruct",
+      "test_type": "emoji_to_text",
+      "input": "\ud83c\udf55\ud83d\ude0d\ud83d\udd25",
+      "output": "Pizza love fire",
+      "latency_seconds": 1.51,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 40,
+        "completion_tokens": 4,
+        "total_tokens": 44
+      },
+      "timestamp": "2025-11-05T17:59:03.686317"
+    },
+    {
+      "model": "qwen/qwen-2.5-72b-instruct",
+      "test_type": "emoji_to_text",
+      "input": "\u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f",
+      "output": "Snowflake, Mountain, Skiing",
+      "latency_seconds": 1.447,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 42,
+        "completion_tokens": 8,
+        "total_tokens": 50
+      },
+      "timestamp": "2025-11-05T17:59:05.136217"
+    },
+    {
+      "model": "qwen/qwen-2.5-72b-instruct",
+      "test_type": "emoji_to_text",
+      "input": "\ud83d\udcbb\ud83d\ude80\ud83c\udf1f",
+      "output": "Computer, Rocket, Star",
+      "latency_seconds": 1.322,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 39,
+        "completion_tokens": 6,
+        "total_tokens": 45
+      },
+      "timestamp": "2025-11-05T17:59:06.461076"
+    },
+    {
+      "model": "qwen/qwen-2.5-72b-instruct",
+      "test_type": "text_to_emoji",
+      "input": "I love eating pizza",
+      "output": "\ud83c\udf55\ud83d\ude0d",
+      "latency_seconds": 0.913,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 38,
+        "completion_tokens": 2,
+        "total_tokens": 40
+      },
+      "timestamp": "2025-11-05T17:59:07.377197"
+    },
+    {
+      "model": "qwen/qwen-2.5-72b-instruct",
+      "test_type": "text_to_emoji",
+      "input": "Going skiing in the mountains",
+      "output": "\u26f7\ufe0f\ud83c\udfd4\ufe0f\ud83d\ude80",
+      "latency_seconds": 1.125,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 39,
+        "completion_tokens": 5,
+        "total_tokens": 44
+      },
+      "timestamp": "2025-11-05T17:59:08.505034"
+    },
+    {
+      "model": "qwen/qwen-2.5-72b-instruct",
+      "test_type": "text_to_emoji",
+      "input": "Excited about this new tech project",
+      "output": "\ud83c\udf89\ud83d\udcbb].\"",
+      "latency_seconds": 3.377,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 41,
+        "completion_tokens": 4,
+        "total_tokens": 45
+      },
+      "timestamp": "2025-11-05T17:59:11.886369"
+    },
+    {
+      "model": "meta-llama/llama-3.1-70b-instruct",
+      "test_type": "emoji_to_text",
+      "input": "\ud83c\udf55\ud83d\ude0d\ud83d\udd25",
+      "output": "The translation of these emojis to text is: \"I absolutely love this pizza, it's amazing and/or on fire.\"",
+      "latency_seconds": 1.585,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 65,
+        "completion_tokens": 25,
+        "total_tokens": 90
+      },
+      "timestamp": "2025-11-05T17:59:14.483176"
+    },
+    {
+      "model": "meta-llama/llama-3.1-70b-instruct",
+      "test_type": "emoji_to_text",
+      "input": "\u2744\ufe0f\ud83c\udfd4\ufe0f\u26f7\ufe0f",
+      "output": "These emojis translate to: \"Skiing in the mountains during winter\" or simply \"Winter skiing trip\" or \"Skiing in a winter wonderland\".",
+      "latency_seconds": 1.533,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 68,
+        "completion_tokens": 34,
+        "total_tokens": 102
+      },
+      "timestamp": "2025-11-05T17:59:16.018591"
+    },
+    {
+      "model": "meta-llama/llama-3.1-70b-instruct",
+      "test_type": "emoji_to_text",
+      "input": "\ud83d\udcbb\ud83d\ude80\ud83c\udf1f",
+      "output": "Here is the translation:\n\n\"Blasting off to success with technology\" or more simply: \"Tech success launch\"",
+      "latency_seconds": 6.34,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 45,
+        "completion_tokens": 22,
+        "total_tokens": 67
+      },
+      "timestamp": "2025-11-05T17:59:22.361194"
+    },
+    {
+      "model": "meta-llama/llama-3.1-70b-instruct",
+      "test_type": "text_to_emoji",
+      "input": "I love eating pizza",
+      "output": "\u2764\ufe0f\ud83c\udf74\ud83c\udf55",
+      "latency_seconds": 1.645,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 40,
+        "completion_tokens": 8,
+        "total_tokens": 48
+      },
+      "timestamp": "2025-11-05T17:59:24.008967"
+    },
+    {
+      "model": "meta-llama/llama-3.1-70b-instruct",
+      "test_type": "text_to_emoji",
+      "input": "Going skiing in the mountains",
+      "output": "\u2744\ufe0f\ud83c\udfc2\ud83c\udfd4\ufe0f",
+      "latency_seconds": 1.193,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 41,
+        "completion_tokens": 10,
+        "total_tokens": 51
+      },
+      "timestamp": "2025-11-05T17:59:25.205077"
+    },
+    {
+      "model": "meta-llama/llama-3.1-70b-instruct",
+      "test_type": "text_to_emoji",
+      "input": "Excited about this new tech project",
+      "output": "\ud83e\udd29\ud83d\udda5\ufe0f\ud83d\udcbb",
+      "latency_seconds": 1.469,
+      "status_code": 200,
+      "success": true,
+      "tokens": {
+        "prompt_tokens": 63,
+        "completion_tokens": 10,
+        "total_tokens": 73
+      },
+      "timestamp": "2025-11-05T17:59:26.676372"
+    }
+  ],
+  "timestamp": "2025-11-05T17:59:27.698640",
+  "total_tests": 90,
+  "successful_tests": 48
+}
