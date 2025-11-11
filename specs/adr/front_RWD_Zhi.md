@@ -2,12 +2,12 @@
 
 **Title:** Web App Layout Design (with or without Responsive Web Design)
 **Date:** 2025-11-10  
-**Status:** Proposed
+**Status:** Accepted
 
 ---
 
 ## 1. Context
-We want to develop a web page for emoji translator and have to decide on whether we should use RWD or not.
+We want to develop a web page for an emoji translator and have to decide on whether we should use Responsive Web Design (RWD), which allows the layout to automatically adapt to different screen sizes.
 
 ---
 
