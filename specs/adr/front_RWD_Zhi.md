@@ -1,5 +1,6 @@
 # Architecture Decision Record (ADR)
 
+**ADR #:** XZFE001  
 **Title:** Web App Layout Design (with or without Responsive Web Design)
 **Date:** 2025-11-10  
 **Status:** Accepted
