@@ -1,8 +1,9 @@
 # Architecture Decision Record (ADR)
 
+**ADR #:** 002
 **Title:** Choice of Programming Language for Slack App Backend (Python FastAPI vs. JavaScript)
 **Date:** 2025-11-10
-**Status:** Proposed
+**Status:** Accepted
 
 ---
 
