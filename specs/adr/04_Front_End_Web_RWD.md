@@ -18,23 +18,23 @@ We decided to implement a responsive web layout using RWD principles. This decis
 ---
 
 ## 3. Alternatives Considered
-- **Option 1:**  Fixed Desktop Layout 
-    — Pros: Simpler to implement and test.
-    - Cons: Poor mobile usability; requires future redesign for RWD.
+- **Option 1:**  Fixed Desktop Layout
+  — Pros: Simpler to implement and test.
+  - Cons: Poor mobile usability; requires future redesign for RWD.
 - **Option 2:** Separate Mobile and Desktop Versions
-    — Pros: Allows full optimization per device.
-    - Cons:  High maintenance cost; code duplication; inconsistent UX.
+  — Pros: Allows full optimization per device.
+  - Cons:  High maintenance cost; code duplication; inconsistent UX.
 
 ---
 
 ## 4. Consequences
-- Positive outcomes (benefits) 
-    - Improved user experience across screen sizes.
-    - Easier long-term maintenance (single layout system).
+- Positive outcomes (benefits)
+  - Improved user experience across screen sizes.
+  - Easier long-term maintenance (single layout system).
 
-- Negative outcomes (risks, costs, complexities)  
-    - Slightly longer initial development and testing time.
-    - Requires attention to responsive edge cases (overflow, grid wrapping).
+- Negative outcomes (risks, costs, complexities)
+  - Slightly longer initial development and testing time.
+  - Requires attention to responsive edge cases (overflow, grid wrapping).
 
 ---
 
