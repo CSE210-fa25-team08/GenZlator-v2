@@ -1,4 +1,4 @@
-# Architecture Decision Record (ADR)
+# ADR-004: Use RWD for Web App Layout Design
 
 **ADR #:** 004
 **Title:** Web App Layout Design (with or without Responsive Web Design)
