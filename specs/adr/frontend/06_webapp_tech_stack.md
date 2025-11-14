@@ -1,9 +1,9 @@
-# Architecture Decision Record (ADR)
+# ADR-006: Adopting React for the Emoji Translator Front-End 
 
-**ADR #:** 010517  
+**ADR #:** 006
 **Title:** Adopting React for the Emoji Translator Front-End  
 **Date:** 2025-11-10  
-**Status:**  
+**Status:** Approved
 
 ---
 
