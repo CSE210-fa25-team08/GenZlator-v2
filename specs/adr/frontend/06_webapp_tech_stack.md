@@ -1,6 +1,6 @@
-# ADR-006: Adopting React for the Emoji Translator Front-End 
+# ADR-006: Adopting React for the Emoji Translator Front-End  
 
-**ADR #:** 006
+**ADR #:** 006  
 **Title:** Adopting React for the Emoji Translator Front-End  
 **Date:** 2025-11-10  
 **Status:** Approved
