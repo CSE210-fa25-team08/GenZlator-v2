@@ -1,13 +1,12 @@
- 
-# ADR-007: Why We Chose Slack as the Complementary Platform 
-​
-**ADR #:** 007
-**Title:** Why We Chose Slack as the Complementary Platform 
-**Date:** 2025-11-06
-**Status:** Accepted 
-​
+# ADR-007: Why We Chose Slack as the Complementary Platform  
+
+​**ADR #:** 007  
+**Title:** Why We Chose Slack as the Complementary Platform  
+**Date:** 2025-11-06  
+**Status:** Accepted  
+
 ---
-​
+
 ## 1. Context
 We chose Slack as our complementary platform because it enables seamless real-time emoji translation within users’ existing chat workflows. Its built-in bot API and immediate workspace access allow rapid testing and deployment, unlike mobile or third-party platforms requiring complex approvals.
 
@@ -16,7 +15,6 @@ We chose Slack as our complementary platform because it enables seamless real-ti
 ## 2. Decision
 We integrated our Emoji Translator with Slack through a real-time bot that connects to our backend for instant emoji-to-text translation. This approach enables fast deployment, seamless testing within our class workspace, and efficient prototyping without new platform overhead.
 
-​
 ---
 ​
 ## 3. Alternatives Considered
@@ -62,7 +60,7 @@ We integrated our Emoji Translator with Slack through a real-time bot that conne
 Explain the results and trade-offs.  
 - Positive outcomes (benefits): quick testing, real-time translation, easy integration.
 - Negative outcomes (risks, costs, complexities): dependency on Slack’s API, limited non-Slack user access.
-- How it affects other parts of the system：The Slack bot shares backend logic with the web app, promoting code reuse and unified architecture.  
+- How it affects other parts of the system：The Slack bot shares backend logic with the web app, promoting code reuse and unified architecture.
 
 ---
 ​
@@ -88,12 +86,11 @@ Explain the results and trade-offs.
 - Testing focuses on verifying event handling, command accuracy, and modal interactions within Slack.  
 - Since it’s integrated within the class workspace, errors can be debugged quickly without external deployment risks.
 
-​
 ---
 ​
 ## 6. References
-- https://docs.slack.dev/apis/web-api/
-- https://docs.slack.dev/interactivity/implementing-slash-commands/
-- https://docs.slack.dev/surfaces/modals/
-- https://docs.slack.dev/surfaces/app-home/
-- https://docs.slack.dev/interactivity/implementing-shortcuts
+- [Slack Web API Doc](https://docs.slack.dev/apis/web-api/)
+- [Slack Slash Commands Doc](https://docs.slack.dev/interactivity/implementing-slash-commands/)
+- [Slack Modals Doc](https://docs.slack.dev/surfaces/modals/)
+- [Slack App Home Page Doc](https://docs.slack.dev/surfaces/app-home/)
+- [Slack Shortcuts Doc](https://docs.slack.dev/interactivity/implementing-shortcuts)
