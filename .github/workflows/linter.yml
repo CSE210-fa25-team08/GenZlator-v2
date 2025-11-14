@@ -1,0 +1,34 @@
+name: Lint CodeBase
+
+on:
+  # push:
+  #   branches-ignore: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  build:
+    name: Lint CodeBase
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Lint CodeBase
+        uses: github/super-linter@v4
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_MARKDOWN: true
+          VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_PYTHON_BLACK: true
+          VALIDATE_HTML: true
+          VALIDATE_YAML: true
+          VALIDATE_JSON: true
+          VALIDATE_CSS: true
+          VALIDATE_DOCKERFILE_HADOLINT: true
+          VALIDATE_XML: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
