@@ -1,9 +1,9 @@
-# ADR-005: Choice of Programming Language for Slack App Backend (Python FastAPI vs. JavaScript)
+# ADR-005: Choice of Programming Language for Slack App Backend (Python FastAPI vs. JavaScript)  
 
-**ADR #:** 005
-**Title:** Choice of Programming Language for Slack App Backend (Python FastAPI vs. JavaScript)
-**Date:** 2025-11-10
-**Status:** Accepted
+**ADR #:** 005  
+**Title:** Choice of Programming Language for Slack App Backend (Python FastAPI vs. JavaScript)  
+**Date:** 2025-11-10  
+**Status:** Accepted  
 
 ---
 
@@ -28,26 +28,26 @@ We decided to implement the **Slack application backend in JavaScript (Node.js)*
 
   **- Pros:**
 
-    - Officially recommended by Slack and best supported by its API documentation.
-    - Uses the same language and tools as the web frontend, enabling the frontend team to maintain both components.
-    - Natural fit for asynchronous and event-driven Slack interactions.
-    - Large community support and active updates.
+  - Officially recommended by Slack and best supported by its API documentation.
+  - Uses the same language and tools as the web frontend, enabling the frontend team to maintain both components.
+  - Natural fit for asynchronous and event-driven Slack interactions.
+  - Large community support and active updates.
 
   **- Cons:**
 
-    - Need to rebuild from scratch.
+  - Need to rebuild from scratch.
 
 - **Option 2: Python (FastAPI)**
 
   **- Pros:**
 
-    - Was used during the early phase of testing the Slack app’s feasibility, so basic endpoints and verification logic already exist.
-    - Straightforward to integrate with REST-style API endpoints.
+  - Was used during the early phase of testing the Slack app’s feasibility, so basic endpoints and verification logic already exist.
+  - Straightforward to integrate with REST-style API endpoints.
 
   **- Cons:**
 
-    - Different language ad toolchain from the frontend team’s main stack.
-    - Slack’s Python SDK is less feature-rich and has fewer up-to-date examples.
+  - Different language ad toolchain from the frontend team’s main stack.
+  - Slack’s Python SDK is less feature-rich and has fewer up-to-date examples.
 
 ---
 
