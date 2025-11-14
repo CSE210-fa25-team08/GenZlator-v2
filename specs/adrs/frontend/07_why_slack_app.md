@@ -39,7 +39,7 @@ We integrated our Emoji Translator with Slack through a real-time bot that conne
   - Poor usability for non-technical users  
   - Limited interactivity and visualization options  
 
- 
+
 - **Option 3: Keyboard Extension**  
   **Pros:**  
   - Easily accessible within any app (Messages, Slack, Discord, Instagram, WeChat, etc.)  
