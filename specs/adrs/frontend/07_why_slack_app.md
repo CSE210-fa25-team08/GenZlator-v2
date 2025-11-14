@@ -1,9 +1,10 @@
  
-# Architecture Decision Record (ADR)
+# ADR-007: Why We Chose Slack as the Complementary Platform 
 ​
-**Title:** why we chose Slack as the complementary platform 
+**ADR #:** 007
+**Title:** Why We Chose Slack as the Complementary Platform 
 **Date:** 2025-11-06
-**Status:** Proposed | Accepted | Rejected | Superseded 
+**Status:** Accepted 
 ​
 ---
 ​
