@@ -2,7 +2,7 @@
 
 **ADR #:** 004
 **Title:** Web App Layout Design (with or without Responsive Web Design)
-**Date:** 2025-11-10  
+**Date:** 2025-11-10
 **Status:** Accepted
 
 ---
