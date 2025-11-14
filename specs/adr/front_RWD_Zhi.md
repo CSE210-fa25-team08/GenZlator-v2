@@ -40,4 +40,4 @@ We decided to implement a responsive web layout using RWD principles. This decis
 
 ## 5. Implementation Notes
 - Initialize the project using Vite + React + TypeScript for fast builds and type safety.
-- Use Tailwind CSS or CSS Flexbox Grid for RWD (Responsive Web Design).
+- Potentially use CSS Flexbox Grid to achieve RWD (Responsive Web Design).
