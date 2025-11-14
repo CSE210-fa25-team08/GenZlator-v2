@@ -24,30 +24,30 @@ We decided to implement the **Slack application backend in JavaScript (Node.js)*
 
 ## 3. Alternatives Considered
 
--   **Option 1: JavaScript (Bolt for Node.js)**
+- **Option 1: JavaScript (Bolt for Node.js)**
 
-    -   **Pros:**
+  **- Pros:**
 
-        -   Officially recommended by Slack and best supported by its API documentation.
-        -   Uses the same language and tools as the web frontend, enabling the frontend team to maintain both components.
-        -   Natural fit for asynchronous and event-driven Slack interactions.
-        -   Large community support and active updates.
+    - Officially recommended by Slack and best supported by its API documentation.
+    - Uses the same language and tools as the web frontend, enabling the frontend team to maintain both components.
+    - Natural fit for asynchronous and event-driven Slack interactions.
+    - Large community support and active updates.
 
-    -   **Cons:**
+  **- Cons:**
 
-        -   Need to rebuild from scratch.
+    - Need to rebuild from scratch.
 
--   **Option 2: Python (FastAPI)**
+- **Option 2: Python (FastAPI)**
 
-    -   **Pros:**
+  **- Pros:**
 
-        -   Was used during the early phase of testing the Slack app’s feasibility, so basic endpoints and verification logic already exist.
-        -   Straightforward to integrate with REST-style API endpoints.
+    - Was used during the early phase of testing the Slack app’s feasibility, so basic endpoints and verification logic already exist.
+    - Straightforward to integrate with REST-style API endpoints.
 
-    -   **Cons:**
+  **- Cons:**
 
-        -   Different language ad toolchain from the frontend team’s main stack.
-        -   Slack’s Python SDK is less feature-rich and has fewer up-to-date examples.
+    - Different language ad toolchain from the frontend team’s main stack.
+    - Slack’s Python SDK is less feature-rich and has fewer up-to-date examples.
 
 ---
 
@@ -55,13 +55,13 @@ We decided to implement the **Slack application backend in JavaScript (Node.js)*
 
 Positive:
 
--   Unified development environment for both web and Slack app components.
--   Strong SDK and documentation support directly from Slack.
--   Simplified collaboration within the frontend group.
+- Unified development environment for both web and Slack app components.
+- Strong SDK and documentation support directly from Slack.
+- Simplified collaboration within the frontend group.
 
 Negative:
 
--   Requires rewriting the early FastAPI prototype into Node.js using the Bolt SDK.
+- Requires rewriting the early FastAPI prototype into Node.js using the Bolt SDK.
 
 Overall, the benefits of maintainability, developer efficiency, and official support outweigh the short-term migration effort.
 
@@ -69,14 +69,14 @@ Overall, the benefits of maintainability, developer efficiency, and official sup
 
 ## 5. Implementation Notes
 
--   Use **@slack/bolt** for event handling, slash commands, and modals.
--   Deploy the Slack app as an independent Node.js service managed by the frontend team.
--   Secure all Slack tokens and secrets via environment variables.
--   Integrate deployment within the same npm-based CI/CD pipeline as the web frontend.
+- Use **@slack/bolt** for event handling, slash commands, and modals.
+- Deploy the Slack app as an independent Node.js service managed by the frontend team.
+- Secure all Slack tokens and secrets via environment variables.
+- Integrate deployment within the same npm-based CI/CD pipeline as the web frontend.
 
 ---
 
 ## 6. References
 
--   [Slack API Documentation – Bolt for JavaScript](https://slack.dev/bolt-js/tutorial/getting-started)
--   [Slack API: Interactivity & Shortcuts](https://api.slack.com/interactivity)
+- [Slack API Documentation – Bolt for JavaScript](https://slack.dev/bolt-js/tutorial/getting-started)
+- [Slack API: Interactivity & Shortcuts](https://api.slack.com/interactivity)
