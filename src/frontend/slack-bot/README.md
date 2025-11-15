@@ -7,7 +7,7 @@ Future updates may change this flow once we deploy to a permanent server.
 
 ### 1. Install Dependencies
 
-```
+```bash
 npm install
 ```
 
@@ -15,7 +15,7 @@ npm install
 
 Create a `.env` file in the project root:
 
-```
+```bash
 SLACK_BOT_TOKEN=your-token-here
 SLACK_SIGNING_SECRET=your-secret-here
 PORT=8000
@@ -30,13 +30,13 @@ If you prefer, you can also DM Nora and she can provide these values.
 
 ## Start the Slack App Server
 
-```
+```bash
 npm start
 ```
 
 The server runs on:
 
-```
+```bash
 http://localhost:8000
 ```
 
@@ -44,13 +44,13 @@ http://localhost:8000
 
 Slack requires a public URL during development.
 
-```
+```bash
 ngrok http 8000
 ```
 
 ngrok will generate a temporary URL such as:
 
-```
+```bash
 https://random-string.ngrok.io
 ```
 
@@ -58,14 +58,14 @@ https://random-string.ngrok.io
 
 Take the generated ngrok URL and update the following sections in your Slack App config:
 
-```
+```bash
 https://<ngrok-url>/slack/events
 ```
 
 Required updates:
 
--   Interactivity & Shortcuts
--   Slash Commands
+- Interactivity & Shortcuts
+- Slash Commands
 
 ngrok URLs change every time you restart it—remember to update both places each time.
 
