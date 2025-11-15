@@ -23,8 +23,7 @@ PORT=8000
 
 You can find `SLACK_BOT_TOKEN` and `SLACK_SIGNING_SECRET` in your Slack App configuration page.
 
-Slack App config page:
-https://api.slack.com/apps
+Slack App config page: [Slack App Dashboard](https://api.slack.com/apps)
 
 If you prefer, you can also DM Nora and she can provide these values.
 
