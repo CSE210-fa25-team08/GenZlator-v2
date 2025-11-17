@@ -1,0 +1,13 @@
+{
+  "name": "emoji-translator-slack-app",
+  "version": "1.0.0",
+  "description": "A Slack app that translates text to emojis and emojis to text.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "@slack/bolt": "^4.6.0",
+    "dotenv": "^17.2.3"
+  }
+}
