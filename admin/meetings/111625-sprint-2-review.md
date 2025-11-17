@@ -1,4 +1,4 @@
-Sprint \#2 Review Meeting
+# Sprint \#2 Review Meeting
 
 Attendance: Justin Wang, Sai Chaparala, Yirui Miao, Liu Dai, Haina Wang, Harshit Dhankhar, Kara Hoagland, Zhi Xu, Andrew Wu, Viroopaksh Chekuri
 
