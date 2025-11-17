@@ -89,5 +89,21 @@ This decision directly addresses the need for **real-time responsiveness, mainta
 ---
 
 ## 5. Implementation Notes
-- Initialize project using **React + Setup/Dependency** scaffold.  
-- Define folder structure
+
+- Front-end stack: **React + TypeScript** with **Vite** as the build tool and dev server.
+  - Vite is a better fit than Next.js for our current scope because the web-app is small and client-side only. We don’t need Next.js features like SSR/ISR, routing, or file-based APIs, and avoiding them reduces complexity and build times.
+  - The original React build tool (**Create React App**) has been deprecated/archived by the React team, so Vite is the modern, actively maintained alternative with faster cold starts, HMR, and simpler configuration.
+
+- Styling approach: **plain CSS** with CSS variables for theming.
+  - Using CSS keeps setup simple and avoids introducing a CSS-in-JS runtime for now.
+  - We manage light/dark color schemes via `data-theme` on `html` and a small toggle that persists the choice in `localStorage`. CSS variables drive the palette for headers, panels, borders, and text.
+
+- Project layout and tooling highlights:
+  - Scripts: `npm run dev`, `npm run build`, `npm run preview`, `npm run lint`.
+  - Vite configuration kept minimal (`vite.config.ts`) with React plugin.
+  - TypeScript configured with separate `tsconfig.app.json` and `tsconfig.node.json` for clarity.
+  - Components are organized under `src/components/`; global styles live in `src/index.css`.
+
+- Future considerations:
+  - If we later need server-side rendering, static generation, or complex routing, we can reassess Next.js or add a dedicated router to the current Vite setup.
+  - If styling needs grow, we can layer on a utility CSS framework (e.g., Tailwind) or a component library without changing the build tool.
