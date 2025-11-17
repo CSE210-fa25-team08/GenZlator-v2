@@ -1,4 +1,4 @@
-Sprint 2 Retrospective:
+# Sprint 2 Retrospective:
 
 <img width="1002" height="881" alt="Screenshot 2025-11-16 at 6 09 42 PM" src="https://github.com/user-attachments/assets/d163f8b4-9b9b-440a-8c2e-4f2ed87e96f9" />
 
