@@ -11,8 +11,8 @@ Frontend:
 
 Backend:
 
-- Trying out LLM apis   
-- Manual model selection endpoint, 4-5 models in plan. /model endpoint lists out model, /translate returns translation. Model rerouting not essential for the MVP, backend stays the same.   
+- Trying out LLM apis
+- Manual model selection endpoint, 4-5 models in plan. /model endpoint lists out model, /translate returns translation. Model rerouting not essential for the MVP, backend stays the same.
 - Work on Database
 
 CI/CD:
