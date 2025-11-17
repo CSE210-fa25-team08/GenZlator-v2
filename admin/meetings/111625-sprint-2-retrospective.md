@@ -4,10 +4,10 @@ Sprint 2 Retrospective:
 
 Takeaways:
 
-- Communicate in sub-teams to work out a common schedule and to cover misalignments   
-- MVP by next week, need to get it done so user testing can start   
-- Backend integration is high priority   
-- Keep updating to-dos in github issues   
-- Some ADRs are kinda redundant (eg-responsive web design, etc)  
-- An ADR template to have uniformity among ADRs  
+- Communicate in sub-teams to work out a common schedule and to cover misalignments
+- MVP by next week, need to get it done so user testing can start
+- Backend integration is high priority
+- Keep updating to-dos in github issues
+- Some ADRs are kinda redundant (eg-responsive web design, etc)
+- An ADR template to have uniformity among ADRs
 - Find test users this week so we can start testing by next sprints
