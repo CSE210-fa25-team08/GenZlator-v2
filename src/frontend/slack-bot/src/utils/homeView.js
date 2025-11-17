@@ -1,11 +1,11 @@
-const { styleMap } = require("./style");
+const { modelMap } = require("./model");
 
 // --- Helper: build App Home view ---
 // markdown for Slack App Home
 // I move it here in order to reduce code duplication
 // might change in future
 function buildHomeView(currentStyle) {
-  const selected = styleMap[currentStyle] || styleMap.default;
+  const selected = modelMap[currentStyle] || modelMap.default;
 
   return {
     type: "home",
