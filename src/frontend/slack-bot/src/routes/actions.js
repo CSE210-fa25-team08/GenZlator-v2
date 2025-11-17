@@ -1,4 +1,4 @@
-const { styleMap, setUserStyle } = require("../utils/style");
+const { modelMap, setUserModel } = require("../utils/model");
 const { buildHomeView } = require("../utils/homeView");
 
 module.exports = function registerActions(app) {
@@ -22,7 +22,7 @@ module.exports = function registerActions(app) {
                 element: {
                 type: "static_select",
                 action_id: "style_choice",
-                options: Object.entries(styleMap).map(([value, text]) => ({
+                options: Object.entries(modelMap).map(([value, text]) => ({
                     text: { type: "plain_text", text },
                     value,
                 })),
