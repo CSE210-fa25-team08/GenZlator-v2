@@ -3,8 +3,16 @@ import json
 from datetime import datetime
 from typing import Dict
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.responses import JSONResponse
+
+from dotenv import load_dotenv
+
+from sqlalchemy.orm import Session
+from sqlalchemy import text
+
+from db import get_db
+from db_models import User, ChatHistory
 
 from models import (
     TranslateRequest,
@@ -14,6 +22,8 @@ from models import (
     FeedbackResponse,
 )
 from openrouter_client import call_openrouter_race
+
+load_dotenv()
 
 FEEDBACK_LOG_PATH = os.getenv("FEEDBACK_LOG_PATH", "feedback_log.jsonl")
 
@@ -146,3 +156,54 @@ async def submit_feedback(req: FeedbackRequest):
 @app.get("/healthz")
 async def health_check():
     return JSONResponse({"status": "ok"})
+
+
+@app.get("/healthz/db")
+async def db_health_check(db: Session = Depends(get_db)):
+    """
+    Simple DB connectivity check
+    """
+    try:
+        db.execute(text("SELECT 1"))
+        return JSONResponse({"status": "ok"})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"DB error: {str(e)}")
+
+
+# TODO: remove this after testing
+@app.get("/api/v1/debug/users")
+async def list_users(db: Session = Depends(get_db)):
+    """
+    Debug endpoint to list all users from database
+    """
+    users = db.query(User).all()
+    return [
+        {
+            "uid": u.uid,
+            "name": u.name,
+        }
+        for u in users
+    ]
+
+
+# TODO: remove this after testing
+@app.get("/api/v1/debug/chat_history")
+async def list_chat_history(db: Session = Depends(get_db)):
+    """
+    Debug endpoint to list all chat history records
+    """
+    messages = (
+        db.query(ChatHistory)
+        .order_by(ChatHistory.message_id)
+        .all()
+    )
+    return [
+        {
+            "message_id": m.message_id,
+            "message": m.message,
+            "translation": m.translation,
+            "sender_id": m.sender_id,
+            "receiver_id": m.receiver_id, 
+        }
+        for m in messages
+    ]
