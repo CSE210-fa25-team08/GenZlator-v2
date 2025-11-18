@@ -118,4 +118,41 @@ module.exports = function registerViews(app) {
             blocks: feedbackBlocks,
         });
     });
+
+
+    // --- Handle feedback suggestion modal in messages ---
+    app.view("feedback_suggestion_modal", async ({ ack, body, view }) => {
+        const suggestion = view.state.values.suggestion_block.suggestion_input.value;
+    
+        console.log("Feedback received:", {
+          user: body.user.id,
+          suggestion,
+        });
+
+        await ack({
+            response_action: "update",
+            view: {
+              type: "modal",
+              title: {
+                type: "plain_text",
+                text: "Thank you!",
+              },
+              close: {
+                type: "plain_text",
+                text: "Close",
+              },
+              blocks: [
+                {
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text:
+                      `🎉 Thanks for your feedback, <@${body.user.id}>!\n\n` +
+                      `We’ve received your suggestions and will use them to improve Emoji Translator.`,
+                  },
+                },
+              ],
+            },
+        });
+    });
 };
