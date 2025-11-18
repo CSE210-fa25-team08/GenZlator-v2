@@ -26,11 +26,13 @@ module.exports = function registerCommands(app) {
                     text: `*Text → Emoji by ${command.user_name}:*\n${emojiTranslation}`,
                     });
 
-                await client.chat.postMessage({
+                //make feedback form invisible to others 
+                await client.chat.postEphemeral({
                     channel: command.channel_id,
-                    response_type: "in_channel",
+                    user: command.user_id,
+                    text: "Feedback on this translation",
                     blocks: feedbackBlocks,
-                });
+                    });
             } catch (err) {
                 // private DM or other error
                 if (err.data?.error === "channel_not_found") {
@@ -80,11 +82,13 @@ module.exports = function registerCommands(app) {
                     text: `*Emoji → text by ${command.user_name}:*\n${emojiTranslation}`,
                     });
 
-                await client.chat.postMessage({
+                //make feedback form invisible to others 
+                await client.chat.postEphemeral({
                     channel: command.channel_id,
-                    response_type: "in_channel",
+                    user: command.user_id,
+                    text: "Feedback on this translation",
                     blocks: feedbackBlocks,
-                });
+                    });
             } catch (err) {
                 // private DM or other error
                 if (err.data?.error === "channel_not_found") {
