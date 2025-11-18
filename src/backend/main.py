@@ -110,7 +110,7 @@ async def translate(req: TranslateRequest):
 
     return TranslateResponse(
         translatedMessage=extracted["translatedMessage"],
-        metadata=TranslateResponseMetadata()#tone=extracted["tone"]),
+        metadata=TranslateResponseMetadata(),  #tone=extracted["tone"]),
     )
 
 

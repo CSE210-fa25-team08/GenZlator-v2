@@ -10,10 +10,11 @@ The backend uses **OpenRouter** and races multiple free models in parallel.
 
 ## 📁 Project Structure
 
+```bash
 src/backend/
 main.py               # FastAPI app + endpoints
 models.py             # Pydantic schemas for requests/responses
-openrouter_client.py  # OpenRouter client with model 
+openrouter_client.py  # OpenRouter client with model
 ```
 
 **main.py**  
