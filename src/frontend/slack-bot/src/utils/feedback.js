@@ -16,14 +16,14 @@ function buildFeedbackBlocks(text) {
           text: { type: "plain_text", text: "Yes" },
           style: "primary",
           action_id: "feedback_yes",
-          value: text || "yes",    // 保證非空
+          value: text || "yes",  
         },
         {
           type: "button",
           text: { type: "plain_text", text: "No" },
           style: "danger",
           action_id: "feedback_no",
-          value: text || "no",     // 保證非空
+          value: text || "no",  
         },
       ],
     },
