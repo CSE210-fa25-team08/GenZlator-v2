@@ -28,7 +28,6 @@ def extract_translation_and_tone(raw_content: str) -> Dict[str, str]:
     """
     Try to parse JSON object from model output and extract:
     - translatedMessage
-    - tone (metadata.tone or top-level tone)
     Falls back to treating entire output as translatedMessage.
     """
     content = raw_content.strip()
@@ -53,7 +52,7 @@ def extract_translation_and_tone(raw_content: str) -> Dict[str, str]:
 
     return {
         "translatedMessage": translated or "",
-        "tone": tone or None,
+        # "tone": tone or None,
     }
 
 
@@ -82,11 +81,11 @@ async def translate(req: TranslateRequest):
         "concise English.\n"
         "- Always respond in STRICT JSON with the following structure:\n"
         "{\n"
-        '  \"translatedMessage\": \"<string>\",\n'
-        '  \"metadata\": {\n'
-        '    \"tone\": \"<short tone phrase like \'Extreme Laughter\', '
-        "'Mild Sarcasm', 'Neutral'>\"\n"
-        "  }\n"
+        '  "translatedMessage": "<string>",\n'
+        # '  "metadata": {\n'
+        # '    "tone": "<short tone phrase like \'Extreme Laughter\', '
+        # "'Mild Sarcasm', 'Neutral'>\"\n"
+        # "  }\n"
         "}\n"
         "- Do not include any extra keys, explanation, or commentary.\n"
     )
@@ -111,7 +110,7 @@ async def translate(req: TranslateRequest):
 
     return TranslateResponse(
         translatedMessage=extracted["translatedMessage"],
-        metadata=TranslateResponseMetadata(tone=extracted["tone"]),
+        metadata=TranslateResponseMetadata()#tone=extracted["tone"]),
     )
 
 
@@ -137,7 +136,9 @@ async def submit_feedback(req: FeedbackRequest):
             f.write(json.dumps(feedback_record, ensure_ascii=False) + "\n")
     except Exception as e:
         # If you prefer hard failure, you can raise HTTPException instead.
-        raise HTTPException(status_code=500, detail=f"Failed to store feedback: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to store feedback: {str(e)}"
+        )
 
     return FeedbackResponse(status="accepted")
 

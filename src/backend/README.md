@@ -1,7 +1,6 @@
-# GenZlator-v2
-Because sometimes ‘😭💀🔥’ says more than a paragraph — and GenZlator-v2 gets that
+# GenZlator-v2: Emoji Translator Backend
 
-# Emoji Translator Backend
+Because sometimes ‘😭💀🔥’ says more than a paragraph — and GenZlator-v2 gets that
 
 This directory contains the FastAPI backend for the **Emoji Translator** project.  
 It provides a bidirectional **English ↔ Emoji** translation API and a feedback endpoint.  
@@ -10,8 +9,6 @@ The backend uses **OpenRouter** and races multiple free models in parallel.
 ---
 
 ## 📁 Project Structure
-
-```
 
 src/backend/
 main.py               # FastAPI app + endpoints
@@ -104,7 +101,7 @@ Docs available at:
 
 Translates English → Emoji or Emoji → English depending on `isToEmoji`.
 
-#### Request Body
+#### Translate Request Body
 
 ```json
 {
@@ -145,7 +142,7 @@ curl -X POST http://localhost:8000/api/v1/translate \
 
 Used for logging corrections, ratings, and improvement hints.
 
-#### Request Body
+#### Feedback Request Body
 
 ```json
 {
