@@ -63,7 +63,7 @@ module.exports = function registerActions(app) {
         await ack();
       
         await respond({
-          replace_original: true,   // 🔥 用這個替換原本的 ephemeral
+          replace_original: true,  
           text: `👍 Thanks for your feedback, <@${body.user.id}>!`,
           blocks: [
             {
@@ -91,7 +91,7 @@ module.exports = function registerActions(app) {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `🫤 <@${body.user.id}> clicked *No*. We'll keep improving!`,
+                text: `🫤 <@${body.user.id}> clicked *No*. We'll keep improving! Do you have any suggestion for us?`,
               },
             },
             {
@@ -99,13 +99,15 @@ module.exports = function registerActions(app) {
               elements: [
                 {
                   type: "button",
-                  text: { type: "plain_text", text: "Sure ✍️" },
+                  style: "primary",
+                  text: { type: "plain_text", text: "Yes" },
                   action_id: "feedback_sure",
                   value: "feedback_sure",
                 },
                 {
                   type: "button",
-                  text: { type: "plain_text", text: "No thanks 🙅‍♀️" },
+                  style: "danger",
+                  text: { type: "plain_text", text: "No" },
                   action_id: "feedback_no_thanks",
                   value: "feedback_no_thanks",
                 },
@@ -139,83 +141,140 @@ module.exports = function registerActions(app) {
         });
       
         await client.views.open({
-          trigger_id: body.trigger_id,
-          view: {
-            type: "modal",
-            callback_id: "feedback_suggestion_modal",
-            title: {
-              type: "plain_text",
-              text: "Suggested translation",
-            },
-            submit: {
-              type: "plain_text",
-              text: "Submit",
-            },
-            close: {
-              type: "plain_text",
-              text: "Cancel",
-            },
-            blocks: [
-              {
-                type: "input",
-                block_id: "suggestion_block",
-                label: {
-                  type: "plain_text",
-                  text: "What translation do you think is better?",
-                },
-                element: {
-                  type: "plain_text_input",
-                  action_id: "suggestion_input",
-                  multiline: true,
-                  placeholder: {
-                    type: "plain_text",
-                    text: "Please type your suggested translation here!",
+            trigger_id: body.trigger_id,
+            view: {
+              type: "modal",
+              callback_id: "feedback_suggestion_modal",
+              title: {
+                type: "plain_text",
+                text: "Emoji Feedback", 
+              },
+              
+              submit: {
+                type: "plain_text",
+                text: "Submit feedback",
+              },
+              close: {
+                type: "plain_text",
+                text: "Cancel",
+              },
+              blocks: [
+
+                {
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text:
+                      "Thanks for helping us improve Emoji Translator! " +
+                      "Your suggestions help us make the app better for everyone. 🙏",
                   },
                 },
-              },
-            ],
-          },
-        });
+          
+                {
+                  type: "divider",
+                },
+                {
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text: "*How can we improve this translation?*",
+                  },
+                },
+          
+                {
+                  type: "input",
+                  block_id: "suggestion_block",
+                  element: {
+                    type: "plain_text_input",
+                    action_id: "suggestion_input",
+                    multiline: true,
+                    placeholder: {
+                      type: "plain_text",
+                      text: "Tell us your improved translation or suggestions...",
+                    },
+                  },
+                  label: {
+                    type: "plain_text",
+                    text: "Your feedback",
+                  },
+                },
+        
+                {
+                  type: "input",
+                  block_id: "email_block",
+                  optional: true,
+                  element: {
+                    type: "plain_text_input",
+                    action_id: "email_input",
+                    placeholder: {
+                      type: "plain_text",
+                      text: "you@example.com",
+                    },
+                  },
+                  label: {
+                    type: "plain_text",
+                    text: "Email (optional)",
+                  },
+                },
+          
+                //
+                // 下方的小提示（模仿 Simple Poll）
+                //
+                {
+                  type: "context",
+                  elements: [
+                    {
+                      type: "mrkdwn",
+                      text:
+                        "_If we have follow-up questions, we may reach out using the email provided._",
+                    },
+                  ],
+                },
+              ],
+            },
+          });
+          
       });
     
       // --- Handle feedback suggestion modal in messages ---
       app.view("feedback_suggestion_modal", async ({ ack, body, view }) => {
         const suggestion =
           view.state.values.suggestion_block.suggestion_input.value;
+        const email =
+          view.state.values.email_block?.email_input?.value || null;
       
-        // later on connect this to database
-        console.log("User suggested translation:", {
+        console.log("Feedback received:", {
           user: body.user.id,
           suggestion,
+          email,
         });
 
         await ack({
-          response_action: "update",
-          view: {
-            type: "modal",
-            callback_id: "feedback_suggestion_modal_thanks",
-            title: {
-              type: "plain_text",
-              text: "Thank you!",
-            },
-            close: {
-              type: "plain_text",
-              text: "Close",
-            },
-            blocks: [
-              {
-                type: "section",
-                text: {
-                  type: "mrkdwn",
-                  text:
-                    `🙏 We’ve received your suggested translation, <@${body.user.id}>.\n\n` +
-                    `Thanks for helping us improve Emoji Translator!`,
-                },
+            response_action: "update",
+            view: {
+              type: "modal",
+              title: {
+                type: "plain_text",
+                text: "Thank you!",
               },
-            ],
-          },
+              close: {
+                type: "plain_text",
+                text: "Close",
+              },
+              blocks: [
+                {
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text:
+                      `🎉 Thanks for your feedback, <@${body.user.id}>!\n\n` +
+                      `We’ve received your suggestions and will use them to improve Emoji Translator.`,
+                  },
+                },
+              ],
+            },
+          });
         });
-      });
       
         // --- Handle feedback suggestion modal in messages ---
       app.action("feedback_no_thanks", async ({ ack, body, respond }) => {
