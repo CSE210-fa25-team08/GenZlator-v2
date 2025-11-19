@@ -24,6 +24,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Lint CodeBase
         uses: github/super-linter@v4
         env:
@@ -39,3 +47,5 @@ jobs:
           VALIDATE_XML: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
+      - name: Run ESLint (include JSON via jsonc)
+        run: npx eslint . --ext .js,.json

@@ -1,0 +1,12 @@
+
+{
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "eslint-plugin-jsonc": "^3.0.0",
+    "jsonc-eslint-parser": "^2.0.0"
+  },
+  "scripts": {
+    "lint": "eslint . --ext .js,.json",
+    "lint:json": "eslint '**/*.json' --ext .json"
+  }
+}
