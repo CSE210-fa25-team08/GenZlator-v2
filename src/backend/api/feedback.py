@@ -23,6 +23,7 @@ async def submit_feedback(req: FeedbackRequest):
         with open(FEEDBACK_LOG_PATH, "a", encoding="utf-8") as f:
             f.write(json.dumps(feedback_record, ensure_ascii=False) + "\n")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to store feedback: {str(e)}")
-
+        raise HTTPException(
+            status_code=500, detail=f"Failed to store feedback: {str(e)}"
+        )
     return FeedbackResponse(status="accepted")

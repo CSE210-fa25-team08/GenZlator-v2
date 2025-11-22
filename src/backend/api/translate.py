@@ -5,7 +5,7 @@ from core.openrouter_client import call_openrouter_race
 import json
 from typing import Dict
 
-router = APIRouter(prefix='/api/v1',tags=['translate'])
+router = APIRouter(prefix="/api/v1", tags=["translate"])
 
 @router.post("/translate", response_model=TranslateResponse)
 async def translate(req: TranslateRequest):
@@ -18,12 +18,11 @@ async def translate(req: TranslateRequest):
         "You are a bidirectional translator between English text and emoji chains.\n"
         "- When direction is 'text_to_emoji', convert the original message into a concise "
         "emoji sequence that preserves meaning and tone.\n"
-        "- When direction is 'emoji_to_text', convert the emoji sequence into natural, "
-        "concise English.\n"
+        "- When direction is 'emoji_to_text', convert the emoji sequence into natural, concise English.\n"
         "- Always respond in STRICT JSON with the following structure:\n"
-        "{\n"
-        '  \"translatedMessage\": \"<string>\",\n'
-        "}\n"
+        "{"
+        '  "translatedMessage": "<string>",'
+        "}"
         "- Do not include any extra keys, explanation, or commentary.\n"
     )
 

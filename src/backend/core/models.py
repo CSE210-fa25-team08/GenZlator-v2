@@ -20,6 +20,7 @@ class TranslateRequest(BaseModel):
 class TranslateResponse(BaseModel):
     translatedMessage: str
 
+
 class FeedbackRequest(BaseModel):
     originalInput: str = Field(
         ...,
@@ -35,7 +36,7 @@ class FeedbackRequest(BaseModel):
     )
     rating: Optional[int] = Field(
         default=None,
-        description="Anonymous score provided by user (e.g., 0 for Dislike / 1 for Like)."
+        description="Anonymous score provided by user (e.g., 0 for Dislike / 1 for Like).",
     )
 
 
