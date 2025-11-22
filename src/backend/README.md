@@ -1,7 +1,4 @@
 # GenZlator-v2: Emoji Translator Backend
-
-Because sometimes ‘😭💀🔥’ says more than a paragraph — and GenZlator-v2 gets that
-
 This directory contains the FastAPI backend for the **Emoji Translator** project.  
 It provides a bidirectional **English ↔ Emoji** translation API and a feedback endpoint.  
 The backend uses **OpenRouter** and races multiple free models in parallel.
@@ -12,21 +9,33 @@ The backend uses **OpenRouter** and races multiple free models in parallel.
 
 ```bash
 src/backend/
-main.py               # FastAPI app + endpoints
-models.py             # Pydantic schemas for requests/responses
-openrouter_client.py  # OpenRouter client with model
+  main.py                # App entrypoint (FastAPI)
+  api/                   # HTTP routes
+    translate.py         # /api/v1/translate
+    feedback.py          # /api/v1/feedback
+  core/                  # Shared models & clients
+    models.py            # Pydantic schemas
+    openrouter_client.py # OpenRouter chat/completions client (model race)
+  vectorization/         # Embedding + RAG utilities
+    embeddings_client.py # Embedding model calls
+    feedback_rag.py      # RAG-style ranking for feedback
 ```
 
 **main.py**  
-- Hosts the FastAPI application  
-- Exposes `/api/v1/translate`, `/api/v1/feedback`, `/healthz`
+- Creates the FastAPI application
+- Includes the route modules under `/api/v1/...`
+- Exposes /healthz for health checks
 
-**models.py**  
-- Defines request/response Pydantic models
+**core/models.py**  
+- Defines request/response Pydantic models for Translation and Feedback
 
-**openrouter_client.py**  
-- Calls OpenRouter  
+**core/openrouter_client.py**  
+- Calls OpenRouter `/chat/completions` endpoint  
 - Races multiple free models and returns the first successful result
+
+**vectorization/embeddings_client.py & vectorization/feedback_rag.py**
+- Reserved for feedback vectorization & RAG-style ranking
+- These exist to support future features like "find similar feedback" or "search feedback by meaning," even if their code is not fully implemented yet
 
 ---
 
@@ -66,6 +75,7 @@ export FEEDBACK_LOG_PATH="feedback_log.jsonl"
 ---
 
 ## 🚀 Running the Server
+Because the code uses `backend.*` imports, it’s best to run from the repo root with `src` on PYTHONPATH.
 
 From the repo root:
 
@@ -79,6 +89,14 @@ Server will start at:
 Docs available at:
 👉 [http://localhost:8000/docs](http://localhost:8000/docs)
 
+If you prefer running from `src/backend`, make sure `PYTHONPATH` still points to src:
+
+```bash
+cd <repo-root>/src/backend
+export PYTHONPATH=../..
+export OPENROUTER_API_KEY="sk-or-..."
+uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
+```
 
 ---
 
@@ -117,13 +135,12 @@ Translates English → Emoji or Emoji → English depending on `isToEmoji`.
 ```json
 {
   "translatedMessage": "string",
-  "metadata": {
-    "tone": "Neutral"
-  }
 }
 ```
 
 #### Example
+
+In Linux/Ubuntu/Mac:
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/translate \
@@ -133,6 +150,11 @@ curl -X POST http://localhost:8000/api/v1/translate \
     "isToEmoji": true,
     "chatHistory": []
   }'
+```
+In Windows Terminal:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/translate -H "Content-Type: application/json" -d "{ \"originalMessage\": \"That meeting was hilarious\",  \"isToEmoji\": true, \"chatHistory\": [] }"
 ```
 
 ---
@@ -150,7 +172,7 @@ Used for logging corrections, ratings, and improvement hints.
   "originalInput": "🙂🙂🙂",
   "correctionText": "Very mildly amused",
   "anonymousId": "user-1234",
-  "rating": 4
+  "rating": 0
 }
 ```
 

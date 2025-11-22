@@ -17,24 +17,15 @@ class TranslateRequest(BaseModel):
     )
 
 
-class TranslateResponseMetadata(BaseModel):
-    tone: Optional[str] = Field(
-        default=None,
-        description='Assessed emotional tone (e.g., "Extreme Laughter", "Mild Sarcasm").',
-    )
-
-
 class TranslateResponse(BaseModel):
     translatedMessage: str
-    metadata: TranslateResponseMetadata
-
 
 class FeedbackRequest(BaseModel):
     originalInput: str = Field(
         ...,
         description="Original text/emoji input that triggered translation.",
     )
-    correctionText: str = Field(
+    correctionText: Optional[str] = Field(
         ...,
         description="User-provided correct/suggested translation.",
     )
@@ -44,7 +35,7 @@ class FeedbackRequest(BaseModel):
     )
     rating: Optional[int] = Field(
         default=None,
-        description="Anonymous score provided by user (e.g., 1–5).",
+        description="Anonymous score provided by user (e.g., 0 for Dislike / 1 for Like)."
     )
 
 
