@@ -1,8 +1,10 @@
 # GenZlator-v2
+
 Because sometimes '😭💀🔥' says more than a paragraph — and GenZlator-v2 gets that
 
-## Code Structure 
-```
+## Code Structure
+
+```text
 GenZlator-v2/
 ├── backend/                          # FASTAPI BACKEND APPLICATION
 │   ├── core/                         # CORE BUSINESS LOGIC
@@ -29,27 +31,27 @@ GenZlator-v2/
 ```
 
 ## Setup
+
 Export the Open Router API key:
+
 ```bash
 export OPENROUTER_API_KEY="sk-or-v1-..."
 ```
 
 Run the code using:
+
 ```bash
 uvicorn backend.main:app --reload --host 0.0.0.0 --port 8001
 
 ```
 
-And in another terminal, access the API with examples below. 
+And in another terminal, access the API with examples below.
 After receiving the feedback, the system will store the feedback in a SQLite database named `feedback_embeddings.db` in the working directory, and store the logs in `feedback_log.jsonl`.
-
-
-
-
 
 ## Public API Examples
 
 ### Translation API
+
 ```bash
 curl -X POST "http://localhost:8001/api/v1/translate" \
   -H "Content-Type: application/json" \
@@ -75,6 +77,7 @@ curl -X POST "http://localhost:8001/api/v1/translate" \
 ```
 
 ### Feedback API
+
 ```bash
 curl -X POST "http://localhost:8001/api/v1/feedback" \
   -H "Content-Type: application/json" \
@@ -89,12 +92,14 @@ curl -X POST "http://localhost:8001/api/v1/feedback" \
 ## Private API Examples (Not for public use)
 
 ### Health Check APIs
+
 ```bash
 # Basic health check (fast, for load balancers)
 curl -X GET "http://localhost:8001/healthz"
 ```
 
 ### Debug APIs
+
 ```bash
 # Debug RAG system statistics and recent feedback
 curl -X GET "http://localhost:8001/debug/rag"
@@ -108,6 +113,7 @@ curl -X POST "http://localhost:8001/debug/rag/search" \
 ```
 
 ### Root API
+
 ```bash
 # Get API information and available endpoints
 curl -X GET "http://localhost:8001/"

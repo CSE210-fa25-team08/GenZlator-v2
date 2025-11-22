@@ -123,8 +123,7 @@ async def call_openrouter_race(
 
     async with httpx.AsyncClient(timeout=global_timeout) as client:
         tasks = [
-            asyncio.create_task(_call_single_model(client, m, messages))
-            for m in models
+            asyncio.create_task(_call_single_model(client, m, messages)) for m in models
         ]
 
         try:

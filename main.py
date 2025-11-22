@@ -34,10 +34,12 @@ app.include_router(feedback.router)
 app.include_router(debug.router)
 app.include_router(health.router)
 
+
 @app.on_event("startup")
 async def startup_event():
     """Initialize RAG system with existing feedback data on application startup"""
     rag_system.load_feedback_from_jsonl(FEEDBACK_LOG_PATH)
+
 
 @app.get("/")
 async def root():
@@ -46,6 +48,5 @@ async def root():
         "message": "Emoji Translator Backend API",
         "version": "1.0.0",
         "docs": "/docs",
-        "health": "/healthz"
+        "health": "/healthz",
     }
-    
