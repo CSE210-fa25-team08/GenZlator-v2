@@ -1,11 +1,11 @@
 from fastapi import APIRouter
-
 from core.models import TranslateRequest, TranslateResponse
 from core.openrouter_client import call_openrouter_race
 import json
 from typing import Dict
 
 router = APIRouter(prefix="/api/v1", tags=["translate"])
+
 
 @router.post("/translate", response_model=TranslateResponse)
 async def translate(req: TranslateRequest):
@@ -46,6 +46,7 @@ async def translate(req: TranslateRequest):
     return TranslateResponse(
         translatedMessage=extracted["translatedMessage"],
     )
+
 
 def extract_translation(raw_content: str) -> Dict[str, str]:
     content = raw_content.strip()
