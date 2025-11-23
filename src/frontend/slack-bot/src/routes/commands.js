@@ -1,6 +1,7 @@
 // src/routes/commands.js
 const { buildFeedbackBlocks } = require("../utils/feedback");
-const { styleMap } = require("../utils/style");
+const { modelMap } = require("../utils/model");
+const { openTranslateModal } = require("../utils/commandTranslate");
 
 
 // currently, the response can be viewed by all members in the channel
@@ -22,14 +23,16 @@ module.exports = function registerCommands(app) {
                 await client.chat.postMessage({
                     channel: command.channel_id,
                     response_type: "in_channel",
-                    text: `:sparkles: *Text → Emoji by ${command.user_name}:*\n${emojiTranslation}`,
+                    text: `*Text → Emoji by ${command.user_name}:*\n${emojiTranslation}`,
                     });
 
-                await client.chat.postMessage({
+                //make feedback form invisible to others 
+                await client.chat.postEphemeral({
                     channel: command.channel_id,
-                    response_type: "in_channel",
+                    user: command.user_id,
+                    text: "Feedback on this translation",
                     blocks: feedbackBlocks,
-                });
+                    });
             } catch (err) {
                 // private DM or other error
                 if (err.data?.error === "channel_not_found") {
@@ -41,7 +44,7 @@ module.exports = function registerCommands(app) {
                             type: "section",
                             text: {
                             type: "mrkdwn",
-                            text: `:sparkles: *Text → Emoji:*\n${emojiTranslation}`,
+                            text: `*Text → Emoji:*\n${emojiTranslation}`,
                             },
                         },
                         ...feedbackBlocks,
@@ -53,40 +56,12 @@ module.exports = function registerCommands(app) {
             }
         } else {
             // if no text, open interactive modal
-            // modal should change in future for specific text-to-emoji or emoji-to-text
-            // currently both use same modal for simplicity
-            await client.views.open({
-                trigger_id: command.trigger_id,
-                view: {
-                type: "modal",
-                callback_id: "/text-to-emoji_modal",
-                title: { type: "plain_text", text: "Select Generation Style" },
-                submit: { type: "plain_text", text: "Translate" },
-                close: { type: "plain_text", text: "Cancel" },
-                private_metadata: JSON.stringify({ channel_id: command.channel_id }),
-                blocks: [
-                    {
-                        type: "input",
-                        block_id: "input_text",
-                        label: { type: "plain_text", text: "Enter text or emojis" },
-                        element: { type: "plain_text_input", action_id: "value_input" },
-                    },
-                    {
-                        type: "input",
-                        block_id: "style_select",
-                        label: { type: "plain_text", text: "Choose generation style" },
-                        element: {
-                            type: "static_select",
-                            action_id: "style_choice",
-                            options: Object.entries(styleMap).map(([value, text]) => ({
-                            text: { type: "plain_text", text },
-                            value,
-                            })),
-                        },
-                    },
-                ],
-                },
-            });
+            await openTranslateModal(
+                client,
+                command.trigger_id,
+                command.channel_id,
+                "text-to-emoji"
+            );
         }
     });
 
@@ -104,14 +79,16 @@ module.exports = function registerCommands(app) {
                 await client.chat.postMessage({
                     channel: command.channel_id,
                     response_type: "in_channel",
-                    text: `:sparkles: *Emoji → text by ${command.user_name}:*\n${emojiTranslation}`,
+                    text: `*Emoji → text by ${command.user_name}:*\n${emojiTranslation}`,
                     });
 
-                await client.chat.postMessage({
+                //make feedback form invisible to others 
+                await client.chat.postEphemeral({
                     channel: command.channel_id,
-                    response_type: "in_channel",
+                    user: command.user_id,
+                    text: "Feedback on this translation",
                     blocks: feedbackBlocks,
-                });
+                    });
             } catch (err) {
                 // private DM or other error
                 if (err.data?.error === "channel_not_found") {
@@ -123,7 +100,7 @@ module.exports = function registerCommands(app) {
                         type: "section",
                         text: {
                         type: "mrkdwn",
-                        text: `:sparkles: *Emoji → text:*\n${emojiTranslation}`,
+                        text: `*Emoji → text:*\n${emojiTranslation}`,
                         },
                     },
                     ...feedbackBlocks,
@@ -134,39 +111,13 @@ module.exports = function registerCommands(app) {
                 }
             }
         } else {
-        // Interactive modal
-        await client.views.open({
-            trigger_id: command.trigger_id,
-            view: {
-            type: "modal",
-            callback_id: "/emoji-to-text_modal",
-            title: { type: "plain_text", text: "Select Generation Style" },
-            submit: { type: "plain_text", text: "Translate" },
-            close: { type: "plain_text", text: "Cancel" },
-            private_metadata: JSON.stringify({ channel_id: command.channel_id }),
-            blocks: [
-                {
-                    type: "input",
-                    block_id: "input_text",
-                    label: { type: "plain_text", text: "Enter text or emojis" },
-                    element: { type: "plain_text_input", action_id: "value_input" },
-                },
-                {
-                    type: "input",
-                    block_id: "style_select",
-                    label: { type: "plain_text", text: "Choose generation style" },
-                    element: {
-                        type: "static_select",
-                        action_id: "style_choice",
-                        options: Object.entries(styleMap).map(([value, text]) => ({
-                        text: { type: "plain_text", text },
-                        value,
-                        })),
-                    },
-                },
-            ],
-            },
-        });
+            // Interactive modal
+            await openTranslateModal(
+                client,
+                command.trigger_id,
+                command.channel_id,
+                "emoji-to-text"
+            );
         }
     });
 };

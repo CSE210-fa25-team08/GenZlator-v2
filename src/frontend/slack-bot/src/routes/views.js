@@ -1,6 +1,7 @@
 // src/routes/views.js
 const { buildHomeView } = require("../utils/homeView");
-const { setUserStyle } = require("../utils/style");
+const { setUserModel } = require("../utils/model");
+const { buildFeedbackBlocks } = require("../utils/feedback");
 
 module.exports = function registerViews(app) {
     // --- View: shortcut translate_modal (from translate_shortcut shortcut) ---
@@ -53,7 +54,7 @@ module.exports = function registerViews(app) {
         const styleChoice =
         body.view.state.values.style_select.style_choice.selected_option.value;
 
-        setUserStyle(userId, styleChoice);
+        setUserModel(userId, styleChoice);
 
         const newHome = buildHomeView(styleChoice);
         await client.views.publish({ user_id: userId, view: newHome });
@@ -67,23 +68,54 @@ module.exports = function registerViews(app) {
         console.log(`Feedback from ${body.user.username}: ${feedback}`);
     });
 
-    // --- View: /text-to-emoji_modal ---
-    app.view("/text-to-emoji_modal", async ({ ack, body, client }) => {
+    // --- View: text-to-emoji_modal (from Interactive translate mode) ---
+    app.view("text-to-emoji_modal", async ({ ack, body, client }) => {
         await ack();
         const metadata = JSON.parse(body.view.private_metadata);
+        const channel = metadata.channel_id;
+
+        const input =
+        body.view.state.values.input_text.value_input.value;
+        const model =
+        body.view.state.values.model_select.model_choice.selected_option.value;
+
+        const feedbackBlocks = buildFeedbackBlocks(input);
+
+        // Dummy translation
+        const translated = `Dummy Emoji Output for: "${input}"`;
+        // todo : also support private DM case
         await client.chat.postMessage({
-        channel: metadata.channel_id,
-        text: "testing for Slash Command Interactive Mode",
+            channel,
+            text: `*Text → Emoji*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
+        });
+        await client.chat.postMessage({
+            channel,
+            blocks: feedbackBlocks,
         });
     });
 
-    // --- View: /emoji-to-text_modal ---
-    app.view("/emoji-to-text_modal", async ({ ack, body, client }) => {
+    // --- View: emoji-to-text_modal (from Interactive translate mode) ---
+    app.view("emoji-to-text_modal", async ({ ack, body, client }) => {
         await ack();
         const metadata = JSON.parse(body.view.private_metadata);
+        const channel = metadata.channel_id;
+        const input =
+        body.view.state.values.input_text.value_input.value;
+        const model =
+        body.view.state.values.model_select.model_choice.selected_option.value;
+
+        const feedbackBlocks = buildFeedbackBlocks(input);
+        // Dummy translation
+        const translated = `Dummy Text Output for: "${input}"`;
+
+        // todo : also support private DM case
         await client.chat.postMessage({
-        channel: metadata.channel_id,
-        text: "testing for Slash Command Interactive Mode",
+            channel,
+            text: `*Emoji → Text*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
+        });
+        await client.chat.postMessage({
+            channel,
+            blocks: feedbackBlocks,
         });
     });
 };
