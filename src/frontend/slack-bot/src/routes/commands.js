@@ -3,6 +3,7 @@ const { buildFeedbackBlocks } = require("../utils/feedback");
 const { modelMap } = require("../utils/model");
 const { openTranslateModal } = require("../utils/commandTranslate");
 const { translate } = require("../utils/backendClient");
+const { getLastTwoMessages } = require("../utils/chatHistory");
 
 
 // currently, the response can be viewed by all members in the channel
@@ -33,6 +34,17 @@ module.exports = function registerCommands(app) {
             } catch (err) {
                 console.error("Failed to fetch chat history:", err);
             }
+
+            console.log("📤 Sending to backend:", {
+                originalMessage: text,
+                isToEmoji: true,
+                chatHistory
+            });
+            
+
+            let translated = "";
+            try {
+            let chatHistory = await getLastTwoMessages(client, body);
 
             console.log("📤 Sending to backend:", {
                 originalMessage: text,
@@ -110,7 +122,7 @@ module.exports = function registerCommands(app) {
             const { buildFeedbackBlocks } = require("../utils/feedback");
 
 
-            let chatHistory = [];
+            // let chatHistory = [];
             try {
                 const history = await client.conversations.history({
                     channel: command.channel_id,
@@ -125,6 +137,7 @@ module.exports = function registerCommands(app) {
             } catch (err) {
                 console.error("Failed to fetch chat history:", err);
             }
+            let chatHistory = await getLastTwoMessages(client, body);
 
             let translated = "";
             try {

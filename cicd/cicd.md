@@ -62,3 +62,7 @@
     * This step releases the validated container to the live production environment serving real users.
     * Tech Stack: GCP Compute Engine
     * **Status: This step has been completed.**
+
+
+## CI/CD Diagram
+![Alt text](/Users/jenishthanki/Desktop/Projects/cse210/GenZlator-v2/cicd.drawio.png " ")
