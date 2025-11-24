@@ -9,8 +9,6 @@ router = APIRouter(prefix="/api/v1", tags=["translate"])
 
 @router.post("/translate", response_model=TranslateResponse)
 async def translate(req: TranslateRequest):
-
-    print("🔥 Received /translate request:", req.dict())
     direction = "text_to_emoji" if req.isToEmoji else "emoji_to_text"
 
     history = (req.chatHistory or [])[-2:]
