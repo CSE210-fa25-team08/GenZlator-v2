@@ -17,6 +17,10 @@ function App() {
         </section>
         <section className="panel" aria-label="Feedback like placeholder">
           <h2 className="panel-title">Do you like this translation?</h2>
+          <div className="panel-body"></div>
+        </section>
+        <section className="panel" aria-label="Help us improve placeholder">
+          <h2 className="panel-title">Help Us Improve</h2>
           <div className="panel-body">
             <p>Share quick thoughts so we can keep improving.</p>
             <a
@@ -28,10 +32,6 @@ function App() {
               Open Google Form
             </a>
           </div>
-        </section>
-        <section className="panel" aria-label="Help us improve placeholder">
-          <h2 className="panel-title">Help Us Improve</h2>
-          <div className="panel-body"></div>
         </section>
       </main>
       <Footer />
