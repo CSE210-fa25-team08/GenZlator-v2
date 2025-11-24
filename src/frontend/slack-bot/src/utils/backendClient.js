@@ -1,7 +1,7 @@
 
 const axios = require("axios");
 
-const API_BASE = process.env.BACKEND_URL;
+const API_BASE = 'http://genzlator-api.saichaparala.com:8001';
 
 async function translate(originalMessage, isToEmoji) {
   console.log("🔗 Calling backend:", `${API_BASE}/api/v1/translate`);
