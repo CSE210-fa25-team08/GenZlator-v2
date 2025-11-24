@@ -18,9 +18,32 @@ module.exports = function registerCommands(app) {
             const { translate } = require("../utils/backendClient");
             const { buildFeedbackBlocks } = require("../utils/feedback");
     
+            let chatHistory = [];
+            try {
+                const history = await client.conversations.history({
+                    channel: command.channel_id,
+                    limit: 3  // 取 3 是为了排除 slash command
+                });
+
+                chatHistory = history.messages
+                    .filter(m => m.type === "message" && !m.subtype) // 排除系统消息
+                    .map(m => m.text)
+                    .slice(0, 2); // 只拿前两条
+
+            } catch (err) {
+                console.error("Failed to fetch chat history:", err);
+            }
+
+            console.log("📤 Sending to backend:", {
+                originalMessage: text,
+                isToEmoji: true,
+                chatHistory
+            });
+            
+
             let translated = "";
             try {
-                translated = await translate(text, true);  // true = text → emoji
+                translated = await translate(text, true, chatHistory);  
             } catch (err) {
                 console.error("Translate backend error:", err);
                 translated = "⚠️ Translation failed. Please try again later.";
@@ -86,10 +109,27 @@ module.exports = function registerCommands(app) {
             const { translate } = require("../utils/backendClient");
             const { buildFeedbackBlocks } = require("../utils/feedback");
 
+
+            let chatHistory = [];
+            try {
+                const history = await client.conversations.history({
+                    channel: command.channel_id,
+                    limit: 3  // 取 3 是为了排除 slash command，自行过滤
+                });
+
+                chatHistory = history.messages
+                    .filter(m => m.type === "message" && !m.subtype) // 排除系统消息
+                    .map(m => m.text)
+                    .slice(0, 2); // 只拿前两条
+
+            } catch (err) {
+                console.error("Failed to fetch chat history:", err);
+            }
+
             let translated = "";
             try {
                 //backend：emoji → text
-                translated = await translate(text, false);  // false → emoji-to-text mode
+                translated = await translate(text, false, chatHistory);  // false → emoji-to-text mode
             } catch (err) {
                 console.error("Translate backend error:", err);
                 translated = "⚠️ Translation failed. Please try again later.";
