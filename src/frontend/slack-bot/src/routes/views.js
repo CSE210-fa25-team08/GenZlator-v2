@@ -2,6 +2,7 @@
 const { buildHomeView } = require("../utils/homeView");
 const { setUserModel } = require("../utils/model");
 const { buildFeedbackBlocks } = require("../utils/feedback");
+const { sendFeedback } = require("../utils/backendClient");
 
 module.exports = function registerViews(app) {
     // --- View: shortcut translate_modal (from translate_shortcut shortcut) ---
@@ -121,51 +122,33 @@ module.exports = function registerViews(app) {
 
 
     // --- Handle feedback suggestion modal in messages ---
-    app.view("feedback_suggestion_modal", async ({ ack, body, view }) => {
-        const suggestion = view.state.values.suggestion_block.suggestion_input.value;
-    
+    app.view("feedback_suggestion_modal", async ({ ack, body, view, client}) => {
+        const suggestion = view.state.values["suggestion_block"]["suggestion_input"].value;
+        const metadata = JSON.parse(view.private_metadata);
+        const originalInput = metadata.originalInput;
+        const channel = metadata.channel;
+
         console.log("Feedback received:", {
           user: body.user.id,
           suggestion,
+            originalInput,
         });
-        //could be replaced
-        const { sendFeedback } = require("../utils/backendClient");
+
         try {
-        await sendFeedback(
-            originalInput,     
-            suggestion,          
-            body.user.id,     
-            4                
-        );
+            // backend broke rightnow 
+            // await sendFeedback(originalInput, suggestion, body.user.id, 0);
         } catch (err) {
             console.error("Feedback backend error:", err);
         }
-        //
 
-        await ack({
-            response_action: "update",
-            view: {
-              type: "modal",
-              title: {
-                type: "plain_text",
-                text: "Thank you!",
-              },
-              close: {
-                type: "plain_text",
-                text: "Close",
-              },
-              blocks: [
-                {
-                  type: "section",
-                  text: {
-                    type: "mrkdwn",
-                    text:
-                      `🎉 Thanks for your feedback, <@${body.user.id}>!\n\n` +
-                      `We’ve received your suggestions and will use them to improve Emoji Translator.`,
-                  },
-                },
-              ],
-            },
+        await ack({ response_action: "clear" });
+
+        await client.chat.postEphemeral({
+            channel: channel,
+            user: body.user.id,
+            text: `Thanks for your feedback!`,
         });
+
+
     });
 };
