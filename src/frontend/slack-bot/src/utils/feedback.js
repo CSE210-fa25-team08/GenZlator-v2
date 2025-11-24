@@ -2,7 +2,7 @@
 // markdown for feedback component
 // I move it here in order to reduce code duplication
 // might change in future
-function buildFeedbackBlocks(text) {
+function buildFeedbackBlocks(originalInput) {
   return [
     {
       type: "section",
@@ -16,14 +16,14 @@ function buildFeedbackBlocks(text) {
           text: { type: "plain_text", text: "Yes" },
           style: "primary",
           action_id: "feedback_yes",
-          value: text || "yes",  
+          value: originalInput || "yes",  
         },
         {
           type: "button",
           text: { type: "plain_text", text: "No" },
           style: "danger",
           action_id: "feedback_no",
-          value: text || "no",  
+          value: originalInput || "no",  
         },
       ],
     },

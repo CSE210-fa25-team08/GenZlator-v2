@@ -2,6 +2,10 @@
 const { buildFeedbackBlocks } = require("../utils/feedback");
 const { modelMap } = require("../utils/model");
 const { openTranslateModal } = require("../utils/commandTranslate");
+const { translate } = require("../utils/backendClient");
+// const { getLastTwoMessages } = require("../utils/chatHistory");
+const { getChatHistory } = require("../utils/chatHistory");
+
 
 
 // currently, the response can be viewed by all members in the channel
@@ -12,50 +16,67 @@ module.exports = function registerCommands(app) {
     app.command("/text-to-emoji", async ({ command, ack, respond, client }) => {
         await ack();
         const text = command.text.trim();
-
-        // if text is provided, do quick translation
+    
         if (text) {
-            const emojiTranslation = "test data : " + text;
-            const feedbackBlocks = buildFeedbackBlocks(text);
+            let chatHistory = await getChatHistory(client, command.channel_id);
 
+            console.log("📤 Sending to backend:", {
+                originalMessage: text,
+                isToEmoji: true,
+                chatHistory
+            });
+            
+
+            let translated = "";
             try {
-                // group channel or public channel
+                //translated = await translate(text, true, chatHistory);  
+            } catch (err) {
+                console.error("Translate backend error:", err);
+                translated = "⚠️ Translation failed. Please try again later.";
+            }
+    
+            const feedbackBlocks = buildFeedbackBlocks(text);
+    
+            try {
+                // Public channel → send translation to channel
                 await client.chat.postMessage({
                     channel: command.channel_id,
                     response_type: "in_channel",
-                    text: `*Text → Emoji by ${command.user_name}:*\n${emojiTranslation}`,
-                    });
-
-                //make feedback form invisible to others 
+                    text: `*Text → Emoji by ${command.user_name}:*\n${translated}`,
+                });
+    
+                // Feedback (only visible to the user)
                 await client.chat.postEphemeral({
                     channel: command.channel_id,
                     user: command.user_id,
                     text: "Feedback on this translation",
                     blocks: feedbackBlocks,
-                    });
+                });
+    
             } catch (err) {
-                // private DM or other error
+                // DM or errors → fallback to ephemeral
                 if (err.data?.error === "channel_not_found") {
                     await respond({
                         response_type: "ephemeral",
                         replace_original: false,
                         blocks: [
-                        {
-                            type: "section",
-                            text: {
-                            type: "mrkdwn",
-                            text: `*Text → Emoji:*\n${emojiTranslation}`,
+                            {
+                                type: "section",
+                                text: {
+                                    type: "mrkdwn",
+                                    text: `*Text → Emoji:*\n${translated}`,
+                                },
                             },
-                        },
-                        ...feedbackBlocks,
+                            ...feedbackBlocks,
                         ],
                     });
                 } else {
                     console.error(err);
                 }
             }
+    
         } else {
-            // if no text, open interactive modal
+            // If no text → open the modal
             await openTranslateModal(
                 client,
                 command.trigger_id,
@@ -64,54 +85,67 @@ module.exports = function registerCommands(app) {
             );
         }
     });
+    
 
-    // --- /emoji-to-text ---
     app.command("/emoji-to-text", async ({ command, ack, respond, client }) => {
         await ack();
         const text = command.text.trim();
 
         if (text) {
-            const emojiTranslation = "test data : " + text;
+            let chatHistory = await getChatHistory(client, command.channel_id);
+
+            let translated = "";
+            try {
+                //backend：emoji → text
+                //translated = await translate(text, false, chatHistory);  // false → emoji-to-text mode
+            } catch (err) {
+                console.error("Translate backend error:", err);
+                translated = "⚠️ Translation failed. Please try again later.";
+            }
+
             const feedbackBlocks = buildFeedbackBlocks(text);
 
             try {
-                // group channel or public channel
+                // --- Public or group channel ---
                 await client.chat.postMessage({
                     channel: command.channel_id,
                     response_type: "in_channel",
-                    text: `*Emoji → text by ${command.user_name}:*\n${emojiTranslation}`,
-                    });
+                    text: `*Emoji → Text by ${command.user_name}:*\n${translated}`,
+                });
 
-                //make feedback form invisible to others 
+                // --- Feedback form (only visible to the user) ---
                 await client.chat.postEphemeral({
                     channel: command.channel_id,
                     user: command.user_id,
                     text: "Feedback on this translation",
                     blocks: feedbackBlocks,
-                    });
-            } catch (err) {
-                // private DM or other error
-                if (err.data?.error === "channel_not_found") {
-                await respond({
-                    response_type: "ephemeral",
-                    replace_original: false,
-                    blocks: [
-                    {
-                        type: "section",
-                        text: {
-                        type: "mrkdwn",
-                        text: `*Emoji → text:*\n${emojiTranslation}`,
-                        },
-                    },
-                    ...feedbackBlocks,
-                    ],
                 });
+
+            } catch (err) {
+
+                // --- Private DM fallback ---
+                if (err.data?.error === "channel_not_found") {
+                    await respond({
+                        response_type: "ephemeral",
+                        replace_original: false,
+                        blocks: [
+                            {
+                                type: "section",
+                                text: {
+                                    type: "mrkdwn",
+                                    text: `*Emoji → Text:*\n${translated}`,
+                                },
+                            },
+                            ...feedbackBlocks,
+                        ],
+                    });
                 } else {
                     console.error(err);
                 }
             }
+
         } else {
-            // Interactive modal
+            // --- If no emoji typed → open interactive modal ---
             await openTranslateModal(
                 client,
                 command.trigger_id,
@@ -120,4 +154,5 @@ module.exports = function registerCommands(app) {
             );
         }
     });
-};
+
+ };

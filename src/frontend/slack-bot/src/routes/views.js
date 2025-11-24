@@ -2,50 +2,10 @@
 const { buildHomeView } = require("../utils/homeView");
 const { setUserModel } = require("../utils/model");
 const { buildFeedbackBlocks } = require("../utils/feedback");
+const { sendFeedback } = require("../utils/backendClient");
+const { getChatHistory } = require("../utils/chatHistory");
 
 module.exports = function registerViews(app) {
-    // --- View: shortcut translate_modal (from translate_shortcut shortcut) ---
-    // I think we don't need this anymore?  Cause we deicded to post directly from shortcut
-    app.view("translate_modal", async ({ ack, body, client }) => {
-        await ack();
-
-        const { channel, message } = JSON.parse(body.view.private_metadata);
-        const user = body.user.username;
-        const fakeTranslation = "fake translate result";
-
-        await client.chat.postMessage({
-        channel,
-        text: `:sparkles: *Emoji Translation by ${user}:*\n> *Original:* ${message}\n${fakeTranslation}`,
-        });
-
-        await client.chat.postMessage({
-            channel,
-            blocks: [
-                {
-                type: "section",
-                text: { type: "mrkdwn", text: "*Do you like this translation?*" },
-                },
-                {
-                type: "actions",
-                elements: [
-                    {
-                    type: "button",
-                    text: { type: "plain_text", text: "Yes" },
-                    style: "primary",
-                    action_id: "feedback_yes",
-                    },
-                    {
-                    type: "button",
-                    text: { type: "plain_text", text: "No" },
-                    style: "danger",
-                    action_id: "feedback_no",
-                    },
-                ],
-                },
-            ],
-        });
-   });
-
     // --- View: default_style_modal (from open_default_setting action) ---
     app.view("default_style_modal", async ({ ack, body, client }) => {
         await ack();
@@ -79,15 +39,29 @@ module.exports = function registerViews(app) {
         const model =
         body.view.state.values.model_select.model_choice.selected_option.value;
 
+        let chatHistory = await getChatHistory(client, channel);
+
+        console.log("📤 Sending to backend:", {
+            originalMessage: input,
+            isToEmoji: true,
+            chatHistory
+        });
+
+        let translated = "";
+        try {
+            // translated = await translate(input, true, chatHistory);
+        } catch (err) {
+            console.error("Translate backend error:", err);
+            translated = "⚠️ Translation failed. Please try again later.";
+        }
+
         const feedbackBlocks = buildFeedbackBlocks(input);
 
-        // Dummy translation
-        const translated = `Dummy Emoji Output for: "${input}"`;
-        // todo : also support private DM case
         await client.chat.postMessage({
             channel,
             text: `*Text → Emoji*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
         });
+    
         await client.chat.postMessage({
             channel,
             blocks: feedbackBlocks,
@@ -104,15 +78,31 @@ module.exports = function registerViews(app) {
         const model =
         body.view.state.values.model_select.model_choice.selected_option.value;
 
+        let chatHistory = await getChatHistory(client, channel);
+
+        console.log("📤 Sending to backend:", {
+            originalMessage: input,
+            isToEmoji: true,
+            chatHistory
+        });
+
+
+        let translated = "";
+        try {
+            //translated = await translate(input, false, chatHistory);
+        } catch (err) {
+            console.error("Translate backend error:", err);
+            translated = "⚠️ Translation failed. Please try again later.";
+        }
+
         const feedbackBlocks = buildFeedbackBlocks(input);
-        // Dummy translation
-        const translated = `Dummy Text Output for: "${input}"`;
 
         // todo : also support private DM case
         await client.chat.postMessage({
             channel,
             text: `*Emoji → Text*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
         });
+    
         await client.chat.postMessage({
             channel,
             blocks: feedbackBlocks,
@@ -121,38 +111,33 @@ module.exports = function registerViews(app) {
 
 
     // --- Handle feedback suggestion modal in messages ---
-    app.view("feedback_suggestion_modal", async ({ ack, body, view }) => {
-        const suggestion = view.state.values.suggestion_block.suggestion_input.value;
-    
+    app.view("feedback_suggestion_modal", async ({ ack, body, view, client}) => {
+        const suggestion = view.state.values["suggestion_block"]["suggestion_input"].value;
+        const metadata = JSON.parse(view.private_metadata);
+        const originalInput = metadata.originalInput;
+        const channel = metadata.channel;
+
         console.log("Feedback received:", {
           user: body.user.id,
           suggestion,
+            originalInput,
         });
 
-        await ack({
-            response_action: "update",
-            view: {
-              type: "modal",
-              title: {
-                type: "plain_text",
-                text: "Thank you!",
-              },
-              close: {
-                type: "plain_text",
-                text: "Close",
-              },
-              blocks: [
-                {
-                  type: "section",
-                  text: {
-                    type: "mrkdwn",
-                    text:
-                      `🎉 Thanks for your feedback, <@${body.user.id}>!\n\n` +
-                      `We’ve received your suggestions and will use them to improve Emoji Translator.`,
-                  },
-                },
-              ],
-            },
+        try {
+            // backend broke rightnow 
+            // await sendFeedback(originalInput, suggestion, body.user.id, 0);
+        } catch (err) {
+            console.error("Feedback backend error:", err);
+        }
+
+        await ack({ response_action: "clear" });
+
+        await client.chat.postEphemeral({
+            channel: channel,
+            user: body.user.id,
+            text: `Thanks for your feedback!`,
         });
+
+
     });
 };

@@ -1,5 +1,6 @@
 const { modelMap, setUserModel } = require("../utils/model");
 const { buildHomeView } = require("../utils/homeView");
+const { sendFeedback } = require("../utils/backendClient");
 
 module.exports = function registerActions(app) {
     // --- Handle modal submission for default style setting ---
@@ -42,6 +43,7 @@ module.exports = function registerActions(app) {
             callback_id: "feedback_modal",
             title: { type: "plain_text", text: "Feedback" },
             submit: { type: "plain_text", text: "Submit" },
+            close: { type: "plain_text", text: "Cancel" },
             blocks: [
               {
                   type: "section",
@@ -98,6 +100,10 @@ module.exports = function registerActions(app) {
     app.action("feedback_yes", async ({ ack, body, respond }) => {
         await ack();
       
+        const originalInput = body.actions[0].value;
+        console.log("User liked the translation, original input " + originalInput);
+        //await sendFeedback(originalInput, "", body.user.id, 1);
+
         await respond({
           replace_original: true,  
           text: `👍 Thanks for your feedback, <@${body.user.id}>!`,
@@ -118,6 +124,8 @@ module.exports = function registerActions(app) {
     // --- Handle feedback buttons in messages ---
     app.action("feedback_no", async ({ ack, body, respond }) => {
         await ack();
+
+        const originalInput = body.actions[0].value;
       
         await respond({
           replace_original: true,
@@ -138,14 +146,14 @@ module.exports = function registerActions(app) {
                   style: "primary",
                   text: { type: "plain_text", text: "Yes" },
                   action_id: "feedback_sure",
-                  value: "feedback_sure",
+                  value: originalInput,
                 },
                 {
                   type: "button",
                   style: "danger",
                   text: { type: "plain_text", text: "No" },
                   action_id: "feedback_no_thanks",
-                  value: "feedback_no_thanks",
+                  value: originalInput,
                 },
               ],
             },
@@ -157,7 +165,7 @@ module.exports = function registerActions(app) {
     // --- Handle feedback suggestion buttons in messages ---
     app.action("feedback_sure", async ({ ack, body, client, respond }) => {
         await ack();
-
+        const originalInput = body.actions[0].value;
         await respond({
             replace_original: true,
             text: "Please write your suggested translation in the modal.",
@@ -183,6 +191,10 @@ module.exports = function registerActions(app) {
               view: {
                 type: "modal",
                 callback_id: "feedback_suggestion_modal",
+                private_metadata: JSON.stringify({
+                  originalInput,
+                  channel: body.channel.id
+                }),
                 title: {
                   type: "plain_text",
                   text: "Improve Translation", 
@@ -245,6 +257,9 @@ module.exports = function registerActions(app) {
     // --- Handle feedback suggestion modal in messages ---
     app.action("feedback_no_thanks", async ({ ack, body, respond }) => {
         await ack();
+        const originalInput = body.actions[0].value;
+        console.log("User declined to provide suggestion, original input " + originalInput);
+        // await sendFeedback(originalInput, "", body.user.id, 0);
       
         await respond({
             replace_original: true,
