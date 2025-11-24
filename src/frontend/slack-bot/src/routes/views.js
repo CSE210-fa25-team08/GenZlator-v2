@@ -128,6 +128,19 @@ module.exports = function registerViews(app) {
           user: body.user.id,
           suggestion,
         });
+        //could be replaced
+        const { sendFeedback } = require("../utils/backendClient");
+        try {
+        await sendFeedback(
+            originalInput,     
+            suggestion,          
+            body.user.id,     
+            4                
+        );
+        } catch (err) {
+            console.error("Feedback backend error:", err);
+        }
+        //
 
         await ack({
             response_action: "update",
