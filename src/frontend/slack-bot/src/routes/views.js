@@ -3,50 +3,9 @@ const { buildHomeView } = require("../utils/homeView");
 const { setUserModel } = require("../utils/model");
 const { buildFeedbackBlocks } = require("../utils/feedback");
 const { sendFeedback } = require("../utils/backendClient");
+const { getChatHistory } = require("../utils/chatHistory");
 
 module.exports = function registerViews(app) {
-    // --- View: shortcut translate_modal (from translate_shortcut shortcut) ---
-    // I think we don't need this anymore?  Cause we deicded to post directly from shortcut
-    app.view("translate_modal", async ({ ack, body, client }) => {
-        await ack();
-
-        const { channel, message } = JSON.parse(body.view.private_metadata);
-        const user = body.user.username;
-        const fakeTranslation = "fake translate result";
-
-        await client.chat.postMessage({
-        channel,
-        text: `:sparkles: *Emoji Translation by ${user}:*\n> *Original:* ${message}\n${fakeTranslation}`,
-        });
-
-        await client.chat.postMessage({
-            channel,
-            blocks: [
-                {
-                type: "section",
-                text: { type: "mrkdwn", text: "*Do you like this translation?*" },
-                },
-                {
-                type: "actions",
-                elements: [
-                    {
-                    type: "button",
-                    text: { type: "plain_text", text: "Yes" },
-                    style: "primary",
-                    action_id: "feedback_yes",
-                    },
-                    {
-                    type: "button",
-                    text: { type: "plain_text", text: "No" },
-                    style: "danger",
-                    action_id: "feedback_no",
-                    },
-                ],
-                },
-            ],
-        });
-   });
-
     // --- View: default_style_modal (from open_default_setting action) ---
     app.view("default_style_modal", async ({ ack, body, client }) => {
         await ack();
@@ -80,24 +39,17 @@ module.exports = function registerViews(app) {
         const model =
         body.view.state.values.model_select.model_choice.selected_option.value;
 
-        let chatHistory = [];
-        try {
-            const history = await client.conversations.history({
-                channel,
-                limit: 3
-            });
+        let chatHistory = await getChatHistory(client, channel);
 
-            chatHistory = history.messages
-                .filter(m => m.type === "message" && !m.subtype)
-                .map(m => m.text)
-                .slice(0, 2);
-        } catch (err) {
-            console.error("Failed to fetch chat history:", err);
-        }
+        console.log("📤 Sending to backend:", {
+            originalMessage: input,
+            isToEmoji: true,
+            chatHistory
+        });
 
         let translated = "";
         try {
-            translated = await translate(input, true, chatHistory);
+            // translated = await translate(input, true, chatHistory);
         } catch (err) {
             console.error("Translate backend error:", err);
             translated = "⚠️ Translation failed. Please try again later.";
@@ -126,24 +78,18 @@ module.exports = function registerViews(app) {
         const model =
         body.view.state.values.model_select.model_choice.selected_option.value;
 
-        let chatHistory = [];
-        try {
-            const history = await client.conversations.history({
-                channel,
-                limit: 3
-            });
+        let chatHistory = await getChatHistory(client, channel);
 
-            chatHistory = history.messages
-                .filter(m => m.type === "message" && !m.subtype)
-                .map(m => m.text)
-                .slice(0, 2);
-        } catch (err) {
-            console.error("Failed to fetch chat history:", err);
-        }
+        console.log("📤 Sending to backend:", {
+            originalMessage: input,
+            isToEmoji: true,
+            chatHistory
+        });
+
 
         let translated = "";
         try {
-            translated = await translate(input, false, chatHistory);
+            //translated = await translate(input, false, chatHistory);
         } catch (err) {
             console.error("Translate backend error:", err);
             translated = "⚠️ Translation failed. Please try again later.";
@@ -176,19 +122,6 @@ module.exports = function registerViews(app) {
           suggestion,
             originalInput,
         });
-        //could be replaced
-        const { sendFeedback } = require("../utils/backendClient");
-        try {
-        await sendFeedback(
-            originalInput,     
-            suggestion,          
-            body.user.id,     
-            4                
-        );
-        } catch (err) {
-            console.error("Feedback backend error:", err);
-        }
-        //
 
         try {
             // backend broke rightnow 

@@ -29,7 +29,7 @@ module.exports = function registerCommands(app) {
 
             let translated = "";
             try {
-                translated = await translate(text, true, chatHistory);  
+                //translated = await translate(text, true, chatHistory);  
             } catch (err) {
                 console.error("Translate backend error:", err);
                 translated = "⚠️ Translation failed. Please try again later.";
@@ -97,7 +97,7 @@ module.exports = function registerCommands(app) {
             let translated = "";
             try {
                 //backend：emoji → text
-                translated = await translate(text, false, chatHistory);  // false → emoji-to-text mode
+                //translated = await translate(text, false, chatHistory);  // false → emoji-to-text mode
             } catch (err) {
                 console.error("Translate backend error:", err);
                 translated = "⚠️ Translation failed. Please try again later.";

@@ -165,18 +165,7 @@ module.exports = function registerActions(app) {
     // --- Handle feedback suggestion buttons in messages ---
     app.action("feedback_sure", async ({ ack, body, client, respond }) => {
         await ack();
-
         const originalInput = body.actions[0].value;
-        const ts =
-        body?.message?.ts ||
-        body?.container?.message_ts ||
-        body?.container?.thread_ts ||
-        undefined;
-
-        if (!ts) {
-        console.error("⚠️ No ts found in payload:", body);
-        }
-
         await respond({
             replace_original: true,
             text: "Please write your suggested translation in the modal.",

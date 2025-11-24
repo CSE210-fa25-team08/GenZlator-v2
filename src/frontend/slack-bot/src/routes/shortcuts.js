@@ -1,7 +1,7 @@
 // src/routes/shortcuts.js
 const { buildFeedbackBlocks } = require("../utils/feedback");
 const { translate } = require("../utils/backendClient");
-const { getLastTwoMessages } = require("../utils/chatHistory");
+const { getChatHistory } = require("../utils/chatHistory");
 
 module.exports = function registerShortcuts(app) {
     // the shortcut ID is "translate_shortcut", and need to align with the one set in Slack App configuration
@@ -12,7 +12,12 @@ module.exports = function registerShortcuts(app) {
 
         const feedbackBlocks = buildFeedbackBlocks(originalText);
 
-        let chatHistory = await getLastTwoMessages(client, body);
+        let chatHistory = await getChatHistory(client, body.channel.id);
+        console.log("📤 Sending to backend:",  {
+            originalMessage: originalText,
+            isToEmoji: true,
+            chatHistory
+        });
 
         let translated = "model failed so dummy text";
             try {
