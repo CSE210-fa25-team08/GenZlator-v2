@@ -3,6 +3,7 @@ const { buildFeedbackBlocks } = require("../utils/feedback");
 const { modelMap } = require("../utils/model");
 const { openTranslateModal } = require("../utils/commandTranslate");
 const { translate } = require("../utils/backendClient");
+const { getLastTwoMessages } = require("../utils/chatHistory");
 
 
 // currently, the response can be viewed by all members in the channel
@@ -18,21 +19,7 @@ module.exports = function registerCommands(app) {
             const { translate } = require("../utils/backendClient");
             const { buildFeedbackBlocks } = require("../utils/feedback");
     
-            let chatHistory = [];
-            try {
-                const history = await client.conversations.history({
-                    channel: command.channel_id,
-                    limit: 3  // 取 3 是为了排除 slash command
-                });
-
-                chatHistory = history.messages
-                    .filter(m => m.type === "message" && !m.subtype) // 排除系统消息
-                    .map(m => m.text)
-                    .slice(0, 2); // 只拿前两条
-
-            } catch (err) {
-                console.error("Failed to fetch chat history:", err);
-            }
+            let chatHistory = await getLastTwoMessages(client, body);
 
             console.log("📤 Sending to backend:", {
                 originalMessage: text,
@@ -110,21 +97,7 @@ module.exports = function registerCommands(app) {
             const { buildFeedbackBlocks } = require("../utils/feedback");
 
 
-            let chatHistory = [];
-            try {
-                const history = await client.conversations.history({
-                    channel: command.channel_id,
-                    limit: 3  // 取 3 是为了排除 slash command，自行过滤
-                });
-
-                chatHistory = history.messages
-                    .filter(m => m.type === "message" && !m.subtype) // 排除系统消息
-                    .map(m => m.text)
-                    .slice(0, 2); // 只拿前两条
-
-            } catch (err) {
-                console.error("Failed to fetch chat history:", err);
-            }
+            let chatHistory = await getLastTwoMessages(client, body);
 
             let translated = "";
             try {
