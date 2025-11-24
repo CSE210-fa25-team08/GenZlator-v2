@@ -2,7 +2,7 @@
   --bg: #f8fafc;
   --text: #0f172a;
   --brand-bg: #075985; /* teal-ish header/footer */
-  --panel-bg: #ffffff;
+  --panel-bg: #fff;
   --border: #e2e8f0;
   --accent: #facc15; /* amber */
 
@@ -11,7 +11,7 @@
   font-weight: 400;
 }
 
-html[data-theme='dark'] {
+html[data-theme="dark"] {
   --bg: #0b1220;
   --text: #e5e7eb;
   --brand-bg: #0a2a43;
@@ -44,25 +44,29 @@ body {
   background: var(--brand-bg);
   color: #fff;
 }
+
 .brand {
   display: flex;
   align-items: center;
   gap: 10px;
   font-weight: 600;
 }
+
 .brand .logo {
   font-size: 20px;
 }
+
 .theme-toggle {
-  color: #fff;
+  color: rgb(255 255 255);
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.3);
+  border: 1px solid rgb(255 255 255 / 30%);
   border-radius: 8px;
   padding: 6px 10px;
   cursor: pointer;
 }
+
 .theme-toggle:hover {
-  background: rgba(255,255,255,0.1);
+  background: rgb(255 255 255 / 10%);
 }
 
 .content {
@@ -72,17 +76,20 @@ body {
   flex-direction: column;
   gap: 16px;
 }
+
 .panel {
   border: 1px solid var(--border);
   background: var(--panel-bg);
   border-radius: 12px;
   padding: 16px;
 }
+
 .panel-title {
-  margin: 0 0 8px 0;
+  margin: 0 0 8px;
   font-size: 1.1rem;
   font-weight: 700;
 }
+
 .panel-body {
   min-height: 120px;
 }
@@ -95,10 +102,12 @@ body {
   background: var(--brand-bg);
   color: #fff;
 }
+
 .footer-actions {
   display: flex;
   gap: 8px;
 }
+
 .footer-btn {
   background: transparent;
   border: none;
@@ -107,6 +116,7 @@ body {
   font-weight: 600;
   cursor: pointer;
 }
+
 .footer-btn:hover {
   text-decoration: underline;
 }
