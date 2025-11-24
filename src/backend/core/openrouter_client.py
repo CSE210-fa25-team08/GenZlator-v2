@@ -7,6 +7,7 @@ from typing import Dict, Any, List
 import httpx
 from fastapi import HTTPException
 
+
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 # Free models to race between

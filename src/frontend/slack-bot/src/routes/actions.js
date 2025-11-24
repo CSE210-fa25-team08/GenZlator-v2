@@ -42,6 +42,7 @@ module.exports = function registerActions(app) {
             callback_id: "feedback_modal",
             title: { type: "plain_text", text: "Feedback" },
             submit: { type: "plain_text", text: "Submit" },
+            close: { type: "plain_text", text: "Cancel" },
             blocks: [
               {
                   type: "section",
@@ -98,6 +99,10 @@ module.exports = function registerActions(app) {
     app.action("feedback_yes", async ({ ack, body, respond }) => {
         await ack();
       
+        const { sendFeedback } = require("../utils/backendClient");
+        const originalInput = body.actions[0].value;
+        await sendFeedback(originalInput, null, body.user.id, 5);
+
         await respond({
           replace_original: true,  
           text: `👍 Thanks for your feedback, <@${body.user.id}>!`,
@@ -118,6 +123,8 @@ module.exports = function registerActions(app) {
     // --- Handle feedback buttons in messages ---
     app.action("feedback_no", async ({ ack, body, respond }) => {
         await ack();
+
+        const originalInput = body.actions[0].value;
       
         await respond({
           replace_original: true,
@@ -157,6 +164,31 @@ module.exports = function registerActions(app) {
     // --- Handle feedback suggestion buttons in messages ---
     app.action("feedback_sure", async ({ ack, body, client, respond }) => {
         await ack();
+
+        //这边还没好～～～ 
+        const correctionText =
+            view.state.values["feedback_block"]["feedback_input"].value;
+
+        const originalInput = view.private_metadata;
+        const channel = body.channel.id;
+        const ts =
+        body?.message?.ts ||
+        body?.container?.message_ts ||
+        body?.container?.thread_ts ||
+        undefined;
+
+        if (!ts) {
+        console.error("⚠️ No ts found in payload:", body);
+        }
+
+        
+          // now safe to use ts
+        await client.chat.postMessage({
+        channel: body.channel.id,
+        thread_ts: ts,
+        text: "Thanks for your feedback!"
+        });
+
 
         await respond({
             replace_original: true,
@@ -245,6 +277,11 @@ module.exports = function registerActions(app) {
     // --- Handle feedback suggestion modal in messages ---
     app.action("feedback_no_thanks", async ({ ack, body, respond }) => {
         await ack();
+
+        const originalInput = body.actions[0].value;
+        const { sendFeedback } = require("../utils/backendClient");
+
+        await sendFeedback(originalInput, null, body.user.id, 1);
       
         await respond({
             replace_original: true,
