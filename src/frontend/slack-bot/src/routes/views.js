@@ -80,15 +80,36 @@ module.exports = function registerViews(app) {
         const model =
         body.view.state.values.model_select.model_choice.selected_option.value;
 
+        let chatHistory = [];
+        try {
+            const history = await client.conversations.history({
+                channel,
+                limit: 3
+            });
+
+            chatHistory = history.messages
+                .filter(m => m.type === "message" && !m.subtype)
+                .map(m => m.text)
+                .slice(0, 2);
+        } catch (err) {
+            console.error("Failed to fetch chat history:", err);
+        }
+
+        let translated = "";
+        try {
+            translated = await translate(input, true, chatHistory);
+        } catch (err) {
+            console.error("Translate backend error:", err);
+            translated = "⚠️ Translation failed. Please try again later.";
+        }
+
         const feedbackBlocks = buildFeedbackBlocks(input);
 
-        // Dummy translation
-        const translated = `Dummy Emoji Output for: "${input}"`;
-        // todo : also support private DM case
         await client.chat.postMessage({
             channel,
             text: `*Text → Emoji*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
         });
+    
         await client.chat.postMessage({
             channel,
             blocks: feedbackBlocks,
@@ -105,15 +126,37 @@ module.exports = function registerViews(app) {
         const model =
         body.view.state.values.model_select.model_choice.selected_option.value;
 
+        let chatHistory = [];
+        try {
+            const history = await client.conversations.history({
+                channel,
+                limit: 3
+            });
+
+            chatHistory = history.messages
+                .filter(m => m.type === "message" && !m.subtype)
+                .map(m => m.text)
+                .slice(0, 2);
+        } catch (err) {
+            console.error("Failed to fetch chat history:", err);
+        }
+
+        let translated = "";
+        try {
+            translated = await translate(input, false, chatHistory);
+        } catch (err) {
+            console.error("Translate backend error:", err);
+            translated = "⚠️ Translation failed. Please try again later.";
+        }
+
         const feedbackBlocks = buildFeedbackBlocks(input);
-        // Dummy translation
-        const translated = `Dummy Text Output for: "${input}"`;
 
         // todo : also support private DM case
         await client.chat.postMessage({
             channel,
             text: `*Emoji → Text*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
         });
+    
         await client.chat.postMessage({
             channel,
             blocks: feedbackBlocks,
