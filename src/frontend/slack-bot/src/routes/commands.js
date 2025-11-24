@@ -16,9 +16,6 @@ module.exports = function registerCommands(app) {
         const text = command.text.trim();
     
         if (text) {
-            const { translate } = require("../utils/backendClient");
-            const { buildFeedbackBlocks } = require("../utils/feedback");
-    
             let chatHistory = await getLastTwoMessages(client, body);
 
             console.log("📤 Sending to backend:", {
@@ -93,10 +90,6 @@ module.exports = function registerCommands(app) {
         const text = command.text.trim();
 
         if (text) {
-            const { translate } = require("../utils/backendClient");
-            const { buildFeedbackBlocks } = require("../utils/feedback");
-
-
             let chatHistory = await getLastTwoMessages(client, body);
 
             let translated = "";
