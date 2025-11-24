@@ -1,4 +1,4 @@
-Sprint \#3 Review Meeting
+# Sprint \#3 Review Meeting
 
 Attendance: Justin Wang, Sai Chaparala, Kara Hoagland, Liu Dai, Zhi Xu, Viroopaksh Chekuri, Nora, Andrew Wu, Jenish Thanki, Harshit
 
