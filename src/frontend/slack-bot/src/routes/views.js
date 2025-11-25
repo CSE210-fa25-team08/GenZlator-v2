@@ -5,6 +5,7 @@ const { buildFeedbackBlocks } = require("../utils/feedback");
 const { sendFeedback } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
 const { addHistory } = require("../storage/history");
+const { renderHome } = require("../utils/renderHome");
 
 module.exports = function registerViews(app) {
     // --- View: default_style_modal (from open_default_setting action) ---
@@ -17,8 +18,7 @@ module.exports = function registerViews(app) {
 
         setUserModel(userId, styleChoice);
 
-        const newHome = buildHomeView(styleChoice);
-        await client.views.publish({ user_id: userId, view: newHome });
+        await renderHome(client, userId, "overview");
     });
 
     // --- View: feedback_modal (from open_feedback action) ---
