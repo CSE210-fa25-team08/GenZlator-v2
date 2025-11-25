@@ -175,11 +175,31 @@ module.exports = function registerCommands(app) {
         const history = getHistory(command.user_id); 
 
         if (history.length === 0) {
-            await client.chat.postEphemeral({
-                channel: command.channel_id,
-                user: command.user_id,
-                text: "No translation history yet."
-            });
+            try {
+                await client.chat.postEphemeral({
+                    channel: command.channel_id,
+                    user: command.user_id,
+                    text: "No translation history yet."
+                });
+            } catch (err) {
+                if (err.data?.error === "channel_not_found") {
+                    await respond({
+                        response_type: "ephemeral",
+                        replace_original: false,
+                        blocks: [
+                            {
+                                type: "section",
+                                text: {
+                                    type: "mrkdwn",
+                                    text: "*No translation history yet.*"
+                                }
+                            }
+                        ]
+                    });
+                } else {
+                    console.error(err);
+                }
+            }
             return;
         }
 
@@ -199,13 +219,24 @@ module.exports = function registerCommands(app) {
             blocks.push({ type: "divider" });
         });
 
-        await client.chat.postEphemeral({
-            channel: command.channel_id,
-            user: command.user_id,
-            text: "Your Translation History",
-            blocks
-        });
-
+        try {
+            await client.chat.postEphemeral({
+                channel: command.channel_id,
+                user: command.user_id,
+                text: "Your Translation History",
+                blocks
+            });
+        } catch (err) {
+            // --- Private DM fallback ---
+            if (err.data?.error === "channel_not_found") {
+                await respond({
+                    response_type: "ephemeral",
+                    blocks
+                });
+            } else {
+                console.error(err);
+            }
+        }
     });
 
 };

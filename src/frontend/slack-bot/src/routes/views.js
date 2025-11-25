@@ -56,7 +56,6 @@ module.exports = function registerViews(app) {
             translated = "⚠️ Translation failed. Please try again later.";
         }
 
-
         addHistory(userId, {
             original: input,
             translated: translated,
