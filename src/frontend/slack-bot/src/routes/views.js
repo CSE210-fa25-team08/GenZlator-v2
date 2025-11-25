@@ -33,7 +33,7 @@ module.exports = function registerViews(app) {
         await ack();
         const metadata = JSON.parse(body.view.private_metadata);
         const channel = metadata.channel_id;
-
+        const userId = body.user.id;
         const input =
         body.view.state.values.input_text.value_input.value;
         const model =
@@ -62,8 +62,9 @@ module.exports = function registerViews(app) {
             text: `*Text → Emoji*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
         });
     
-        await client.chat.postMessage({
+        await client.chat.postEphemeral({
             channel,
+            user: userId,
             blocks: feedbackBlocks,
         });
     });
@@ -73,6 +74,7 @@ module.exports = function registerViews(app) {
         await ack();
         const metadata = JSON.parse(body.view.private_metadata);
         const channel = metadata.channel_id;
+        const userId = body.user.id;
         const input =
         body.view.state.values.input_text.value_input.value;
         const model =
@@ -98,13 +100,15 @@ module.exports = function registerViews(app) {
         const feedbackBlocks = buildFeedbackBlocks(input);
 
         // todo : also support private DM case
+        // just figure out that slack can't done this 
         await client.chat.postMessage({
             channel,
             text: `*Emoji → Text*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
         });
     
-        await client.chat.postMessage({
+        await client.chat.postEphemeral({
             channel,
+            user: userId,
             blocks: feedbackBlocks,
         });
     });
@@ -137,7 +141,6 @@ module.exports = function registerViews(app) {
             user: body.user.id,
             text: `Thanks for your feedback!`,
         });
-
 
     });
 };
