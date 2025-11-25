@@ -43,23 +43,9 @@ module.exports = function registerShortcuts(app) {
             });
     
         } catch (err) {
-            // DM or errors → fallback to ephemeral
+            // just figure out that slack can't done this 
             if (err.data?.error === "channel_not_found") {
-                await client.chat.postEphemeral({
-                    channel: body.user.id,     // DM fallback: ephemeral inside user's DM
-                    user: body.user.id,
-                    text: `Translated: "${originalText}" → ${translated}`,
-                    blocks: [
-                        {
-                            type: "section",
-                            text: {
-                                type: "mrkdwn",
-                                text: `Translated: "${originalText}" → ${translated}`,
-                            },
-                        },
-                        ...feedbackBlocks,
-                    ]
-                });
+                
             } else {
                 console.error(err);
             }
