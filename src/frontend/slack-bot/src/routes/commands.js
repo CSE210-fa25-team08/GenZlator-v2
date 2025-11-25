@@ -3,9 +3,8 @@ const { buildFeedbackBlocks } = require("../utils/feedback");
 const { modelMap } = require("../utils/model");
 const { openTranslateModal } = require("../utils/commandTranslate");
 const { translate } = require("../utils/backendClient");
-// const { getLastTwoMessages } = require("../utils/chatHistory");
 const { getChatHistory } = require("../utils/chatHistory");
-
+const { addHistory, getHistory } = require("../storage/history");
 
 
 // currently, the response can be viewed by all members in the channel
@@ -25,7 +24,6 @@ module.exports = function registerCommands(app) {
                 isToEmoji: true,
                 chatHistory
             });
-            
 
             let translated = "";
             try {
@@ -36,6 +34,14 @@ module.exports = function registerCommands(app) {
             }
     
             const feedbackBlocks = buildFeedbackBlocks(text);
+
+            addHistory(command.user_id, {
+                original: text,
+                translated: translated,
+                direction: "text-to-emoji", 
+                timestamp: new Date().toISOString(),
+                channel: command.channel_id
+            });
     
             try {
                 // Public channel → send translation to channel
@@ -105,6 +111,14 @@ module.exports = function registerCommands(app) {
 
             const feedbackBlocks = buildFeedbackBlocks(text);
 
+            addHistory(command.user_id, {
+                original: text,
+                translated: translated,
+                direction: "emoji-to-text", 
+                timestamp: new Date().toISOString(),
+                channel: command.channel_id
+            });
+
             try {
                 // --- Public or group channel ---
                 await client.chat.postMessage({
@@ -155,4 +169,43 @@ module.exports = function registerCommands(app) {
         }
     });
 
- };
+    app.command("/history", async ({ command, ack, respond, client }) => {
+        await ack();
+
+        const history = getHistory(command.user_id); 
+
+        if (history.length === 0) {
+            await client.chat.postEphemeral({
+                channel: command.channel_id,
+                user: command.user_id,
+                text: "No translation history yet."
+            });
+            return;
+        }
+
+        const blocks = [];
+
+        history.slice(-10).forEach(h => {
+            blocks.push({
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text:
+                        `*${h.direction}*   \`${h.timestamp}\`\n` +
+                        `• *Original:* ${h.original}\n` +
+                        `• *Translated:* ${h.translated}`
+                }
+            });
+            blocks.push({ type: "divider" });
+        });
+
+        await client.chat.postEphemeral({
+            channel: command.channel_id,
+            user: command.user_id,
+            text: "Your Translation History",
+            blocks
+        });
+
+    });
+
+};

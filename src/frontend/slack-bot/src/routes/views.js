@@ -4,6 +4,7 @@ const { setUserModel } = require("../utils/model");
 const { buildFeedbackBlocks } = require("../utils/feedback");
 const { sendFeedback } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
+const { addHistory } = require("../storage/history");
 
 module.exports = function registerViews(app) {
     // --- View: default_style_modal (from open_default_setting action) ---
@@ -55,6 +56,15 @@ module.exports = function registerViews(app) {
             translated = "⚠️ Translation failed. Please try again later.";
         }
 
+
+        addHistory(userId, {
+            original: input,
+            translated: translated,
+            direction: "text-to-emoji", 
+            timestamp: new Date().toISOString(),
+            channel: channel
+        });
+
         const feedbackBlocks = buildFeedbackBlocks(input);
 
         await client.chat.postMessage({
@@ -98,6 +108,14 @@ module.exports = function registerViews(app) {
         }
 
         const feedbackBlocks = buildFeedbackBlocks(input);
+
+        addHistory(userId, {
+            original: input,
+            translated: translated,
+            direction: "emoji-to-text", 
+            timestamp: new Date().toISOString(),
+            channel: channel
+        });
 
         // todo : also support private DM case
         // just figure out that slack can't done this 
