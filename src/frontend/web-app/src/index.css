@@ -94,6 +94,24 @@ body {
   min-height: 120px;
 }
 
+.feedback-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  background: var(--brand-bg);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.feedback-link:hover {
+  background: var(--accent);
+  color: #000;
+}
+
 .site-footer {
   display: flex;
   align-items: center;
