@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - FEEDBACK_LOG_PATH=${FEEDBACK_LOG_PATH:-feedback_log.jsonl}
+    volumes:
+      # Mount feedback log directory for persistence
+      - ./src/backend/api:/app/src/backend/api
+    restart: unless-stopped
