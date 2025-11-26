@@ -12,7 +12,7 @@
   font-weight: 400;
 }
 
-html[data-theme='dark'] {
+html[data-theme="dark"] {
   --bg: #0b1220;
   --text: #e5e7eb;
   --brand-bg: #0a2a43;
@@ -52,19 +52,22 @@ body {
   gap: 10px;
   font-weight: 600;
 }
+
 .brand .logo {
   font-size: 20px;
 }
+
 .theme-toggle {
-  color: #fff;
+  color: rgb(255 255 255);
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.3);
+  border: 1px solid rgb(255 255 255 / 30%);
   border-radius: 8px;
   padding: 6px 10px;
   cursor: pointer;
 }
+
 .theme-toggle:hover {
-  background: rgba(255,255,255,0.1);
+  background: rgb(255 255 255 / 10%);
 }
 
 .content {
@@ -80,13 +83,33 @@ body {
   border-radius: 12px;
   padding: 16px;
 }
+
 .panel-title {
-  margin: 0 0 8px 0;
+  margin: 0 0 8px;
   font-size: 1.1rem;
   font-weight: 700;
 }
+
 .panel-body {
   min-height: 120px;
+}
+
+.feedback-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  background: var(--brand-bg);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.feedback-link:hover {
+  background: var(--accent);
+  color: #000;
 }
 
 .site-footer {

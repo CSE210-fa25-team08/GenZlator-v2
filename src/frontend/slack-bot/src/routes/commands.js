@@ -1,6 +1,11 @@
 // src/routes/commands.js
 const { buildFeedbackBlocks } = require("../utils/feedback");
-const { styleMap } = require("../utils/style");
+const { modelMap } = require("../utils/model");
+const { openTranslateModal } = require("../utils/commandTranslate");
+const { translate } = require("../utils/backendClient");
+// const { getLastTwoMessages } = require("../utils/chatHistory");
+const { getChatHistory } = require("../utils/chatHistory");
+
 
 
 // currently, the response can be viewed by all members in the channel
@@ -11,162 +16,143 @@ module.exports = function registerCommands(app) {
     app.command("/text-to-emoji", async ({ command, ack, respond, client }) => {
         await ack();
         const text = command.text.trim();
-
-        // if text is provided, do quick translation
+    
         if (text) {
-            const emojiTranslation = "test data : " + text;
-            const feedbackBlocks = buildFeedbackBlocks(text);
+            let chatHistory = await getChatHistory(client, command.channel_id);
 
+            console.log("📤 Sending to backend:", {
+                originalMessage: text,
+                isToEmoji: true,
+                chatHistory
+            });
+            
+
+            let translated = "";
             try {
-                // group channel or public channel
+                //translated = await translate(text, true, chatHistory);  
+            } catch (err) {
+                console.error("Translate backend error:", err);
+                translated = "⚠️ Translation failed. Please try again later.";
+            }
+    
+            const feedbackBlocks = buildFeedbackBlocks(text);
+    
+            try {
+                // Public channel → send translation to channel
                 await client.chat.postMessage({
                     channel: command.channel_id,
                     response_type: "in_channel",
-                    text: `:sparkles: *Text → Emoji by ${command.user_name}:*\n${emojiTranslation}`,
-                    });
-
-                await client.chat.postMessage({
+                    text: `*Text → Emoji by ${command.user_name}:*\n${translated}`,
+                });
+    
+                // Feedback (only visible to the user)
+                await client.chat.postEphemeral({
                     channel: command.channel_id,
-                    response_type: "in_channel",
+                    user: command.user_id,
+                    text: "Feedback on this translation",
                     blocks: feedbackBlocks,
                 });
+    
             } catch (err) {
-                // private DM or other error
+                // DM or errors → fallback to ephemeral
                 if (err.data?.error === "channel_not_found") {
                     await respond({
                         response_type: "ephemeral",
                         replace_original: false,
                         blocks: [
-                        {
-                            type: "section",
-                            text: {
-                            type: "mrkdwn",
-                            text: `:sparkles: *Text → Emoji:*\n${emojiTranslation}`,
+                            {
+                                type: "section",
+                                text: {
+                                    type: "mrkdwn",
+                                    text: `*Text → Emoji:*\n${translated}`,
+                                },
                             },
-                        },
-                        ...feedbackBlocks,
+                            ...feedbackBlocks,
                         ],
                     });
                 } else {
                     console.error(err);
                 }
             }
+    
         } else {
-            // if no text, open interactive modal
-            // modal should change in future for specific text-to-emoji or emoji-to-text
-            // currently both use same modal for simplicity
-            await client.views.open({
-                trigger_id: command.trigger_id,
-                view: {
-                type: "modal",
-                callback_id: "/text-to-emoji_modal",
-                title: { type: "plain_text", text: "Select Generation Style" },
-                submit: { type: "plain_text", text: "Translate" },
-                close: { type: "plain_text", text: "Cancel" },
-                private_metadata: JSON.stringify({ channel_id: command.channel_id }),
-                blocks: [
-                    {
-                        type: "input",
-                        block_id: "input_text",
-                        label: { type: "plain_text", text: "Enter text or emojis" },
-                        element: { type: "plain_text_input", action_id: "value_input" },
-                    },
-                    {
-                        type: "input",
-                        block_id: "style_select",
-                        label: { type: "plain_text", text: "Choose generation style" },
-                        element: {
-                            type: "static_select",
-                            action_id: "style_choice",
-                            options: Object.entries(styleMap).map(([value, text]) => ({
-                            text: { type: "plain_text", text },
-                            value,
-                            })),
-                        },
-                    },
-                ],
-                },
-            });
+            // If no text → open the modal
+            await openTranslateModal(
+                client,
+                command.trigger_id,
+                command.channel_id,
+                "text-to-emoji"
+            );
         }
     });
+    
 
-    // --- /emoji-to-text ---
     app.command("/emoji-to-text", async ({ command, ack, respond, client }) => {
         await ack();
         const text = command.text.trim();
 
         if (text) {
-            const emojiTranslation = "test data : " + text;
+            let chatHistory = await getChatHistory(client, command.channel_id);
+
+            let translated = "";
+            try {
+                //backend：emoji → text
+                //translated = await translate(text, false, chatHistory);  // false → emoji-to-text mode
+            } catch (err) {
+                console.error("Translate backend error:", err);
+                translated = "⚠️ Translation failed. Please try again later.";
+            }
+
             const feedbackBlocks = buildFeedbackBlocks(text);
 
             try {
-                // group channel or public channel
+                // --- Public or group channel ---
                 await client.chat.postMessage({
                     channel: command.channel_id,
                     response_type: "in_channel",
-                    text: `:sparkles: *Emoji → text by ${command.user_name}:*\n${emojiTranslation}`,
-                    });
+                    text: `*Emoji → Text by ${command.user_name}:*\n${translated}`,
+                });
 
-                await client.chat.postMessage({
+                // --- Feedback form (only visible to the user) ---
+                await client.chat.postEphemeral({
                     channel: command.channel_id,
-                    response_type: "in_channel",
+                    user: command.user_id,
+                    text: "Feedback on this translation",
                     blocks: feedbackBlocks,
                 });
+
             } catch (err) {
-                // private DM or other error
+
+                // --- Private DM fallback ---
                 if (err.data?.error === "channel_not_found") {
-                await respond({
-                    response_type: "ephemeral",
-                    replace_original: false,
-                    blocks: [
-                    {
-                        type: "section",
-                        text: {
-                        type: "mrkdwn",
-                        text: `:sparkles: *Emoji → text:*\n${emojiTranslation}`,
-                        },
-                    },
-                    ...feedbackBlocks,
-                    ],
-                });
+                    await respond({
+                        response_type: "ephemeral",
+                        replace_original: false,
+                        blocks: [
+                            {
+                                type: "section",
+                                text: {
+                                    type: "mrkdwn",
+                                    text: `*Emoji → Text:*\n${translated}`,
+                                },
+                            },
+                            ...feedbackBlocks,
+                        ],
+                    });
                 } else {
                     console.error(err);
                 }
             }
+
         } else {
-        // Interactive modal
-        await client.views.open({
-            trigger_id: command.trigger_id,
-            view: {
-            type: "modal",
-            callback_id: "/emoji-to-text_modal",
-            title: { type: "plain_text", text: "Select Generation Style" },
-            submit: { type: "plain_text", text: "Translate" },
-            close: { type: "plain_text", text: "Cancel" },
-            private_metadata: JSON.stringify({ channel_id: command.channel_id }),
-            blocks: [
-                {
-                    type: "input",
-                    block_id: "input_text",
-                    label: { type: "plain_text", text: "Enter text or emojis" },
-                    element: { type: "plain_text_input", action_id: "value_input" },
-                },
-                {
-                    type: "input",
-                    block_id: "style_select",
-                    label: { type: "plain_text", text: "Choose generation style" },
-                    element: {
-                        type: "static_select",
-                        action_id: "style_choice",
-                        options: Object.entries(styleMap).map(([value, text]) => ({
-                        text: { type: "plain_text", text },
-                        value,
-                        })),
-                    },
-                },
-            ],
-            },
-        });
+            // --- If no emoji typed → open interactive modal ---
+            await openTranslateModal(
+                client,
+                command.trigger_id,
+                command.channel_id,
+                "emoji-to-text"
+            );
         }
     });
-};
+
+ };
