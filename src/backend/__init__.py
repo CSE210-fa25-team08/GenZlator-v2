@@ -4,7 +4,7 @@ from core.models import (
     TranslateRequest,
     TranslateResponse,
     FeedbackRequest,
-    FeedbackResponse
+    FeedbackResponse,
 )
 
 ''' This is an example of how to write a test
