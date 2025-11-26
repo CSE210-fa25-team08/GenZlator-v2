@@ -1,0 +1,15 @@
+# Ownership rules for root README.md
+/README.md	@CSE210-fa25-team08/admin
+
+# Ownership rules for ADRs
+/specs/adr/	@CSE210-fa25-team08/admin
+
+# Ownership rules for the high-level documentation
+/admin/		@CSE210-fa25-team08/admin
+/specs/		@CSE210-fa25-team08/admin
+
+# Define ownership rules for frontend
+/src/frontend/	@CSE210-fa25-team08/frontend
+
+# Define ownership rules for backend
+/src/backend/	@CSE210-fa25-team08/backend
