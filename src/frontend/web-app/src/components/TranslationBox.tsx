@@ -18,18 +18,20 @@ import { backend_translate, backend_feedback } from '../hooks/backend.tsx'
 
 
 
-export default function TranslationBox ({rating, setRating}) {
+export default function TranslationBox ({lastTranslation, setLastTranslation, rating, setRating, isTranslated, setTranslated}) {
     const [inputText, setInputText] = useState('');
     const [outputText, setOutputText] = useState('');
     const [toEmoji, setToEmoji] = useState(false);
     const [isLoading, setLoading] = useState(false);
-    const [lastTranslation, setLastTranslation] = useState({
-        text: "",
-        toEmoji: false
-    });
+    // const [lastTranslation, setLastTranslation] = useState({
+    //     text: "",
+    //     toEmoji: false
+    // });
 
     const AUTO_TRANSLATE_DELAY = 5000;
     const auto_translate_timer = useRef<number>(null); //consistent timer id
+
+    const activeControllerRef = useRef<AbortController>(null);
 
     useEffect(() => {
         auto_translate_timer.current = setTimeout(() => {
@@ -59,11 +61,22 @@ export default function TranslationBox ({rating, setRating}) {
         if (lastTranslation.text.trim() == inputText.trim() && lastTranslation.toEmoji == toEmoji){return;}
         else {setLastTranslation({text:inputText, toEmoji:toEmoji})};
         setLoading(true);
-        // const controller = new AbortController();
-        // const signal = controller.signal;
+        setTranslated(false);
+        if(activeControllerRef.current){
+            activeControllerRef.current.abort();
+            console.log("Aborting previous request");
+        }
+        const controller = new AbortController();
+        activeControllerRef.current = controller;
+        const signal = controller.signal;
         try {
-            const translated_output = await backend_translate(toEmoji, inputText)//, signal);
-            setOutputText(translated_output);
+            const translated_output = await backend_translate(toEmoji, inputText, signal);
+            if(!signal.aborted){
+                setOutputText(translated_output);
+                setRating(null);
+                setTranslated(true);
+                activeControllerRef.current = null;
+            }
         } catch (err) {
             if (err.name === 'AbortError') {
                 console.log("Request was aborted");
@@ -72,6 +85,7 @@ export default function TranslationBox ({rating, setRating}) {
                 toast.error('Translation Failed. Please try again later.');
                 console.error(`Translation error: ${err}`);
             }
+            activeControllerRef.current = null;
         }
         setLoading(false);
     }
@@ -97,7 +111,7 @@ export default function TranslationBox ({rating, setRating}) {
         }
         setRating(val);
         try {
-            await backend_feedback(inputText, val, "")
+            await backend_feedback(lastTranslation.text, val, "")
             toast.dismiss();
             toast.success('Feedback sent successfully!');
         } catch (err) {
@@ -114,12 +128,14 @@ export default function TranslationBox ({rating, setRating}) {
         let temp = inputText;
         setInputText(outputText);
         setOutputText(temp);
+        setRating(null);
+        setTranslated(false);
+        if(activeControllerRef.current){activeControllerRef.current.abort();}
         // if(auto_translate_timer.current) {
         //     clearTimeout(auto_translate_timer.current);
         // }
     }
 
-    const emptyOutput = outputText.trim() == "";
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -156,8 +172,8 @@ export default function TranslationBox ({rating, setRating}) {
                             placeholder="Translation will appear here..."
                         />
                         <footer className="text-field-buttons">
-                            <IconButton className="thumb" onClick={()=>handleRating(true)} sx={{visibility: emptyOutput ? 'hidden' : 'visible'}}>{rating==true ? <ThumbUpIcon/> : <ThumbUpOutlinedIcon/>}</IconButton>
-                            <IconButton className="thumb" onClick={()=>handleRating(false)} sx={{visibility: emptyOutput ? 'hidden' : 'visible'}}>{rating==false ? <ThumbDownIcon/> : <ThumbDownOutlinedIcon/>}</IconButton>
+                            <IconButton className="thumb" onClick={()=>handleRating(true)} sx={{visibility: !isTranslated ? 'hidden' : 'visible'}}>{rating==true ? <ThumbUpIcon/> : <ThumbUpOutlinedIcon/>}</IconButton>
+                            <IconButton className="thumb" onClick={()=>handleRating(false)} sx={{visibility: !isTranslated ? 'hidden' : 'visible'}}>{rating==false ? <ThumbDownIcon/> : <ThumbDownOutlinedIcon/>}</IconButton>
                             {copyButton(outputText)}
                         </footer>
                     </section>

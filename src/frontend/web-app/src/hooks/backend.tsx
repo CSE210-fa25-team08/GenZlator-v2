@@ -1,9 +1,18 @@
 
 const API_BASE = 'http://genzlator-api.saichaparala.com:8001';
-const MOCK = false;
+const MOCK = true;
 
-export async function backend_translate (toEmoji:boolean, inputText:string, ){//signal) {
+const sleep = (ms:number) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+};
+
+export async function backend_translate (toEmoji:boolean, inputText:string, signal: AbortSignal) {
     if (MOCK) {
+
+        await sleep(2000); //testing purposes
+
+        signal.throwIfAborted();
+        
         console.log(`Translation of ${inputText} ${toEmoji ? 'to emojis': 'to plain text'} triggered`);
         return `${inputText} but like as ${toEmoji ? 'emojis':'plain text'}`;
     }
@@ -18,7 +27,7 @@ export async function backend_translate (toEmoji:boolean, inputText:string, ){//
             isToEmoji: toEmoji,
             chatHistory: [] //TODO
         }),
-        // signal: signal
+        signal: signal
     });
 
     if (!response.ok) {
@@ -33,7 +42,7 @@ export async function backend_translate (toEmoji:boolean, inputText:string, ){//
 export async function backend_feedback (inputText:string, rating:number, suggestion:string) {
     if (MOCK) {
         console.log(rating);
-        console.log(`${rating ? "Postive" : "Negative"} feedback sent with suggestion: ${suggestion}`)
+        console.log(`${rating ? "Postive" : "Negative"} feedback for ${inputText} sent with suggestion: ${suggestion}`)
         return;
     }
 

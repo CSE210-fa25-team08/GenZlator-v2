@@ -112,6 +112,23 @@ body {
   color: #000;
 }
 
+.suggestion-btn.MuiButton-root {
+  background-color: var(--accent);
+  border: 0;
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 100%;
+  font-weight: bold;
+  min-height: 40px;
+  min-width: 70px;
+  margin-top: 10px;
+  width: 25%;
+}
+
+.suggestion-btn:disabled {
+  opacity: 50%;
+}
+
 .site-footer {
   display: flex;
   align-items: center;
