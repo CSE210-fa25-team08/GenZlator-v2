@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
@@ -14,14 +14,66 @@ import IconButton from '@mui/material/IconButton';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
+import { backend_translate, backend_feedback } from '../hooks/backend.tsx'
+
+
+
 export default function TranslationBox ({rating, setRating}) {
     const [inputText, setInputText] = useState('');
     const [outputText, setOutputText] = useState('');
     const [toEmoji, setToEmoji] = useState(false);
+    const [isLoading, setLoading] = useState(false);
+    const [lastTranslation, setLastTranslation] = useState({
+        text: "",
+        toEmoji: false
+    });
+
+    const AUTO_TRANSLATE_DELAY = 5000;
+    const auto_translate_timer = useRef<number>(null); //consistent timer id
+
+    useEffect(() => {
+        auto_translate_timer.current = setTimeout(() => {
+            if (inputText.trim() != "") { //TODO: more conditionals than this
+                console.log("auto translate triggered");
+                handleTranslation();
+            }
+        }, AUTO_TRANSLATE_DELAY);
+
+        return () => {
+            if(auto_translate_timer.current) {
+                clearTimeout(auto_translate_timer.current);
+            }
+        };
+
+    }, [inputText]);
+
+    // When the output text changes then cancel the timer
+    useEffect(() => {
+        if(auto_translate_timer.current) {
+            clearTimeout(auto_translate_timer.current);
+        }
+    }, [outputText])
+
     
     const handleTranslation = async() => {
-        console.log(`Translation of ${inputText} ${toEmoji ? 'to emojis': 'to plain text'} triggered`);
-        setOutputText(`${inputText} but like as ${toEmoji ? 'emojis':'plain text'}`);
+        if (lastTranslation.text.trim() == inputText.trim() && lastTranslation.toEmoji == toEmoji){return;}
+        else {setLastTranslation({text:inputText, toEmoji:toEmoji})};
+        setLoading(true);
+        // const controller = new AbortController();
+        // const signal = controller.signal;
+        try {
+            const translated_output = await backend_translate(toEmoji, inputText)//, signal);
+            setOutputText(translated_output);
+        } catch (err) {
+            if (err.name === 'AbortError') {
+                console.log("Request was aborted");
+            } else {
+                toast.dismiss();
+                toast.error('Translation Failed. Please try again later.');
+                console.error(`Translation error: ${err}`);
+            }
+        }
+        setLoading(false);
     }
 
     const handleCopy = async (copiedText:string) => {
@@ -36,16 +88,24 @@ export default function TranslationBox ({rating, setRating}) {
         }
     }
 
-    const handleRating = (val:Boolean) => {
+    const handleRating = async(val:Boolean) => {
         console.log(`rating ${val} clicked`);
+        // if removing rating, then unselect and early return
         if (rating == val){
             setRating(null);
+            return;
         }
-        else {
-            setRating(val);
+        setRating(val);
+        try {
+            await backend_feedback(inputText, val, "")
+            toast.dismiss();
+            toast.success('Feedback sent successfully!');
+        } catch (err) {
+            toast.dismiss();
+            toast.error('Failed to send feedback');
+            console.error(err);
         }
-        toast.dismiss();
-        toast.success('Feedback sent successfully!');
+
     }
 
     const handleSwap = () => {
@@ -54,6 +114,9 @@ export default function TranslationBox ({rating, setRating}) {
         let temp = inputText;
         setInputText(outputText);
         setOutputText(temp);
+        // if(auto_translate_timer.current) {
+        //     clearTimeout(auto_translate_timer.current);
+        // }
     }
 
     const emptyOutput = outputText.trim() == "";
@@ -100,7 +163,7 @@ export default function TranslationBox ({rating, setRating}) {
                     </section>
                 </section>
             </fieldset>
-            <button className="translate-btn" disabled={inputText.trim()==""} onClick={handleTranslation}>TRANSLATE</button>
+            <Button className="translate-btn" loading={isLoading} disabled={inputText.trim()==""} onClick={handleTranslation}>TRANSLATE</Button>
         </section>
     )
 }

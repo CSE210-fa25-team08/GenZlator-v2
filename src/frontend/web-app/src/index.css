@@ -204,7 +204,7 @@ textarea[readonly]{
   cursor: default;
 }
 
-.translate-btn {
+.translate-btn.MuiButton-root {
   align-self: center;
   background-color: var(--accent);
   border: 0;
