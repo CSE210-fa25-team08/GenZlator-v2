@@ -9,6 +9,7 @@ import { backend_feedback } from '../hooks/backend.tsx';
 export default function SuggestionBox ({lastTranslation, rating}) {
     const [suggestionText, setSuggestionText] = useState('');
 
+    // Send feedback with suggestion to the backend
     const handleSuggestion = async () => {
         try {
             await backend_feedback(lastTranslation.text, rating, suggestionText)
