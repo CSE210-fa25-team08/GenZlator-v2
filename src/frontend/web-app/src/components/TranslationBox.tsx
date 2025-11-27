@@ -31,8 +31,9 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     const AUTO_TRANSLATE_DELAY = 5000;
     const auto_translate_timer = useRef<number>(null); //consistent timer id
 
-    const activeControllerRef = useRef<AbortController>(null);
+    const activeControllerRef = useRef<AbortController>(null); //so we can abort translate requests that are overridden
 
+    // Trigger translation if non-empty input is left for 5 seconds
     useEffect(() => {
         auto_translate_timer.current = setTimeout(() => {
             if (inputText.trim() != "") { //TODO: more conditionals than this
@@ -56,16 +57,19 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
         }
     }, [outputText])
 
-    
+    // Send async translation request to backend and update state
     const handleTranslation = async() => {
+        // If this request is the same as the last translation request, ignore
         if (lastTranslation.text.trim() == inputText.trim() && lastTranslation.toEmoji == toEmoji){return;}
         else {setLastTranslation({text:inputText, toEmoji:toEmoji})};
         setLoading(true);
         setTranslated(false);
+        // If there is a current translation request in progress, abort it
         if(activeControllerRef.current){
             activeControllerRef.current.abort();
             console.log("Aborting previous request");
         }
+        // Set up new controller to allow abortion of this translation request
         const controller = new AbortController();
         activeControllerRef.current = controller;
         const signal = controller.signal;
@@ -81,6 +85,7 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
             if (err.name === 'AbortError') {
                 console.log("Request was aborted");
             } else {
+                // notify user if translation failed
                 toast.dismiss();
                 toast.error('Translation Failed. Please try again later.');
                 console.error(`Translation error: ${err}`);
@@ -90,6 +95,7 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
         setLoading(false);
     }
 
+    // Copy text to clipboard and notify user if successful or not
     const handleCopy = async (copiedText:string) => {
         try {
             await navigator.clipboard.writeText(copiedText);
@@ -102,9 +108,10 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
         }
     }
 
+    // Adjust current rating and if is new rating, send feedback on backend and notify user if successful or not
     const handleRating = async(val:Boolean) => {
         console.log(`rating ${val} clicked`);
-        // if removing rating, then unselect and early return
+        // If removing rating, then unselect and early return
         if (rating == val){
             setRating(null);
             return;
@@ -122,14 +129,17 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
 
     }
 
+    // Swap input and output text
     const handleSwap = () => {
         console.log(`Swapping input from ${toEmoji ? 'plain text':'emojis'} to ${toEmoji ? 'emojis':'plain text'}`);
         setToEmoji(!toEmoji);
         let temp = inputText;
         setInputText(outputText);
         setOutputText(temp);
+        // Clear rating and translation status
         setRating(null);
         setTranslated(false);
+        // If there is a translation in progress, we do not want this to old translation to write to the new output box
         if(activeControllerRef.current){activeControllerRef.current.abort();}
         // if(auto_translate_timer.current) {
         //     clearTimeout(auto_translate_timer.current);

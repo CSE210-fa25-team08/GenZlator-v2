@@ -13,7 +13,6 @@ function App() {
         text: "",
         toEmoji: false
     });
-  // const [translationState, setTranslationState] = useState<{lastTranslation:string, rating:number|null}|null>(null);
 
   const feedbackFormUrl =
     import.meta.env.VITE_FEEDBACK_FORM_URL ||
@@ -23,10 +22,9 @@ function App() {
     <div className="layout">
       <Header />
       <main className="content">
-        <TranslationBox lastTranslation={lastTranslation} setLastTranslation={setLastTranslation} rating={rating} setRating={setRating} isTranslated={isTranslated} setTranslated={setTranslated}></TranslationBox>
+        <TranslationBox lastTranslation={lastTranslation} setLastTranslation={setLastTranslation} rating={rating} setRating={setRating} isTranslated={isTranslated} setTranslated={setTranslated}/>
+        {/* Only show suggestion box when the output text is the translated text and has been negatively rated */}
         {rating == false && isTranslated && <SuggestionBox lastTranslation={lastTranslation} rating={rating}/>}
-        {/* <TranslationBox translationState={translationState} setTranslationState{setTranslationState}></TranslationBox>
-        {translationState && translationState.rating == false && <SuggestionBox translationState={translationState}/>} */}
         <section className="panel" aria-label="Help us improve placeholder">
           <h2 className="panel-title">Help Us Improve</h2>
           <div className="panel-body">
