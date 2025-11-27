@@ -114,6 +114,7 @@ body {
   color: #000;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .suggestion-btn.MuiButton-root {
   background-color: var(--accent);
   border: 0;
@@ -226,6 +227,7 @@ textarea[readonly] {
   cursor: default;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .translate-btn.MuiButton-root {
   align-self: center;
   background-color: var(--accent);
@@ -242,10 +244,12 @@ textarea[readonly] {
   opacity: 0.5;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .swap-btn .MuiSvgIcon-root {
   color: var(--text);
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .swap-btn .MuiTouchRipple-rippleVisible {
   color: var(--text);
 }
@@ -254,6 +258,7 @@ textarea[readonly] {
   display: flex;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .copy-btn.MuiButton-root {
   background-color: var(--accent);
   border: 0;
@@ -264,6 +269,7 @@ textarea[readonly] {
   min-height: 25px;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .thumb .MuiSvgIcon-root {
   color: var(--text);
 }
