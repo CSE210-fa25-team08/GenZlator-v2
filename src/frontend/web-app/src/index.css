@@ -2,7 +2,7 @@
   --bg: #f8fafc;
   --text: #0f172a;
   --brand-bg: #075985; /* teal-ish header/footer */
-  --panel-bg: #ffffff;
+  --panel-bg: #fff;
   --accent-bg: #f1f1f5;
   --border: #e2e8f0;
   --accent: #facc15; /* amber */
@@ -46,6 +46,7 @@ body {
   background: var(--brand-bg);
   color: #fff;
 }
+
 .brand {
   display: flex;
   align-items: center;
@@ -77,6 +78,7 @@ body {
   flex-direction: column;
   gap: 16px;
 }
+
 .panel {
   border: 1px solid var(--border);
   background: var(--panel-bg);
@@ -126,7 +128,7 @@ body {
 }
 
 .suggestion-btn:disabled {
-  opacity: 50%;
+  opacity: 0.5;
 }
 
 .site-footer {
@@ -137,10 +139,12 @@ body {
   background: var(--brand-bg);
   color: #fff;
 }
+
 .footer-actions {
   display: flex;
   gap: 8px;
 }
+
 .footer-btn {
   background: transparent;
   border: none;
@@ -149,6 +153,7 @@ body {
   font-weight: 600;
   cursor: pointer;
 }
+
 .footer-btn:hover {
   text-decoration: underline;
 }
@@ -199,12 +204,12 @@ body {
   background-color: var(--accent-bg);
   border: none;
   box-sizing: border-box;
-  color:var(--text);
-  flex:1;
+  color: var(--text);
+  flex: 1;
   font-size: 125%;
   min-height: 200px;
   resize: none;
-  width: 100%;  
+  width: 100%;
 }
 
 .text-input:focus {
@@ -214,10 +219,10 @@ body {
 
 ::placeholder {
   color: var(--text);
-  opacity: 70%;
+  opacity: 0.7;
 }
 
-textarea[readonly]{
+textarea[readonly] {
   cursor: default;
 }
 
@@ -234,7 +239,7 @@ textarea[readonly]{
 }
 
 .translate-btn:disabled {
-  opacity: 50%;
+  opacity: 0.5;
 }
 
 .swap-btn .MuiSvgIcon-root {
@@ -259,6 +264,6 @@ textarea[readonly]{
   min-height: 25px;
 }
 
-.thumb .MuiSvgIcon-root{
+.thumb .MuiSvgIcon-root {
   color: var(--text);
 }
