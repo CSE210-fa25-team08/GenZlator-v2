@@ -1,8 +1,10 @@
-
-
 from fastapi import APIRouter, HTTPException
 from typing import Dict, Any, List
-from src.backend.core.models import TranslateRequest, TranslateResponse, TranslateResponseMetadata
+from src.backend.core.models import (
+    TranslateRequest,
+    TranslateResponse,
+    TranslateResponseMetadata,
+)
 from src.backend.core.openrouter_client import call_openrouter_race
 import json
 

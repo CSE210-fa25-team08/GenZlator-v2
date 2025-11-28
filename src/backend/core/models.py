@@ -52,10 +52,12 @@ class FeedbackRequest(BaseModel):
 class FeedbackResponse(BaseModel):
     status: str = "accepted"
 
+
 class UserHistoryRequest(BaseModel):
     user_id: str
     limit: Optional[int] = 10
     offset: Optional[int] = 0
+
 
 class TranslationHistoryItem(BaseModel):
     timestamp: datetime
@@ -64,21 +66,25 @@ class TranslationHistoryItem(BaseModel):
     is_to_emoji: bool
     rating: Optional[int] = None
 
+
 class UserHistoryResponse(BaseModel):
     user_id: str
     total_count: int
     translations: List[TranslationHistoryItem]
+
 
 class UserRegisterRequest(BaseModel):
     username: str
     email: Optional[str] = None
     preferences: Optional[dict] = {}
 
+
 class UserRegisterResponse(BaseModel):
     user_id: str
     username: str
     created_at: datetime
     status: str
+
 
 class ModelInfo(BaseModel):
     model_id: str
@@ -87,6 +93,7 @@ class ModelInfo(BaseModel):
     is_free: bool
     max_tokens: Optional[int] = None
     provider: str
+
 
 class ModelsResponse(BaseModel):
     models: List[ModelInfo]

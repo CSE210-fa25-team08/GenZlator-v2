@@ -22,11 +22,11 @@ FREE_MODELS = [
 def _get_headers() -> Dict[str, str]:
     api_key = os.getenv("OPENROUTER_API_KEY")
     if not api_key:
-        api_key = 'sk-o1443eef1935a1e2'
-    
+        api_key = "sk-o1443eef1935a1e2"
+
     if not api_key:
         # Don’t crash at import, but fail clearly at call time
-        
+
         raise HTTPException(
             status_code=500,
             detail="OPENROUTER_API_KEY is not set in the environment.",

@@ -19,8 +19,7 @@ GenZlator-v2/
 │   │   ├── openrouter_client.py    # OpenRouter API client with model racing capability
 │   │   └── rag_lite.py            # RAG system for similarity search using sentence transformers and SQLite
 │   ├── scripts/                    # PERFORMANCE TESTING AND DATABASE UTILITIES
-│   │   ├── test_feedback_storage.py # Database storage performance testing script
-│   │   └── test_query_performance.py # Database query performance testing script
+│   │   └── test_feedback_storage.py # Database storage performance testing script
 │   ├── utils/                      # SHARED UTILITIES
 │   │   └── prompt_manager.py       # Prompt templates and generation for LLM interactions
 │   └── backend_main.py             # FastAPI application entry point
@@ -188,6 +187,15 @@ curl -X GET "http://localhost:8001/"
 
 GenZlator-v2 includes comprehensive testing scripts for performance evaluation and database management:
 
+### profiling
+
+Test the qps with the script:
+
+```bash
+python src/backend/profiling/profiler.py --qps 10 --duration 10 --url "http://your-server:8001"
+
+```
+
 ### Database Storage Performance Testing
 
 Test feedback storage performance with large datasets:
@@ -196,11 +204,6 @@ Test feedback storage performance with large datasets:
 # Install testing dependencies
 pip install aiohttp
 
-# Test with 1,000 records (moderate load)
-python src/backend/scripts/test_feedback_storage.py --records 1000 --batch-size 20
-
-# Test with 10,000 records (high load)
-python src/backend/scripts/test_feedback_storage.py --records 10000 --batch-size 50
 
 # Custom server testing
 python src/backend/scripts/test_feedback_storage.py --records 5000 --batch-size 25 --url "http://your-server:8001"
@@ -212,59 +215,6 @@ python src/backend/scripts/test_feedback_storage.py --records 5000 --batch-size 
 - Measures database storage throughput (records/second)
 - Analyzes response time distribution (P50, P95, P99)
 - Provides performance optimization recommendations
-
-### Database Query Performance Testing
-
-Test query performance with large datasets (10K+ records):
-
-```bash
-# Comprehensive query performance test
-python src/backend/scripts/test_query_performance.py --stat-queries 30 --search-queries 100 --concurrent 10
-
-# High-load testing
-python src/backend/scripts/test_query_performance.py --stat-queries 50 --search-queries 200 --concurrent 15
-
-# Custom configuration
-python src/backend/scripts/test_query_performance.py --stat-queries 20 --search-queries 80 --concurrent 8 --url "http://localhost:8001"
-```
-
-**Test Features:**
-
-- Tests RAG statistics queries (`GET /debug/rag`)
-- Tests similarity search performance (`POST /debug/rag/search`)
-- Evaluates query performance with large datasets
-- Analyzes database optimization needs
-- Measures concurrent query handling capability
-
-### Performance Testing Workflow
-
-1. **Generate Test Data:**
-
-   ```bash
-   # Create 50,000 test records for performance testing
-   python src/backend/scripts/test_feedback_storage.py --records 50000 --batch-size 50
-   ```
-
-2. **Test Query Performance:**
-
-   ```bash
-   # Test query performance with the large dataset
-   python src/backend/scripts/test_query_performance.py --search-queries 200 --concurrent 10
-   ```
-
-3. **Monitor Results:**
-   - Storage throughput should exceed 10 records/second for good performance
-   - Query response times should be under 0.5s for datasets with 50K+ records
-   - Success rates should exceed 95% under normal load
-
-### Load Testing Considerations
-
-When testing with high QPS (Queries Per Second):
-
-- **OpenRouter Rate Limits**: Free models typically allow 1-5 QPS
-- **Model Racing Multiplier**: Each translation request sends 5 concurrent API calls
-- **502 Bad Gateway Errors**: Common when exceeding rate limits
-- **Recommended Testing**: Start with 1-3 QPS for realistic free-tier testing
 
 ## API Response Formats
 
@@ -319,21 +269,3 @@ The system uses SQLite databases for data persistence:
 
 - **`feedback_embeddings.db`**: Stores user feedback and vector embeddings for RAG
 - **`feedback_log.jsonl`**: JSON Lines format log of all feedback submissions
-
-### Performance Characteristics
-
-- **Storage**: 10-50 records/second depending on system load
-- **Queries**: Sub-500ms response times for datasets up to 100K records
-- **RAG Search**: Efficient similarity search using sentence transformers
-- **Concurrent Handling**: Supports 5-15 concurrent requests effectively
-
-## System Architecture
-
-GenZlator-v2 employs a modern, scalable architecture:
-
-1. **FastAPI Backend**: High-performance async web framework
-2. **Model Racing**: Parallel LLM requests for optimal response times  
-3. **RAG System**: Context-aware translation improvements using user feedback
-4. **SQLite Storage**: Lightweight, embedded database for feedback and embeddings
-5. **Sentence Transformers**: Vector similarity search for contextual translation
-6. **OpenRouter Integration**: Access to multiple free LLM models via single API
