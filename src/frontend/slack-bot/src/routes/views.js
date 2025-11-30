@@ -4,6 +4,8 @@ const { setUserModel } = require("../utils/model");
 const { buildFeedbackBlocks } = require("../utils/feedback");
 const { sendFeedback } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
+const { addHistory } = require("../storage/history");
+const { renderHome } = require("../utils/renderHome");
 
 module.exports = function registerViews(app) {
     // --- View: default_style_modal (from open_default_setting action) ---
@@ -16,8 +18,7 @@ module.exports = function registerViews(app) {
 
         setUserModel(userId, styleChoice);
 
-        const newHome = buildHomeView(styleChoice);
-        await client.views.publish({ user_id: userId, view: newHome });
+        await renderHome(client, userId, "overview");
     });
 
     // --- View: feedback_modal (from open_feedback action) ---
@@ -54,6 +55,14 @@ module.exports = function registerViews(app) {
             console.error("Translate backend error:", err);
             translated = "⚠️ Translation failed. Please try again later.";
         }
+
+        addHistory(userId, {
+            original: input,
+            translated: translated,
+            direction: "text-to-emoji", 
+            timestamp: new Date().toISOString(),
+            channel: channel
+        });
 
         const feedbackBlocks = buildFeedbackBlocks(input);
 
@@ -98,6 +107,14 @@ module.exports = function registerViews(app) {
         }
 
         const feedbackBlocks = buildFeedbackBlocks(input);
+
+        addHistory(userId, {
+            original: input,
+            translated: translated,
+            direction: "emoji-to-text", 
+            timestamp: new Date().toISOString(),
+            channel: channel
+        });
 
         // todo : also support private DM case
         // just figure out that slack can't done this 

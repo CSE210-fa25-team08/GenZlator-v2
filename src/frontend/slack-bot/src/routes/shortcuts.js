@@ -2,6 +2,7 @@
 const { buildFeedbackBlocks } = require("../utils/feedback");
 const { translate } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
+const { addHistory } = require("../storage/history");
 
 module.exports = function registerShortcuts(app) {
     // the shortcut ID is "translate_shortcut", and need to align with the one set in Slack App configuration
@@ -26,6 +27,14 @@ module.exports = function registerShortcuts(app) {
                 console.error("Translate backend error:", err);
                 translated = "⚠️ Translation failed. Please try again later.";
         }
+
+        addHistory(body.user.id, {
+            original: originalText,
+            translated: translated,
+            direction: "shortcut-translate", 
+            timestamp: new Date().toISOString(),
+            channel: body.channel.id
+        });
 
         try {
             // Public channel → send translation to channel
