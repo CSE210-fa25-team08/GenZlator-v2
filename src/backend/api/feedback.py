@@ -12,7 +12,7 @@ FEEDBACK_LOG_PATH = os.getenv("FEEDBACK_LOG_PATH", "feedback_log.jsonl")
 @router.post("/feedback", response_model=FeedbackResponse, status_code=202)
 async def submit_feedback(req: FeedbackRequest):
     feedback_record = {
-        "timestamp": datetime.datetime().isoformat(),
+        "timestamp": datetime.now().isoformat(),
         "originalInput": req.originalInput,
         "correctionText": req.correctionText,
         "anonymousId": req.anonymousId,
