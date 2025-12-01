@@ -29,7 +29,7 @@ export default function SuggestionBox ({lastTranslation, rating}) {
           <h2 className="panel-title">Submit a Better Translation Below</h2>
           <div className="panel-body">
             <p>What would be a better translation?</p>
-            <textarea className="text-input" value={suggestionText} onChange={(e)=>setSuggestionText(e.target.value)}placeholder="Enter your suggested translation..."></textarea>
+            <textarea className="text-input" value={suggestionText} onChange={(e)=>setSuggestionText(e.target.value)} placeholder="Enter your suggested translation..."></textarea>
             <Button className="suggestion-btn" onClick={handleSuggestion} disabled={suggestionText.trim()==""}>SUBMIT</Button>
           </div>
         </section>

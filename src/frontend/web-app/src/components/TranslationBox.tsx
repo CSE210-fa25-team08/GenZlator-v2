@@ -16,6 +16,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 import { backend_translate, backend_feedback } from '../hooks/backend.tsx'
 
+import Context from './Context.tsx';
 
 
 export default function TranslationBox ({lastTranslation, setLastTranslation, rating, setRating, isTranslated, setTranslated}) {
@@ -23,6 +24,7 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     const [outputText, setOutputText] = useState('');
     const [toEmoji, setToEmoji] = useState(false);
     const [isLoading, setLoading] = useState(false);
+    const [addedContext, setContext] = useState("");
     // const [lastTranslation, setLastTranslation] = useState({
     //     text: "",
     //     toEmoji: false
@@ -34,11 +36,12 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     const activeControllerRef = useRef<AbortController>(null); //so we can abort translate requests that are overridden
 
     // Trigger translation if non-empty input is left for 5 seconds
+    // Also waits for added context to not be edited for 5 seconds
     useEffect(() => {
         auto_translate_timer.current = setTimeout(() => {
             if (inputText.trim() != "") { //TODO: more conditionals than this
                 console.log("auto translate triggered");
-                handleTranslation();
+                handleTranslation(true);
             }
         }, AUTO_TRANSLATE_DELAY);
 
@@ -48,7 +51,7 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
             }
         };
 
-    }, [inputText]);
+    }, [inputText, addedContext]);
 
     // When the output text changes then cancel the timer
     useEffect(() => {
@@ -58,10 +61,11 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     }, [outputText])
 
     // Send async translation request to backend and update state
-    const handleTranslation = async() => {
+    const handleTranslation = async(autotranslated: boolean) => {
         // If this request is the same as the last translation request, ignore
-        if (lastTranslation.text.trim() == inputText.trim() && lastTranslation.toEmoji == toEmoji){return;}
-        else {setLastTranslation({text:inputText, toEmoji:toEmoji})};
+        if (lastTranslation.text.trim() == inputText.trim() && lastTranslation.toEmoji == toEmoji && (lastTranslation.addedContext.trim() == addedContext.trim() || (autotranslated && addedContext.trim() == ""))){return;}
+        else {setLastTranslation({text:inputText, toEmoji:toEmoji, addedContext:addedContext})};
+        console.log("translation started");
         setLoading(true);
         setTranslated(false);
         // If there is a current translation request in progress, abort it
@@ -69,12 +73,15 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
             activeControllerRef.current.abort();
             console.log("Aborting previous request");
         }
+        if(auto_translate_timer.current) {
+            clearTimeout(auto_translate_timer.current);
+        }
         // Set up new controller to allow abortion of this translation request
         const controller = new AbortController();
         activeControllerRef.current = controller;
         const signal = controller.signal;
         try {
-            const translated_output = await backend_translate(toEmoji, inputText, signal);
+            const translated_output = await backend_translate(toEmoji, inputText, addedContext, signal);
             if(!signal.aborted){
                 setOutputText(translated_output);
                 setRating(null);
@@ -189,7 +196,8 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
                     </section>
                 </section>
             </fieldset>
-            <Button className="translate-btn" loading={isLoading} disabled={inputText.trim()==""} onClick={handleTranslation}>TRANSLATE</Button>
+            <Context addedContext={addedContext} setContext={setContext} isMobile={isMobile}/>
+            <Button className="translate-btn" loading={isLoading} disabled={inputText.trim()==""} onClick={()=>{handleTranslation(false)}}>TRANSLATE</Button>
         </section>
     )
 }
