@@ -2,6 +2,7 @@
 const { buildFeedbackBlocks } = require("../utils/feedback");
 const { translate } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
+const { addHistory } = require("../storage/history");
 
 module.exports = function registerShortcuts(app) {
     // the shortcut ID is "translate_shortcut", and need to align with the one set in Slack App configuration
@@ -27,6 +28,14 @@ module.exports = function registerShortcuts(app) {
                 translated = "⚠️ Translation failed. Please try again later.";
         }
 
+        addHistory(body.user.id, {
+            original: originalText,
+            translated: translated,
+            direction: "shortcut-translate", 
+            timestamp: new Date().toISOString(),
+            channel: body.channel.id
+        });
+
         try {
             // Public channel → send translation to channel
             await client.chat.postMessage({
@@ -43,23 +52,9 @@ module.exports = function registerShortcuts(app) {
             });
     
         } catch (err) {
-            // DM or errors → fallback to ephemeral
+            // just figure out that slack can't done this 
             if (err.data?.error === "channel_not_found") {
-                await client.chat.postEphemeral({
-                    channel: body.user.id,     // DM fallback: ephemeral inside user's DM
-                    user: body.user.id,
-                    text: `Translated: "${originalText}" → ${translated}`,
-                    blocks: [
-                        {
-                            type: "section",
-                            text: {
-                                type: "mrkdwn",
-                                text: `Translated: "${originalText}" → ${translated}`,
-                            },
-                        },
-                        ...feedbackBlocks,
-                    ]
-                });
+                
             } else {
                 console.error(err);
             }

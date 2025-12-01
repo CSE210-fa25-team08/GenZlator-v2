@@ -1,6 +1,7 @@
 const { modelMap, setUserModel } = require("../utils/model");
 const { buildHomeView } = require("../utils/homeView");
 const { sendFeedback } = require("../utils/backendClient");
+const { renderHome } = require("../utils/renderHome");
 
 module.exports = function registerActions(app) {
     // --- Handle modal submission for default style setting ---
@@ -275,7 +276,17 @@ module.exports = function registerActions(app) {
               ],
         });
     });
-      
+    
+
+    app.action("nav_overview", async ({ ack, body, client }) => {
+        await ack();
+        await renderHome(client, body.user.id, "overview");
+    });
+
+    app.action("nav_history", async ({ ack, body, client }) => {
+        await ack();
+        await renderHome(client, body.user.id, "history");
+    });
       
       
 
