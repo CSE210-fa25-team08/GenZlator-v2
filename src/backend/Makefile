@@ -19,9 +19,6 @@ help:
 	@echo "  make shell       - Open shell in backend container"
 	@echo "  make backend-logs - View backend logs only"
 
-# ============================================================================
-# Main Commands
-# ============================================================================
 
 runDev: build
 	docker compose up
@@ -29,8 +26,8 @@ runDev: build
 runProd: build
 	docker compose up -d
 	@echo "Services started in production mode"
-	@echo "Backend: http://localhost:8000"
-	@echo "Docs: http://localhost:8000/docs"
+	@echo "Backend: http://localhost:8001"
+	@echo "Docs: http://localhost:8001/docs"
 
 build:
 	docker compose build
@@ -52,19 +49,12 @@ logs:
 ps:
 	docker compose ps
 
-# ============================================================================
-# Individual Service Commands
-# ============================================================================
 
 backend-logs:
 	docker compose logs -f backend
 
 shell:
 	docker compose exec backend /bin/bash
-
-# ============================================================================
-# Maintenance
-# ============================================================================
 
 clean:
 	docker compose down -v
@@ -73,27 +63,23 @@ clean:
 rebuild: clean build up
 
 health:
-	@curl -s http://localhost:8000/healthz || echo "Backend is not running"
-
-# ============================================================================
-# Local Development (Non-Docker)
-# ============================================================================
+	@curl -s http://localhost:8001/healthz || echo "Backend is not running"
 
 install-backend:
-	cd src/backend && pip install -r requirements.txt
+	pip install -r requirements.txt
 
 install-slack:
-	cd src/frontend/slack-bot && npm install
+	cd ../frontend/slack-bot && npm install
 
 install-web:
-	cd src/frontend/web-app && npm install
+	cd ../frontend/web-app && npm install
 
 install-all: install-backend install-slack install-web
 
 setup:
-	@if [ ! -f .env ]; then \
+	@if [ ! -f ../../.env ]; then \
 		echo "Creating .env file..."; \
-		echo "OPENROUTER_API_KEY=your-api-key-here" > .env; \
-		echo "FEEDBACK_LOG_PATH=feedback_log.jsonl" >> .env; \
+		echo "OPENROUTER_API_KEY=your-api-key-here" > ../../.env; \
+		echo "FEEDBACK_LOG_PATH=feedback_log.jsonl" >> ../../.env; \
 		echo ".env file created! Please update with your values."; \
 	fi
