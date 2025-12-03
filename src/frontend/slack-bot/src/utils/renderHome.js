@@ -27,7 +27,7 @@ async function renderHome(client, userId, mode) {
                       type: "mrkdwn",
                       text:
                           `${num}  *${h.direction}* • \`${h.timestamp}\`\n` +
-                          `• *Original:* ${h.original}\n` +
+                          `• *Original Text:* ${h.original}\n` +
                           `• *Translated:* ${h.translated}`
                   }
               };

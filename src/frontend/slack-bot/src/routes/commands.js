@@ -26,62 +26,87 @@ module.exports = function registerCommands(app) {
             });
 
             let translated = "";
+            let isSuccess = false;
             try {
                 translated = await translate(text, true, chatHistory);  
+                isSuccess = true;
             } catch (err) {
                 console.error("Translate backend error:", err);
-                translated = "Translation failed. Please try again later.";
+                translated = "‼️ Translation failed. Please try again later.";
             }
-    
-            const feedbackBlocks = buildFeedbackBlocks(text);
 
-            addHistory(command.user_id, {
-                original: text,
-                translated: translated,
-                direction: "text-to-emoji", 
-                timestamp: new Date().toISOString(),
-                channel: command.channel_id
-            });
-    
-            try {
-                // Public channel → send translation to channel
-                await client.chat.postMessage({
-                    channel: command.channel_id,
-                    response_type: "in_channel",
-                    text: `*🔅 Translation Result*\n\n` +
-                    `• *Original Text:* ${text}\n` +
-                    `• *Text → Emoji:* ${translated}\n`,    
+            if (isSuccess){
+                addHistory(command.user_id, {
+                    original: text,
+                    translated: translated,
+                    direction: "text-to-emoji", 
+                    timestamp: new Date().toISOString(),
+                    channel: command.channel_id
                 });
-    
-                // Feedback (only visible to the user)
-                await client.chat.postEphemeral({
-                    channel: command.channel_id,
-                    user: command.user_id,
-                    text: "Feedback on this translation",
-                    blocks: feedbackBlocks,
-                });
-    
-            } catch (err) {
-                // DM or errors → fallback to ephemeral
-                if (err.data?.error === "channel_not_found") {
-                    await respond({
-                        response_type: "ephemeral",
-                        replace_original: false,
-                        blocks: [
-                            {
-                                type: "section",
-                                text: {
-                                    type: "mrkdwn",
-                                    text: `*🔅 Translation Result*\n\n` +
-                    `• *Original Text:* ${text}\n` +
-                    `• *Text → Emoji:* ${translated}\n`,
-                                },
-                            },
-                            ...feedbackBlocks,
-                        ],
+        
+                const feedbackBlocks = buildFeedbackBlocks(text);
+        
+                try {
+                    // Public channel → send translation to channel
+                    await client.chat.postMessage({
+                        channel: command.channel_id,
+                        response_type: "in_channel",
+                        text: `*🔅 Translation Result*\n\n` +
+                        `• *Original Text:* ${text}\n` +
+                        `• *Text → Emoji:* ${translated}\n`,    
                     });
-                } else {
-                    console.error(err);
+        
+                    // Feedback (only visible to the user)
+                    await client.chat.postEphemeral({
+                        channel: command.channel_id,
+                        user: command.user_id,
+                        text: "Feedback on this translation",
+                        blocks: feedbackBlocks,
+                    });
+        
+                } catch (err) {
+                    // DM or errors → fallback to ephemeral
+                    if (err.data?.error === "channel_not_found") {
+                        await respond({
+                            response_type: "ephemeral",
+                            replace_original: false,
+                            blocks: [
+                                {
+                                    type: "section",
+                                    text: {
+                                        type: "mrkdwn",
+                                        text: `*🔅 Translation Result*\n\n` +
+                        `• *Original Text:* ${text}\n` +
+                        `• *Text → Emoji:* ${translated}\n`,
+                                    },
+                                },
+                                ...feedbackBlocks,
+                            ],
+                        });
+                    } else {
+                        console.error(err);
+                    }
+                }
+
+            } else {
+                try {
+                    await client.chat.postMessage({
+                        channel: command.channel_id,
+                        response_type: "in_channel",
+                        text: translated
+                    });
+
+                } catch (err) {
+                    if (err.data?.error === "channel_not_found") {
+                        await respond({
+                            response_type: "ephemeral",
+                            replace_original: false,
+                            text: translated
+                        });
+
+                    } else {
+                        console.error(err);
+                    }
                 }
             }
     
@@ -105,65 +130,90 @@ module.exports = function registerCommands(app) {
             let chatHistory = await getChatHistory(client, command.channel_id);
 
             let translated = "";
+            let isSuccess = false;
             try {
                 translated = await translate(text, false, chatHistory); 
+                isSuccess = true;
             } catch (err) {
                 console.error("Translate backend error:", err);
-                translated = "Translation failed. Please try again later.";
+                translated = "‼️ Translation failed. Please try again later.";
             }
 
-            const feedbackBlocks = buildFeedbackBlocks(text);
+            if (isSuccess){
+                const feedbackBlocks = buildFeedbackBlocks(text);
 
-            addHistory(command.user_id, {
-                original: text,
-                translated: translated,
-                direction: "emoji-to-text", 
-                timestamp: new Date().toISOString(),
-                channel: command.channel_id
-            });
-
-            try {
-                // --- Public or group channel ---
-                await client.chat.postMessage({
-                    channel: command.channel_id,
-                    response_type: "in_channel",
-                    text: `*🔅 Translation Result*\n\n` +
-                    `• *Original Text:* ${text}\n` +
-                    `• *Emoji → Text:* ${translated}\n`,
+                addHistory(command.user_id, {
+                    original: text,
+                    translated: translated,
+                    direction: "emoji-to-text", 
+                    timestamp: new Date().toISOString(),
+                    channel: command.channel_id
                 });
 
-                // --- Feedback form (only visible to the user) ---
-                await client.chat.postEphemeral({
-                    channel: command.channel_id,
-                    user: command.user_id,
-                    text: "Feedback on this translation",
-                    blocks: feedbackBlocks,
-                });
-
-            } catch (err) {
-
-                // --- Private DM fallback ---
-                if (err.data?.error === "channel_not_found") {
-                    await respond({
-                        response_type: "ephemeral",
-                        replace_original: false,
-                        blocks: [
-                            {
-                                type: "section",
-                                text: {
-                                    type: "mrkdwn",
-                                    text: `*🔅 Translation Result*\n\n` +
-                    `• *Original Text:* ${text}\n` +
-                    `• *Emoji → Text:* ${translated}\n`
-                                },
-                            },
-                            ...feedbackBlocks,
-                        ],
+                try {
+                    // --- Public or group channel ---
+                    await client.chat.postMessage({
+                        channel: command.channel_id,
+                        response_type: "in_channel",
+                        text: `*🔅 Translation Result*\n\n` +
+                        `• *Original Text:* ${text}\n` +
+                        `• *Emoji → Text:* ${translated}\n`,
                     });
-                } else {
-                    console.error(err);
+
+                    // --- Feedback form (only visible to the user) ---
+                    await client.chat.postEphemeral({
+                        channel: command.channel_id,
+                        user: command.user_id,
+                        text: "Feedback on this translation",
+                        blocks: feedbackBlocks,
+                    });
+
+                } catch (err) {
+
+                    // --- Private DM fallback ---
+                    if (err.data?.error === "channel_not_found") {
+                        await respond({
+                            response_type: "ephemeral",
+                            replace_original: false,
+                            blocks: [
+                                {
+                                    type: "section",
+                                    text: {
+                                        type: "mrkdwn",
+                                        text: `*🔅 Translation Result*\n\n` +
+                        `• *Original Text:* ${text}\n` +
+                        `• *Emoji → Text:* ${translated}\n`
+                                    },
+                                },
+                                ...feedbackBlocks,
+                            ],
+                        });
+                    } else {
+                        console.error(err);
+                    }
+                }
+            } else {
+                try {
+                    await client.chat.postMessage({
+                        channel: command.channel_id,
+                        response_type: "in_channel",
+                        text: translated
+                    });
+
+                } catch (err) {
+                    // --- Private DM fallback ---
+                    if (err.data?.error === "channel_not_found") {
+                        await respond({
+                            response_type: "ephemeral",
+                            replace_original: false,
+                            text: translated
+                        });
+                    } else {
+                        console.error(err);
+                    }
                 }
             }
+
 
         } else {
             // --- If no emoji typed → open interactive modal ---
@@ -222,7 +272,7 @@ module.exports = function registerCommands(app) {
                     type: "mrkdwn",
                     text:
                         `${num}  *${h.direction}*   \`${h.timestamp}\`\n` +
-                        `• *Original:* ${h.original}\n` +
+                        `• *Original Text:* ${h.original}\n` +
                         `• *Translated:* ${h.translated}`
                 }
             });

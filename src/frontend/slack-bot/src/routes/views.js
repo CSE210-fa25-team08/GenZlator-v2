@@ -52,54 +52,71 @@ module.exports = function registerViews(app) {
         });
 
         let translated = "";
+        let isSuccess = false;
         try {
             translated = await translate(input, true, chatHistory);
+            isSuccess = true;
         } catch (err) {
             console.error("Translate backend error:", err);
-            translated = "Translation failed. Please try again later.";
+            translated = "‼️ Translation failed. Please try again later.";
         }
-
-        addHistory(userId, {
-            original: input,
-            translated: translated,
-            direction: "text-to-emoji", 
-            timestamp: new Date().toISOString(),
-            channel: channel
-        });
-
-        const feedbackBlocks = buildFeedbackBlocks(input);
-
-
-        if (visibility === "public") {
-            // Send to whole channel
-            await client.chat.postMessage({
-                channel,
-                text: `*🔅 Translation Result*\n\n` +
-                    `• *Original Text:* ${input}\n` +
-                    `• *Text → Emoji:* ${translated}\n`,
+        
+        if (isSuccess) {
+            addHistory(userId, {
+                original: input,
+                translated: translated,
+                direction: "text-to-emoji", 
+                timestamp: new Date().toISOString(),
+                channel: channel
             });
-    
-            await client.chat.postMessage({
-                channel,
-                blocks: feedbackBlocks,
-            });
-    
+
+            const feedbackBlocks = buildFeedbackBlocks(input);
+
+            if (visibility === "public") {
+                // Send to whole channel
+                await client.chat.postMessage({
+                    channel,
+                    text: `*🔅 Translation Result*\n\n` +
+                        `• *Original Text:* ${input}\n` +
+                        `• *Text → Emoji:* ${translated}\n`,
+                });
+        
+                await client.chat.postMessage({
+                    channel,
+                    blocks: feedbackBlocks,
+                });
+        
+            } else {
+                // Send ONLY to the user
+                await client.chat.postEphemeral({
+                    channel,
+                    user: body.user.id,
+                    text: `*🔅 Translation Result*\n\n` +
+                        `• *Original Text:* ${input}\n` +
+                        `• *Text → Emoji:* ${translated}\n`,
+                });
+        
+                await client.chat.postEphemeral({
+                    channel,
+                    user: body.user.id,
+                    blocks: feedbackBlocks,
+                });
+            }
         } else {
-            // Send ONLY to the user
-            await client.chat.postEphemeral({
-                channel,
-                user: body.user.id,
-                text: `*🔅 Translation Result*\n\n` +
-                    `• *Original Text:* ${input}\n` +
-                    `• *Text → Emoji:* ${translated}\n`,
-            });
-    
-            await client.chat.postEphemeral({
-                channel,
-                user: body.user.id,
-                blocks: feedbackBlocks,
-            });
+            if (visibility === "public") {
+                await client.chat.postMessage({
+                    channel,
+                    text: translated,
+                });
+            } else {
+                await client.chat.postEphemeral({
+                    channel,
+                    user: body.user.id,
+                    text: translated,
+                });
+            }
         }
+        
     });
 
     // --- View: emoji-to-text_modal (from Interactive translate mode) ---
@@ -125,55 +142,68 @@ module.exports = function registerViews(app) {
 
 
         let translated = "";
+        let isSuccess = false;
         try {
             translated = await translate(input, false, chatHistory);
+            isSuccess = true;
         } catch (err) {
             console.error("Translate backend error:", err);
-            translated = "Translation failed. Please try again later.";
+            translated = "‼️ Translation failed. Please try again later.";
         }
 
-        const feedbackBlocks = buildFeedbackBlocks(input);
+        if (isSuccess) {
+            const feedbackBlocks = buildFeedbackBlocks(input);
 
-        addHistory(userId, {
-            original: input,
-            translated: translated,
-            direction: "emoji-to-text", 
-            timestamp: new Date().toISOString(),
-            channel: channel
-        });
-
-
-        // todo : also support private DM case
-        // just figure out that slack can't done this 
-        if (visibility === "public") {
-            // Send to whole channel
-            await client.chat.postMessage({
-                channel,
-                text: `*🔅 Translation Result*\n\n` +
-                    `• *Original Text:* ${input}\n` +
-                    `• *Emoji → Text:* ${translated}\n`,
+            addHistory(userId, {
+                original: input,
+                translated: translated,
+                direction: "emoji-to-text", 
+                timestamp: new Date().toISOString(),
+                channel: channel
             });
+            if (visibility === "public") {
+                // Send to whole channel
+                await client.chat.postMessage({
+                    channel,
+                    text: `*🔅 Translation Result*\n\n` +
+                        `• *Original Text:* ${input}\n` +
+                        `• *Emoji → Text:* ${translated}\n`,
+                });
 
-            await client.chat.postMessage({
-                channel,
-                blocks: feedbackBlocks,
-            });
+                await client.chat.postMessage({
+                    channel,
+                    blocks: feedbackBlocks,
+                });
 
+            } else {
+                // Send ONLY to the user
+                await client.chat.postEphemeral({
+                    channel,
+                    user: body.user.id,
+                    text: `*🔅 Translation Result*\n\n` +
+                        `• *Original Text:* ${input}\n` +
+                        `• *Emoji → Text:* ${translated}\n`,
+                });
+
+                await client.chat.postEphemeral({
+                    channel,
+                    user: body.user.id,
+                    blocks: feedbackBlocks,
+                });
+            }
         } else {
-            // Send ONLY to the user
-            await client.chat.postEphemeral({
-                channel,
-                user: body.user.id,
-                text: `*🔅 Translation Result*\n\n` +
-                    `• *Original Text:* ${input}\n` +
-                    `• *Emoji → Text:* ${translated}\n`,
-            });
-
-            await client.chat.postEphemeral({
-                channel,
-                user: body.user.id,
-                blocks: feedbackBlocks,
-            });
+            if (visibility === "public") {
+                await client.chat.postMessage({
+                    channel,
+                    text: translated,
+                });
+            } else {
+                await client.chat.postEphemeral({
+                    channel,
+                    user: body.user.id,
+                    text: translated,
+                });
+            }
         }
     });
 
