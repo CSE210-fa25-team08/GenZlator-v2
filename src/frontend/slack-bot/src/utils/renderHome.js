@@ -8,6 +8,8 @@ async function renderHome(client, userId, mode) {
 
     console.log("Rendering home for user:", userId, "mode:", mode);
 
+    const emojiNumbers = ["1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟"];
+
     const historyBlocks =
         history.length === 0
             ? [
@@ -16,18 +18,21 @@ async function renderHome(client, userId, mode) {
                       text: { type: "mrkdwn", text: "No history yet." }
                   }
               ]
-            : history.slice(-10).map(h => ({
+            : history.slice(-10).map((h, i) => {
+              const num = emojiNumbers[i] || "🔢"; 
+
+              return {
                   type: "section",
                   text: {
                       type: "mrkdwn",
                       text:
-                          `*${h.direction}* • \`${h.timestamp}\`\n` +
+                          `${num}  *${h.direction}* • \`${h.timestamp}\`\n` +
                           `• *Original:* ${h.original}\n` +
                           `• *Translated:* ${h.translated}`
                   }
-              }));
+              };
+          });
 
-    console.log("History blocks:", historyBlocks);
 
     await client.views.publish({
         user_id: userId,

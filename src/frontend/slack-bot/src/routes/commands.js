@@ -19,7 +19,7 @@ module.exports = function registerCommands(app) {
         if (text) {
             let chatHistory = await getChatHistory(client, command.channel_id);
 
-            console.log("📤 Sending to backend:", {
+            console.log("Sending to backend:", {
                 originalMessage: text,
                 isToEmoji: true,
                 chatHistory
@@ -27,10 +27,10 @@ module.exports = function registerCommands(app) {
 
             let translated = "";
             try {
-                //translated = await translate(text, true, chatHistory);  
+                translated = await translate(text, true, chatHistory);  
             } catch (err) {
                 console.error("Translate backend error:", err);
-                translated = "⚠️ Translation failed. Please try again later.";
+                translated = "Translation failed. Please try again later.";
             }
     
             const feedbackBlocks = buildFeedbackBlocks(text);
@@ -48,7 +48,9 @@ module.exports = function registerCommands(app) {
                 await client.chat.postMessage({
                     channel: command.channel_id,
                     response_type: "in_channel",
-                    text: `*Text → Emoji by ${command.user_name}:*\n${translated}`,
+                    text: `*🔅 Translation Result*\n\n` +
+                    `• *Original Text:* ${text}\n` +
+                    `• *Text → Emoji:* ${translated}\n`,    
                 });
     
                 // Feedback (only visible to the user)
@@ -70,7 +72,9 @@ module.exports = function registerCommands(app) {
                                 type: "section",
                                 text: {
                                     type: "mrkdwn",
-                                    text: `*Text → Emoji:*\n${translated}`,
+                                    text: `*🔅 Translation Result*\n\n` +
+                    `• *Original Text:* ${text}\n` +
+                    `• *Text → Emoji:* ${translated}\n`,
                                 },
                             },
                             ...feedbackBlocks,
@@ -102,11 +106,10 @@ module.exports = function registerCommands(app) {
 
             let translated = "";
             try {
-                //backend：emoji → text
-                //translated = await translate(text, false, chatHistory);  // false → emoji-to-text mode
+                translated = await translate(text, false, chatHistory); 
             } catch (err) {
                 console.error("Translate backend error:", err);
-                translated = "⚠️ Translation failed. Please try again later.";
+                translated = "Translation failed. Please try again later.";
             }
 
             const feedbackBlocks = buildFeedbackBlocks(text);
@@ -124,7 +127,9 @@ module.exports = function registerCommands(app) {
                 await client.chat.postMessage({
                     channel: command.channel_id,
                     response_type: "in_channel",
-                    text: `*Emoji → Text by ${command.user_name}:*\n${translated}`,
+                    text: `*🔅 Translation Result*\n\n` +
+                    `• *Original Text:* ${text}\n` +
+                    `• *Emoji → Text:* ${translated}\n`,
                 });
 
                 // --- Feedback form (only visible to the user) ---
@@ -147,7 +152,9 @@ module.exports = function registerCommands(app) {
                                 type: "section",
                                 text: {
                                     type: "mrkdwn",
-                                    text: `*Emoji → Text:*\n${translated}`,
+                                    text: `*🔅 Translation Result*\n\n` +
+                    `• *Original Text:* ${text}\n` +
+                    `• *Emoji → Text:* ${translated}\n`
                                 },
                             },
                             ...feedbackBlocks,
@@ -204,18 +211,22 @@ module.exports = function registerCommands(app) {
         }
 
         const blocks = [];
+        const emojiNumbers = ["1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟"];
 
-        history.slice(-10).forEach(h => {
+        history.slice(-10).forEach((h, i) => {
+            const num = emojiNumbers[i] || "🔢"; 
+
             blocks.push({
                 type: "section",
                 text: {
                     type: "mrkdwn",
                     text:
-                        `*${h.direction}*   \`${h.timestamp}\`\n` +
+                        `${num}  *${h.direction}*   \`${h.timestamp}\`\n` +
                         `• *Original:* ${h.original}\n` +
                         `• *Translated:* ${h.translated}`
                 }
             });
+
             blocks.push({ type: "divider" });
         });
 

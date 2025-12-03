@@ -4,7 +4,7 @@ const axios = require("axios");
 const API_BASE = 'http://genzlator-api.saichaparala.com:8001';
 
 async function translate(originalMessage, isToEmoji, chatHistory) {
-  console.log("🔗 Calling backend:", `${API_BASE}/api/v1/translate`);
+  console.log("Calling backend:", `${API_BASE}/api/v1/translate`);
   const resp = await axios.post(`${API_BASE}/api/v1/translate`, {
     originalMessage,
     isToEmoji,
