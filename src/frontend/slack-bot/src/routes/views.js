@@ -39,6 +39,9 @@ module.exports = function registerViews(app) {
         body.view.state.values.input_text.value_input.value;
         const model =
         body.view.state.values.model_select.model_choice.selected_option.value;
+        const visibility =
+        body.view.state.values.visibility_select.visibility_choice.selected_option.value;
+
 
         let chatHistory = await getChatHistory(client, channel);
 
@@ -66,16 +69,32 @@ module.exports = function registerViews(app) {
 
         const feedbackBlocks = buildFeedbackBlocks(input);
 
-        await client.chat.postMessage({
-            channel,
-            text: `*Text → Emoji*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
-        });
+        if (visibility === "public") {
+            // Send to whole channel
+            await client.chat.postMessage({
+                channel,
+                text: `*Text → Emoji*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
+            });
     
-        await client.chat.postEphemeral({
-            channel,
-            user: userId,
-            blocks: feedbackBlocks,
-        });
+            await client.chat.postMessage({
+                channel,
+                blocks: feedbackBlocks,
+            });
+    
+        } else {
+            // Send ONLY to the user
+            await client.chat.postEphemeral({
+                channel,
+                user: body.user.id,
+                text: `*Text → Emoji*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
+            });
+    
+            await client.chat.postEphemeral({
+                channel,
+                user: body.user.id,
+                blocks: feedbackBlocks,
+            });
+        }
     });
 
     // --- View: emoji-to-text_modal (from Interactive translate mode) ---
@@ -88,6 +107,8 @@ module.exports = function registerViews(app) {
         body.view.state.values.input_text.value_input.value;
         const model =
         body.view.state.values.model_select.model_choice.selected_option.value;
+        const visibility =
+        body.view.state.values.visibility_select.visibility_choice.selected_option.value;
 
         let chatHistory = await getChatHistory(client, channel);
 
@@ -116,18 +137,32 @@ module.exports = function registerViews(app) {
             channel: channel
         });
 
-        // todo : also support private DM case
-        // just figure out that slack can't done this 
-        await client.chat.postMessage({
-            channel,
-            text: `*Emoji → Text*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
-        });
-    
-        await client.chat.postEphemeral({
-            channel,
-            user: userId,
-            blocks: feedbackBlocks,
-        });
+        if (visibility === "public") {
+            // Send to whole channel
+            await client.chat.postMessage({
+                channel,
+                text: `*Emoji → Text*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
+            });
+
+            await client.chat.postMessage({
+                channel,
+                blocks: feedbackBlocks,
+            });
+
+        } else {
+            // Send ONLY to the user
+            await client.chat.postEphemeral({
+                channel,
+                user: body.user.id,
+                text: `*Emoji → Text*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
+            });
+
+            await client.chat.postEphemeral({
+                channel,
+                user: body.user.id,
+                blocks: feedbackBlocks,
+            });
+        }
     });
 
 
