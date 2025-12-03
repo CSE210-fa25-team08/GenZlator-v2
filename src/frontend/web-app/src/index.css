@@ -227,6 +227,10 @@ textarea[readonly] {
   cursor: default;
 }
 
+.char-count {
+  align-self: center;
+}
+
 /* stylelint-disable-next-line selector-class-pattern */
 .translate-btn.MuiButton-root {
   align-self: center;
@@ -240,8 +244,14 @@ textarea[readonly] {
   width: 50%;
 }
 
-.translate-btn:disabled {
-  opacity: 0.5;
+/* stylelint-disable-next-line selector-class-pattern */
+.translate-btn.Mui-disabled {
+  opacity: 0.75 !important;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.translate-btn .MuiCircularProgress-root {
+  color: var(--text);
 }
 
 /* stylelint-disable-next-line selector-class-pattern */
@@ -272,4 +282,9 @@ textarea[readonly] {
 /* stylelint-disable-next-line selector-class-pattern */
 .thumb .MuiSvgIcon-root {
   color: var(--text);
+}
+
+.emoji-container {
+  position: absolute;
+  z-index: 1000;
 }
