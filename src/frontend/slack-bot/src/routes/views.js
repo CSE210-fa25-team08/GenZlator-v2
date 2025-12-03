@@ -2,7 +2,7 @@
 const { buildHomeView } = require("../utils/homeView");
 const { setUserModel } = require("../utils/model");
 const { buildFeedbackBlocks } = require("../utils/feedback");
-const { sendFeedback } = require("../utils/backendClient");
+const { sendFeedback, translate } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
 const { addHistory } = require("../storage/history");
 const { renderHome } = require("../utils/renderHome");
@@ -53,10 +53,10 @@ module.exports = function registerViews(app) {
 
         let translated = "";
         try {
-            // translated = await translate(input, true, chatHistory);
+            translated = await translate(input, true, chatHistory);
         } catch (err) {
             console.error("Translate backend error:", err);
-            translated = "⚠️ Translation failed. Please try again later.";
+            translated = "Translation failed. Please try again later.";
         }
 
         addHistory(userId, {
@@ -69,11 +69,14 @@ module.exports = function registerViews(app) {
 
         const feedbackBlocks = buildFeedbackBlocks(input);
 
+
         if (visibility === "public") {
             // Send to whole channel
             await client.chat.postMessage({
                 channel,
-                text: `*Text → Emoji*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
+                text: `*🔅 Translation Result*\n\n` +
+                    `• *Original Text:* ${input}\n` +
+                    `• *Text → Emoji:* ${translated}\n`,
             });
     
             await client.chat.postMessage({
@@ -86,7 +89,9 @@ module.exports = function registerViews(app) {
             await client.chat.postEphemeral({
                 channel,
                 user: body.user.id,
-                text: `*Text → Emoji*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
+                text: `*🔅 Translation Result*\n\n` +
+                    `• *Original Text:* ${input}\n` +
+                    `• *Text → Emoji:* ${translated}\n`,
             });
     
             await client.chat.postEphemeral({
@@ -121,10 +126,10 @@ module.exports = function registerViews(app) {
 
         let translated = "";
         try {
-            //translated = await translate(input, false, chatHistory);
+            translated = await translate(input, false, chatHistory);
         } catch (err) {
             console.error("Translate backend error:", err);
-            translated = "⚠️ Translation failed. Please try again later.";
+            translated = "Translation failed. Please try again later.";
         }
 
         const feedbackBlocks = buildFeedbackBlocks(input);
@@ -137,11 +142,16 @@ module.exports = function registerViews(app) {
             channel: channel
         });
 
+
+        // todo : also support private DM case
+        // just figure out that slack can't done this 
         if (visibility === "public") {
             // Send to whole channel
             await client.chat.postMessage({
                 channel,
-                text: `*Emoji → Text*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
+                text: `*🔅 Translation Result*\n\n` +
+                    `• *Original Text:* ${input}\n` +
+                    `• *Emoji → Text:* ${translated}\n`,
             });
 
             await client.chat.postMessage({
@@ -154,7 +164,9 @@ module.exports = function registerViews(app) {
             await client.chat.postEphemeral({
                 channel,
                 user: body.user.id,
-                text: `*Emoji → Text*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
+                text: `*🔅 Translation Result*\n\n` +
+                    `• *Original Text:* ${input}\n` +
+                    `• *Emoji → Text:* ${translated}\n`,
             });
 
             await client.chat.postEphemeral({
@@ -180,8 +192,7 @@ module.exports = function registerViews(app) {
         });
 
         try {
-            // backend broke rightnow 
-            // await sendFeedback(originalInput, suggestion, body.user.id, 0);
+            await sendFeedback(originalInput, suggestion, body.user.id, 0);
         } catch (err) {
             console.error("Feedback backend error:", err);
         }
