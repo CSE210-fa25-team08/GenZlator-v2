@@ -8,11 +8,14 @@ import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
+import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
+import CloseIcon from '@mui/icons-material/Close';
 
-import Button from '@mui/material/Button'
+import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import EmojiPicker from 'emoji-picker-react';
 
 import { backend_translate, backend_feedback } from '../hooks/backend.tsx'
 
@@ -25,6 +28,7 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     const [toEmoji, setToEmoji] = useState(false);
     const [isLoading, setLoading] = useState(false);
     const [addedContext, setContext] = useState("");
+    const [showPicker, setPicker] = useState(false);
     // const [lastTranslation, setLastTranslation] = useState({
     //     text: "",
     //     toEmoji: false
@@ -34,6 +38,8 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     const auto_translate_timer = useRef<number>(null); //consistent timer id
 
     const activeControllerRef = useRef<AbortController>(null); //so we can abort translate requests that are overridden
+    const emojiButtonRef = useRef<HTMLButtonElement>(null);
+    const pickerRef = useRef<HTMLDivElement>(null);
 
     // Trigger translation if non-empty input is left for 5 seconds
     // Also waits for added context to not be edited for 5 seconds
@@ -151,7 +157,36 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
         // if(auto_translate_timer.current) {
         //     clearTimeout(auto_translate_timer.current);
         // }
+    } 
+
+    // Event Handler to close emoji keyboard when click outside of it when it is open
+    const handleClickOutsidePicker = (e) => {
+        if (pickerRef.current && !pickerRef.current.contains(e.target)) {
+            setPicker(false);
+        }
     }
+
+    // When change visibility of emoji keyboard, position picker element and add or remove event listener
+    useEffect(() => {
+        if (showPicker && emojiButtonRef.current && pickerRef.current) {
+            const emojiButtonPos = emojiButtonRef.current.getBoundingClientRect();
+            const pickerElement = pickerRef.current;
+
+            pickerElement.style.top = `${emojiButtonPos.bottom}px`;
+            pickerElement.style.left = `${emojiButtonPos.left}px`;
+
+            document.addEventListener('click', handleClickOutsidePicker, true);
+        }
+        else if (!showPicker) {
+         document.removeEventListener('click', handleClickOutsidePicker, true);   
+        }
+
+    }, [showPicker]);
+
+    // when select emoji add to input
+    const handleEmojiClick = (emoji) => {
+        setInputText(prevText => prevText + emoji.emoji);
+    }   
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -173,7 +208,8 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
                             placeholder="Enter emojis or text to translate"
                         />
                         <footer className="text-field-buttons">
-                            <label>Character Count: {inputText.trim().length}</label>
+                            <IconButton ref={emojiButtonRef} className="thumb" onClick={()=>{setPicker(!showPicker)}}>{showPicker==true ? <CloseIcon/> : <EmojiEmotionsIcon/>}</IconButton>
+                            <label className='char-count'>Character Count: {inputText.trim().length}</label>
                             {copyButton(inputText)}
                         </footer>
                     </section>
@@ -197,7 +233,8 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
                 </section>
             </fieldset>
             <Context addedContext={addedContext} setContext={setContext} isMobile={isMobile}/>
-            <Button className="translate-btn" loading={isLoading} disabled={inputText.trim()==""} onClick={()=>{handleTranslation(false)}}>TRANSLATE</Button>
+            <Button fullWidth className="translate-btn" loadingPosition="start" loading={isLoading} disabled={inputText.trim()==""} onClick={handleTranslation}>TRANSLATE</Button>
+        {showPicker && <section ref={pickerRef} className="emoji-container"><EmojiPicker onEmojiClick={handleEmojiClick}/></section>}
         </section>
     )
 }

@@ -227,6 +227,10 @@ textarea[readonly] {
   cursor: default;
 }
 
+.char-count {
+  align-self: center;
+}
+
 /* stylelint-disable-next-line selector-class-pattern */
 .translate-btn.MuiButton-root {
   align-self: center;
@@ -240,8 +244,14 @@ textarea[readonly] {
   width: 50%;
 }
 
-.translate-btn:disabled {
-  opacity: 0.5;
+/* stylelint-disable-next-line selector-class-pattern */
+.translate-btn.Mui-disabled {
+  opacity: 0.75 !important;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.translate-btn .MuiCircularProgress-root {
+  color: var(--text);
 }
 
 /* stylelint-disable-next-line selector-class-pattern */
@@ -274,13 +284,18 @@ textarea[readonly] {
   color: var(--text);
 }
 
+.emoji-container {
+  position: absolute;
+  z-index: 1000;
+}
+
 /* Context.tsx CSS */
 
 .context-container {
   border: 0;
   display: flex;
   flex-direction: column;
-  position: 'relative';
+  position: "relative";
 }
 
 .context-container header {
@@ -300,6 +315,8 @@ textarea[readonly] {
   color: var(--text);
   margin: 16px;
 }
+
+/* stylelint-disable-next-line selector-class-pattern */
 .exit .MuiSvgIcon-root {
   color: var(--text);
   margin-left: auto;
@@ -321,5 +338,3 @@ textarea[readonly] {
   min-width: 25px;
   min-height: 25px;
 }
-
-

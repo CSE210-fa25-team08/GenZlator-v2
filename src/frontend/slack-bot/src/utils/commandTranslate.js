@@ -62,6 +62,32 @@ async function openTranslateModal(client, trigger_id, channel_id, mode) {
             options: buildModelOptions(),
           },
         },
+        {
+          type: "input",
+          block_id: "visibility_select",
+          label: {
+            type: "plain_text",
+            text: "Send Result As"
+          },
+          element: {
+            type: "static_select",
+            action_id: "visibility_choice",
+            options: [
+              {
+                text: { type: "plain_text", text: "🔊 Send to Channel (Public)" },
+                value: "public"
+              },
+              {
+                text: { type: "plain_text", text: "👤 Send Only to Me (Private)" },
+                value: "private"
+              }
+            ],
+            initial_option: {
+              text: { type: "plain_text", text: "🔊 Send to Channel (Public)" },
+              value: "public"
+            }
+          }
+        }
       ],
     },
   });
