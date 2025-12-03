@@ -65,7 +65,7 @@ jobs:
       - name: Build Docker image
         run: |
           IMAGE_TAG=${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REPO_NAME }}/genzlator-backend
-          docker build -t $IMAGE_TAG:${{ github.sha }} .
+          docker build -f src/backend/Dockerfile -t $IMAGE_TAG:${{ github.sha }} .
           docker tag $IMAGE_TAG:${{ github.sha }} $IMAGE_TAG:latest
       
       - name: Push Docker image
