@@ -69,15 +69,6 @@ module.exports = function registerViews(app) {
 
         const feedbackBlocks = buildFeedbackBlocks(input);
 
-        // await client.chat.postMessage({
-        //     channel,
-        //     text: `*Text → Emoji*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
-        // });
-    
-        // await client.chat.postMessage({
-        //     channel,
-        //     blocks: feedbackBlocks,
-        // });
         if (visibility === "public") {
             // Send to whole channel
             await client.chat.postMessage({
@@ -146,16 +137,6 @@ module.exports = function registerViews(app) {
             channel: channel
         });
 
-        // todo : also support private DM case
-        // await client.chat.postMessage({
-        //     channel,
-        //     text: `*Emoji → Text*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
-        // });
-    
-        // await client.chat.postMessage({
-        //     channel,
-        //     blocks: feedbackBlocks,
-        // });
         if (visibility === "public") {
             // Send to whole channel
             await client.chat.postMessage({
