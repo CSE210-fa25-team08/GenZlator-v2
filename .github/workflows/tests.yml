@@ -60,7 +60,7 @@ jobs:
       
       - name: Configure Docker for Artifact Registry
         run: |
-          gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev
+          gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev --quiet
       
       - name: Build Docker image
         run: |
@@ -68,9 +68,10 @@ jobs:
           docker build -f src/backend/Dockerfile -t $IMAGE_TAG:${{ github.sha }} .
           docker tag $IMAGE_TAG:${{ github.sha }} $IMAGE_TAG:latest
       
-      - name: Push Docker image
+      - name: Authenticate and Push Docker image
         run: |
           IMAGE_TAG=${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REPO_NAME }}/genzlator-backend
+          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin ${{ secrets.GCP_REGION }}-docker.pkg.dev
           docker push $IMAGE_TAG:${{ github.sha }}
           docker push $IMAGE_TAG:latest
 
