@@ -6,6 +6,7 @@ from src.backend.core.models import (
     TranslateResponseMetadata,
 )
 from src.backend.core.openrouter_client import call_openrouter_race
+from src.backend.core.openai_client import call_openai_race
 import json
 
 # Create router instance
@@ -111,7 +112,7 @@ async def translate(req: TranslateRequest):
     ]
 
     # Race multiple OpenRouter models for fastest response
-    race_result = await call_openrouter_race(messages)
+    race_result = await call_openai_race(messages)
     raw_content = race_result["content"]
 
     # Extract structured response
