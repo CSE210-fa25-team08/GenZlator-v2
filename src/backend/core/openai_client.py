@@ -14,7 +14,6 @@ load_dotenv()
 OPENAI_BASE_URL = "https://api.openai.com/v1"
 
 # 5 Light OpenAI models to race
-# Note: OpenAI treats specific version tags (e.g., -0125) as distinct model targets
 LIGHT_MODELS = [
     "gpt-4o-mini",
     "gpt-3.5-turbo",
@@ -25,7 +24,7 @@ LIGHT_MODELS = [
 
 def _get_headers() -> Dict[str, str]:
     """
-    Standard OpenAI headers.
+    Implemented Standard OpenAI headers.
     """
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
@@ -48,13 +47,9 @@ async def _call_single_model(
 ) -> Dict[str, Any]:
     """
     Call a single OpenAI model and return timing + content.
-    Designed to be used inside asyncio tasks (for racing).
     """
     start = time.time()
-    try:
-        # OpenAI usually handles connections fast, but we keep the timeout logic
-        # We don't need the i%2 logic here unless you are rotating multiple OpenAI keys
-        
+    try:        
         resp = await client.post(
             f"{OPENAI_BASE_URL}/chat/completions",
             headers=_get_headers(),
@@ -115,7 +110,7 @@ async def _call_single_model(
 async def call_openai_race(
     messages: List[Dict[str, str]],
     models: List[str] = None,
-    global_timeout: float = 30.0, # Reduced timeout as OpenAI is generally faster/stricter
+    global_timeout: float = 30.0, 
 ) -> Dict[str, Any]:
     """
     Fire requests to multiple OpenAI models in parallel and return the FIRST successful one.
@@ -140,7 +135,6 @@ async def call_openai_race(
             for completed in asyncio.as_completed(tasks, timeout=global_timeout):
                 result = await completed
                 if result.get("ok"):
-                    # Cancel remaining tasks to save tokens/resources
                     for t in tasks:
                         if not t.done():
                             t.cancel()
