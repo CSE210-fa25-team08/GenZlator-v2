@@ -6,21 +6,34 @@ from typing import Dict, Any, List
 
 import httpx
 from fastapi import HTTPException
+from dotenv import load_dotenv
+load_dotenv()  
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 # Free models to race between
 FREE_MODELS = [
     "mistralai/mistral-7b-instruct:free",
-    "deepseek/deepseek-r1:free",
-    "deepseek/deepseek-r1-distill-llama-70b:free",
-    "cognitivecomputations/dolphin3.0-mistral-24b:free",
+    # "deepseek/deepseek-r1:free",
+    # "deepseek/deepseek-r1-distill-llama-70b:free",
+    # "cognitivecomputations/dolphin3.0-mistral-24b:free",
+    "google/gemini-2.0-flash-exp:free",
+    "nvidia/nemotron-nano-9b-v2:free",
+    "qwen/qwen3-4b:free",
     "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
 ]
 
+# os.environ["OPENROUTER_API_KEY_1"] = "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"
+API_KEYS = {
+    # 0: os.getenv("OPENROUTER_API_KEY_1"),
+    # 0: os.getenv("OPENROUTER_API_KEY_2"),
+    1: os.getenv("OPENROUTER_API_KEY_3"),
+    0: os.getenv("OPENROUTER_API_KEY_3"),
+}
 
-def _get_headers() -> Dict[str, str]:
-    api_key = os.getenv("OPENROUTER_API_KEY")
+
+def _get_headers(i: int) -> Dict[str, str]:
+    api_key = API_KEYS[i]
     if not api_key:
         # Don’t crash at import, but fail clearly at call time
         raise HTTPException(
@@ -32,7 +45,7 @@ def _get_headers() -> Dict[str, str]:
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
         # Optional but recommended by OpenRouter
-        "HTTP-Referer": "https://your-app-url.example.com",
+        # "HTTP-Referer": "https://your-app-url.example.com",
         "X-Title": "emoji-translator-backend",
     }
 
@@ -42,6 +55,7 @@ async def _call_single_model(
     model: str,
     messages: List[Dict[str, str]],
     request_timeout: float = 30.0,
+    i: int = 0
 ) -> Dict[str, Any]:
     """
     Call a single OpenRouter model and return timing + content.
@@ -49,12 +63,15 @@ async def _call_single_model(
     """
     start = time.time()
     try:
+        i = i%2;
+        timeout = httpx.Timeout(30.0, connect=5)
         resp = await client.post(
             f"{OPENROUTER_BASE_URL}/chat/completions",
-            headers=_get_headers(),
+            headers=_get_headers(i),
             json={"model": model, "messages": messages},
-            timeout=request_timeout,
+            timeout=timeout,
         )
+
         latency = time.time() - start
 
         if resp.status_code != 200:
@@ -109,7 +126,7 @@ async def _call_single_model(
 async def call_openrouter_race(
     messages: List[Dict[str, str]],
     models: List[str] = None,
-    global_timeout: float = 40.0,
+    global_timeout: float = 400.0,
 ) -> Dict[str, Any]:
     """
     Fire requests to multiple models in parallel and return the FIRST successful one.
@@ -123,7 +140,7 @@ async def call_openrouter_race(
 
     async with httpx.AsyncClient(timeout=global_timeout) as client:
         tasks = [
-            asyncio.create_task(_call_single_model(client, m, messages)) for m in models
+            asyncio.create_task(_call_single_model(client, m, messages, i)) for i,m in enumerate(models)
         ]
 
         try:
@@ -135,6 +152,7 @@ async def call_openrouter_race(
                     for t in tasks:
                         if not t.done():
                             t.cancel()
+                    print(result)
                     return result
 
             # No successful result
@@ -162,3 +180,21 @@ async def call_openrouter_race(
                 status_code=504,
                 detail="Global timeout while waiting for OpenRouter models.",
             )
+
+
+
+async def main():
+    messages = [
+        {"role": "user", "content": "Can you hear me?"},
+    ]
+
+    print("Running model race...")
+    result = await call_openrouter_race(messages)
+
+    print("\n--- WINNER ---")
+    print("Model:", result["model"])
+    print("Latency:", result["latency"])
+    print("Content:", result["content"])
+
+if __name__ == "__main__":
+    asyncio.run(main())

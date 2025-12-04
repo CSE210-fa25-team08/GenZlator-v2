@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from core.models import TranslateRequest, TranslateResponse
-from core.openrouter_client import call_openrouter_race
+# from core.openrouter_client import call_openrouter_race
+from core.openai_client import call_openai_race
 import json
 from typing import Dict
 
