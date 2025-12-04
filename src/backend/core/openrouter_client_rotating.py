@@ -24,12 +24,11 @@ FREE_MODELS = [
     "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
 ]
 
-# os.environ["OPENROUTER_API_KEY_1"] = "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"
 API_KEYS = {
     # 0: os.getenv("OPENROUTER_API_KEY_1"),
     # 0: os.getenv("OPENROUTER_API_KEY_2"),
+    0: os.getenv("OPENROUTER_API_KEY_2"),
     1: os.getenv("OPENROUTER_API_KEY_3"),
-    0: os.getenv("OPENROUTER_API_KEY_3"),
 }
 
 
