@@ -1,6 +1,7 @@
 const { modelMap, setUserModel } = require("../utils/model");
 const { buildHomeView } = require("../utils/homeView");
 const { sendFeedback } = require("../utils/backendClient");
+const { renderHome } = require("../utils/renderHome");
 
 module.exports = function registerActions(app) {
     // --- Handle modal submission for default style setting ---
@@ -102,7 +103,7 @@ module.exports = function registerActions(app) {
       
         const originalInput = body.actions[0].value;
         console.log("User liked the translation, original input " + originalInput);
-        //await sendFeedback(originalInput, "", body.user.id, 1);
+        await sendFeedback(originalInput, "", body.user.id, 1);
 
         await respond({
           replace_original: true,  
@@ -259,7 +260,7 @@ module.exports = function registerActions(app) {
         await ack();
         const originalInput = body.actions[0].value;
         console.log("User declined to provide suggestion, original input " + originalInput);
-        // await sendFeedback(originalInput, "", body.user.id, 0);
+        await sendFeedback(originalInput, "", body.user.id, 0);
       
         await respond({
             replace_original: true,
@@ -275,7 +276,17 @@ module.exports = function registerActions(app) {
               ],
         });
     });
-      
+    
+
+    app.action("nav_overview", async ({ ack, body, client }) => {
+        await ack();
+        await renderHome(client, body.user.id, "overview");
+    });
+
+    app.action("nav_history", async ({ ack, body, client }) => {
+        await ack();
+        await renderHome(client, body.user.id, "history");
+    });
       
       
 

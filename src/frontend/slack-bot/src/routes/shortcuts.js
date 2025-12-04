@@ -2,53 +2,65 @@
 const { buildFeedbackBlocks } = require("../utils/feedback");
 const { translate } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
+const { addHistory } = require("../storage/history");
 
 module.exports = function registerShortcuts(app) {
-    // the shortcut ID is "translate_shortcut", and need to align with the one set in Slack App configuration
-    
     app.shortcut("translate", async ({ ack, body, client }) => {
         await ack();
         const originalText = body.message?.text || "(no text)";
-
         const feedbackBlocks = buildFeedbackBlocks(originalText);
 
         let chatHistory = await getChatHistory(client, body.channel.id);
-        console.log("📤 Sending to backend:",  {
-            originalMessage: originalText,
-            isToEmoji: true,
-            chatHistory
-        });
 
-        let translated = "model failed so dummy text";
-            try {
-                // translated = await translate(originalText, true, chatHistory);  
-            } catch (err) {
-                console.error("Translate backend error:", err);
-                translated = "⚠️ Translation failed. Please try again later.";
+        let translated_1 = "";
+        let translated_2 = "";
+        let isSuccess = false;
+        try {
+            translated_1 = await translate(originalText, true, chatHistory);  
+            translated_2 = await translate(originalText, false, chatHistory);
+            isSuccess = true;
+        } catch (err) {
+            console.error("Translate backend error:", err);
         }
 
-        try {
-            // Public channel → send translation to channel
-            await client.chat.postMessage({
-                channel: body.channel.id,
-                text: `Translated: "${originalText}" → ${translated}`,
+        if (isSuccess) {
+            addHistory(body.user.id, {
+                original: originalText,
+                translated: `\ntext to emoji : ${translated_1}\nemoji to text : ${translated_2}`,
+                direction: "shortcut-translate", 
+                timestamp: new Date().toISOString(),
+                channel: body.channel.id
             });
-    
-            // Feedback (only visible to the user)
-            await client.chat.postEphemeral({
-                channel: body.channel.id,
-                user: body.user.id,
-                text: "Feedback on this translation",
-                blocks: feedbackBlocks,
-            });
-    
-        } catch (err) {
-            // just figure out that slack can't done this 
-            if (err.data?.error === "channel_not_found") {
-                
-            } else {
+
+            try {
+                // Public channel → send translation to channel
+                await client.chat.postMessage({
+                    channel: body.channel.id,
+                    text: `*🔅 Translation Result*\n\n` +
+                        `• *Original Text:* ${originalText}\n` +
+                        `• *Text → Emoji:* ${translated_1}\n` +
+                        `• *Emoji → Text:* ${translated_2}\n`,
+                });
+        
+                // Feedback (only visible to the user)
+                await client.chat.postEphemeral({
+                    channel: body.channel.id,
+                    user: body.user.id,
+                    text: "Feedback on this translation",
+                    blocks: feedbackBlocks,
+                });
+        
+            } catch (err) {
+                // just figure out that slack can't done this 
                 console.error(err);
             }
+        } else {
+            await client.chat.postMessage({
+                channel: body.channel.id,
+                text: "‼️ Translation failed. Please try again later."
+            });
         }
+
+        
     });
 };

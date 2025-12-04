@@ -4,9 +4,9 @@ const { modelMap } = require("./model");
 // markdown for Slack App Home
 // I move it here in order to reduce code duplication
 // might change in future
-function buildHomeView(currentModel) {
+function buildHomeView(mode, currentModel, historyBlocks) {
     const selected = modelMap[currentModel] || modelMap.default;
-
+    const isHistory = mode === "history";
     const modelDescriptions = `
     *Model Overview*
 
@@ -31,9 +31,7 @@ function buildHomeView(currentModel) {
       It emphasizes clarity and coherence, making it helpful when translating content that needs to be clearer or more refined.
     `;
 
-  return {
-    type: "home",
-    blocks: [
+    const overviewBlocks = [
       {
         type: "section",
         text: {
@@ -113,12 +111,48 @@ If you type the command without arguments, an interactive modal will appear so y
       },
 
       {
-  type: "context",
-  elements: [
-    { type: "mrkdwn", text: " " }
-  ]
-},
-    ],
+        type: "context",
+        elements: [
+          { type: "mrkdwn", text: " " }
+        ]
+      },
+    ]
+    const historyTabBlocks = [
+        {
+            type: "header",
+            text: { type: "plain_text", text: "Your Translation History" }
+        },
+        ...historyBlocks
+    ];
+
+    // Select content based on mode
+    const content = isHistory ? historyTabBlocks : overviewBlocks;
+
+
+  return {
+    type: "home",
+    blocks: [
+      {
+        type: "actions",
+        elements: [
+            {
+                type: "button",
+                text: { type: "plain_text", text: "Overview" },
+                action_id: "nav_overview",
+                ...(mode === "overview" ? { style: "primary" } : {})
+            },
+            {
+                type: "button",
+                text: { type: "plain_text", text: "History" },
+                action_id: "nav_history",
+                ...(mode === "history" ? { style: "primary" } : {})
+            }
+        ]
+      },
+
+        { type: "divider" },
+            ...content
+      ]
   };
 }
 

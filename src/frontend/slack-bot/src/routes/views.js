@@ -2,8 +2,10 @@
 const { buildHomeView } = require("../utils/homeView");
 const { setUserModel } = require("../utils/model");
 const { buildFeedbackBlocks } = require("../utils/feedback");
-const { sendFeedback } = require("../utils/backendClient");
+const { sendFeedback, translate } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
+const { addHistory } = require("../storage/history");
+const { renderHome } = require("../utils/renderHome");
 
 module.exports = function registerViews(app) {
     // --- View: default_style_modal (from open_default_setting action) ---
@@ -16,8 +18,7 @@ module.exports = function registerViews(app) {
 
         setUserModel(userId, styleChoice);
 
-        const newHome = buildHomeView(styleChoice);
-        await client.views.publish({ user_id: userId, view: newHome });
+        await renderHome(client, userId, "overview");
     });
 
     // --- View: feedback_modal (from open_feedback action) ---
@@ -38,6 +39,9 @@ module.exports = function registerViews(app) {
         body.view.state.values.input_text.value_input.value;
         const model =
         body.view.state.values.model_select.model_choice.selected_option.value;
+        const visibility =
+        body.view.state.values.visibility_select.visibility_choice.selected_option.value;
+
 
         let chatHistory = await getChatHistory(client, channel);
 
@@ -48,25 +52,71 @@ module.exports = function registerViews(app) {
         });
 
         let translated = "";
+        let isSuccess = false;
         try {
-            // translated = await translate(input, true, chatHistory);
+            translated = await translate(input, true, chatHistory);
+            isSuccess = true;
         } catch (err) {
             console.error("Translate backend error:", err);
-            translated = "⚠️ Translation failed. Please try again later.";
+            translated = "‼️ Translation failed. Please try again later.";
         }
+        
+        if (isSuccess) {
+            addHistory(userId, {
+                original: input,
+                translated: translated,
+                direction: "text-to-emoji", 
+                timestamp: new Date().toISOString(),
+                channel: channel
+            });
 
-        const feedbackBlocks = buildFeedbackBlocks(input);
+            const feedbackBlocks = buildFeedbackBlocks(input);
 
-        await client.chat.postMessage({
-            channel,
-            text: `*Text → Emoji*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
-        });
-    
-        await client.chat.postEphemeral({
-            channel,
-            user: userId,
-            blocks: feedbackBlocks,
-        });
+            if (visibility === "public") {
+                // Send to whole channel
+                await client.chat.postMessage({
+                    channel,
+                    text: `*🔅 Translation Result*\n\n` +
+                        `• *Original Text:* ${input}\n` +
+                        `• *Text → Emoji:* ${translated}\n`,
+                });
+        
+                await client.chat.postMessage({
+                    channel,
+                    blocks: feedbackBlocks,
+                });
+        
+            } else {
+                // Send ONLY to the user
+                await client.chat.postEphemeral({
+                    channel,
+                    user: body.user.id,
+                    text: `*🔅 Translation Result*\n\n` +
+                        `• *Original Text:* ${input}\n` +
+                        `• *Text → Emoji:* ${translated}\n`,
+                });
+        
+                await client.chat.postEphemeral({
+                    channel,
+                    user: body.user.id,
+                    blocks: feedbackBlocks,
+                });
+            }
+        } else {
+            if (visibility === "public") {
+                await client.chat.postMessage({
+                    channel,
+                    text: translated,
+                });
+            } else {
+                await client.chat.postEphemeral({
+                    channel,
+                    user: body.user.id,
+                    text: translated,
+                });
+            }
+        }
+        
     });
 
     // --- View: emoji-to-text_modal (from Interactive translate mode) ---
@@ -79,6 +129,8 @@ module.exports = function registerViews(app) {
         body.view.state.values.input_text.value_input.value;
         const model =
         body.view.state.values.model_select.model_choice.selected_option.value;
+        const visibility =
+        body.view.state.values.visibility_select.visibility_choice.selected_option.value;
 
         let chatHistory = await getChatHistory(client, channel);
 
@@ -90,27 +142,69 @@ module.exports = function registerViews(app) {
 
 
         let translated = "";
+        let isSuccess = false;
         try {
-            //translated = await translate(input, false, chatHistory);
+            translated = await translate(input, false, chatHistory);
+            isSuccess = true;
         } catch (err) {
             console.error("Translate backend error:", err);
-            translated = "⚠️ Translation failed. Please try again later.";
+            translated = "‼️ Translation failed. Please try again later.";
         }
 
-        const feedbackBlocks = buildFeedbackBlocks(input);
+        if (isSuccess) {
+            const feedbackBlocks = buildFeedbackBlocks(input);
 
-        // todo : also support private DM case
-        // just figure out that slack can't done this 
-        await client.chat.postMessage({
-            channel,
-            text: `*Emoji → Text*\n*Model:* ${model}\n*Original:* ${input}\n*Translated:* ${translated}`
-        });
-    
-        await client.chat.postEphemeral({
-            channel,
-            user: userId,
-            blocks: feedbackBlocks,
-        });
+            addHistory(userId, {
+                original: input,
+                translated: translated,
+                direction: "emoji-to-text", 
+                timestamp: new Date().toISOString(),
+                channel: channel
+            });
+            if (visibility === "public") {
+                // Send to whole channel
+                await client.chat.postMessage({
+                    channel,
+                    text: `*🔅 Translation Result*\n\n` +
+                        `• *Original Text:* ${input}\n` +
+                        `• *Emoji → Text:* ${translated}\n`,
+                });
+
+                await client.chat.postMessage({
+                    channel,
+                    blocks: feedbackBlocks,
+                });
+
+            } else {
+                // Send ONLY to the user
+                await client.chat.postEphemeral({
+                    channel,
+                    user: body.user.id,
+                    text: `*🔅 Translation Result*\n\n` +
+                        `• *Original Text:* ${input}\n` +
+                        `• *Emoji → Text:* ${translated}\n`,
+                });
+
+                await client.chat.postEphemeral({
+                    channel,
+                    user: body.user.id,
+                    blocks: feedbackBlocks,
+                });
+            }
+        } else {
+            if (visibility === "public") {
+                await client.chat.postMessage({
+                    channel,
+                    text: translated,
+                });
+            } else {
+                await client.chat.postEphemeral({
+                    channel,
+                    user: body.user.id,
+                    text: translated,
+                });
+            }
+        }
     });
 
 
@@ -128,8 +222,7 @@ module.exports = function registerViews(app) {
         });
 
         try {
-            // backend broke rightnow 
-            // await sendFeedback(originalInput, suggestion, body.user.id, 0);
+            await sendFeedback(originalInput, suggestion, body.user.id, 0);
         } catch (err) {
             console.error("Feedback backend error:", err);
         }

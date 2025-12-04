@@ -22,7 +22,7 @@ async def submit_feedback(req: FeedbackRequest):
     - Returns 202 Accepted on success
     """
     feedback_record = {
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now().isoformat(),
         "originalInput": req.originalInput,
         "correctionText": req.correctionText,
         "anonymousId": req.anonymousId,
