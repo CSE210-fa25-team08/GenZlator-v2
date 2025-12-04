@@ -1,5 +1,5 @@
 const { getHistory } = require("../storage/history");
-const { buildHomeView } = require("./homeView");
+const { buildHomeView } = require("../views/homeView");
 const { getUserModel } = require("../utils/model");
 
 async function renderHome(client, userId, mode) {

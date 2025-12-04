@@ -1,5 +1,5 @@
 // src/routes/shortcuts.js
-const { buildFeedbackBlocks } = require("../utils/feedback");
+const { buildFeedbackBlocks } = require("../views/feedback");
 const { translate } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
 const { addHistory } = require("../storage/history");

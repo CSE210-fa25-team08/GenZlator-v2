@@ -1,7 +1,7 @@
 // src/routes/views.js
-const { buildHomeView } = require("../utils/homeView");
+const { buildHomeView } = require("../views/homeView");
 const { setUserModel } = require("../utils/model");
-const { buildFeedbackBlocks } = require("../utils/feedback");
+const { buildFeedbackBlocks } = require("../views/feedback");
 const { sendFeedback, translate } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
 const { addHistory } = require("../storage/history");
