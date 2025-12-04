@@ -110,7 +110,7 @@ async def translate(req: TranslateRequest):
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
     ]
-    
+
     # Race multiple OpenRouter models for fastest response
     race_result = await call_openai_race(messages)
     raw_content = race_result["content"]

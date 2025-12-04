@@ -22,6 +22,7 @@ LIGHT_MODELS = [
     "gpt-3.5-turbo-0125",
 ]
 
+
 def _get_headers() -> Dict[str, str]:
     """
     Implemented Standard OpenAI headers.
@@ -40,16 +41,13 @@ def _get_headers() -> Dict[str, str]:
 
 
 async def _call_single_model(
-    client: httpx.AsyncClient,
-    model: str,
-    messages: List[Dict[str, str]],
-    i: int = 0
+    client: httpx.AsyncClient, model: str, messages: List[Dict[str, str]], i: int = 0
 ) -> Dict[str, Any]:
     """
     Call a single OpenAI model and return timing + content.
     """
     start = time.time()
-    try:        
+    try:
         resp = await client.post(
             f"{OPENAI_BASE_URL}/chat/completions",
             headers=_get_headers(),
@@ -110,7 +108,7 @@ async def _call_single_model(
 async def call_openai_race(
     messages: List[Dict[str, str]],
     models: List[str] = None,
-    global_timeout: float = 30.0, 
+    global_timeout: float = 30.0,
 ) -> Dict[str, Any]:
     """
     Fire requests to multiple OpenAI models in parallel and return the FIRST successful one.
@@ -122,11 +120,11 @@ async def call_openai_race(
     """
     models = models or LIGHT_MODELS
 
-    # We use a single client instance for connection pooling efficiency, 
+    # We use a single client instance for connection pooling efficiency,
     # but we launch 5 concurrent tasks.
     async with httpx.AsyncClient(timeout=global_timeout) as client:
         tasks = [
-            asyncio.create_task(_call_single_model(client, m, messages, i)) 
+            asyncio.create_task(_call_single_model(client, m, messages, i))
             for i, m in enumerate(models)
         ]
 

@@ -7,7 +7,8 @@ from typing import Dict, Any, List
 import httpx
 from fastapi import HTTPException
 from dotenv import load_dotenv
-load_dotenv()  
+
+load_dotenv()
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
@@ -55,7 +56,7 @@ async def _call_single_model(
     model: str,
     messages: List[Dict[str, str]],
     request_timeout: float = 30.0,
-    i: int = 0
+    i: int = 0,
 ) -> Dict[str, Any]:
     """
     Call a single OpenRouter model and return timing + content.
@@ -63,7 +64,7 @@ async def _call_single_model(
     """
     start = time.time()
     try:
-        i = i%2;
+        i = i % 2
         timeout = httpx.Timeout(30.0, connect=5)
         resp = await client.post(
             f"{OPENROUTER_BASE_URL}/chat/completions",
@@ -140,7 +141,8 @@ async def call_openrouter_race(
 
     async with httpx.AsyncClient(timeout=global_timeout) as client:
         tasks = [
-            asyncio.create_task(_call_single_model(client, m, messages, i)) for i,m in enumerate(models)
+            asyncio.create_task(_call_single_model(client, m, messages, i))
+            for i, m in enumerate(models)
         ]
 
         try:
@@ -182,7 +184,6 @@ async def call_openrouter_race(
             )
 
 
-
 async def main():
     messages = [
         {"role": "user", "content": "Can you hear me?"},
@@ -195,6 +196,7 @@ async def main():
     print("Model:", result["model"])
     print("Latency:", result["latency"])
     print("Content:", result["content"])
+
 
 if __name__ == "__main__":
     asyncio.run(main())
