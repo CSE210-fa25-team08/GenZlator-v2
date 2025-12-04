@@ -173,20 +173,22 @@ async def call_openai_race(
             )
 
 
-async def main():
-    messages = [
-        {"role": "system", "content": "Can you hear me?"},
-        {"role": "user", "content": "What's the capital of France?"}
-    ]
+# TESTING CODE
 
-    print("Running OpenAI model race...")
-    # Note: Updated function name to match provider
-    result = await call_openai_race(messages)
+# async def main():
+#     messages = [
+#         {"role": "system", "content": "Can you hear me?"},
+#         {"role": "user", "content": "What's the capital of France?"}
+#     ]
 
-    print("\n--- WINNER ---")
-    print("Model:", result["model"])
-    print("Latency:", f"{result['latency']:.4f}s")
-    print("Content:", result["content"])
+#     print("Running OpenAI model race...")
+#     # Note: Updated function name to match provider
+#     result = await call_openai_race(messages)
 
-if __name__ == "__main__":
-    asyncio.run(main())
+#     print("\n--- WINNER ---")
+#     print("Model:", result["model"])
+#     print("Latency:", f"{result['latency']:.4f}s")
+#     print("Content:", result["content"])
+
+# if __name__ == "__main__":
+#     asyncio.run(main())
