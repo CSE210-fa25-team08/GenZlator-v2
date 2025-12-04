@@ -9,6 +9,7 @@ from src.backend.api import feedback_router as feedback
 from src.backend.api import debug_router as debug
 from src.backend.api import health_check_router as health
 from src.backend.api import models_router as models
+from fastapi.middleware.cors import CORSMiddleware
 
 FEEDBACK_LOG_PATH = os.getenv("FEEDBACK_LOG_PATH", "feedback_log.jsonl")
 
@@ -17,6 +18,14 @@ app = FastAPI(
     title="Emoji Translator Backend",
     version="1.0.0",
     description="Core Translation & Feedback APIs powered by OpenRouter with model racing.",
+)
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Initialize shared components

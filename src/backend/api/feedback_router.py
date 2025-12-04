@@ -2,7 +2,7 @@ import os
 import json
 from datetime import datetime
 from fastapi import APIRouter, HTTPException
-from models import FeedbackRequest, FeedbackResponse
+from src.backend.core.models import FeedbackRequest, FeedbackResponse
 
 # Create router instance
 router = APIRouter(prefix="/api/v1", tags=["feedback"])
