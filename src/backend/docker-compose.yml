@@ -6,7 +6,7 @@ services:
       context: ../..  # Point to repo root (where Dockerfile expects to build from)
       dockerfile: src/backend/Dockerfile  # Path to Dockerfile from root
     ports:
-      - "8001:8001"
+      - "8003:8003"
     environment:
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
       - FEEDBACK_LOG_PATH=${FEEDBACK_LOG_PATH:-feedback_log.jsonl}

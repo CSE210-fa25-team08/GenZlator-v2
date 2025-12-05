@@ -26,8 +26,8 @@ runDev: build
 runProd: build
 	docker compose up -d
 	@echo "Services started in production mode"
-	@echo "Backend: http://localhost:8001"
-	@echo "Docs: http://localhost:8001/docs"
+	@echo "Backend: http://localhost:8003"
+	@echo "Docs: http://localhost:8003/docs"
 
 build:
 	docker compose build
@@ -63,7 +63,7 @@ clean:
 rebuild: clean build up
 
 health:
-	@curl -s http://localhost:8001/healthz || echo "Backend is not running"
+	@curl -s http://localhost:8003/healthz || echo "Backend is not running"
 
 install-backend:
 	pip install -r requirements.txt
