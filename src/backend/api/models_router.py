@@ -2,6 +2,7 @@
 from fastapi import APIRouter
 from src.backend.core.models import ModelsResponse, ModelInfo
 from src.backend.core.openai_client import LIGHT_MODELS
+
 router = APIRouter(prefix="/api/v1", tags=["models"])
 
 
