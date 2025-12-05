@@ -17,4 +17,3 @@ app.include_router(feedback_router)
 @app.get("/healthz")
 async def health_check():
     return JSONResponse({"status": "ok"})
-                                       
