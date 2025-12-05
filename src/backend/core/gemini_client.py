@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 # Gemini Configuration
-GEMINI_MODEL = "gemini-2.5-flash" 
+GEMINI_MODEL = "gemini-2.5-flash"
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models"
 
 # Number of identical requests to fire in parallel
@@ -25,9 +25,11 @@ def _get_api_key() -> str:
     return api_key
 
 
-def _convert_openai_messages_to_gemini(messages: List[Dict[str, str]]) -> Dict[str, Any]:
+def _convert_openai_messages_to_gemini(
+    messages: List[Dict[str, str]],
+) -> Dict[str, Any]:
     """
-    Helper to convert OpenAI format [{"role": "user", ...}] 
+    Helper to convert OpenAI format [{"role": "user", ...}]
     to Gemini REST format {"contents": [...], "system_instruction": ...}
     """
     system_instruction = None
@@ -38,24 +40,16 @@ def _convert_openai_messages_to_gemini(messages: List[Dict[str, str]]) -> Dict[s
         content = msg.get("content", "")
 
         if role == "system":
-            system_instruction = {
-                "parts": [{"text": content}]
-            }
+            system_instruction = {"parts": [{"text": content}]}
         elif role == "user":
-            contents.append({
-                "role": "user",
-                "parts": [{"text": content}]
-            })
+            contents.append({"role": "user", "parts": [{"text": content}]})
         elif role == "assistant":
-            contents.append({
-                "role": "model",
-                "parts": [{"text": content}]
-            })
+            contents.append({"role": "model", "parts": [{"text": content}]})
 
     payload = {"contents": contents}
     if system_instruction:
         payload["system_instruction"] = system_instruction
-    
+
     return payload
 
 
@@ -97,7 +91,7 @@ async def _call_single_gemini_instance(
             }
 
         data = resp.json()
-        
+
         # Parse Gemini Response Structure
         try:
             # Gemini returns candidates -> content -> parts -> text
@@ -106,7 +100,7 @@ async def _call_single_gemini_instance(
             return {
                 "ok": False,
                 "instance_id": instance_id,
-                "status_code": 200, # Technically success HTTP but failed parsing
+                "status_code": 200,  # Technically success HTTP but failed parsing
                 "latency": latency,
                 "error": "Failed to parse Gemini response structure",
                 "content": None,
@@ -162,7 +156,7 @@ async def call_gemini_race(
         tasks = [
             asyncio.create_task(
                 _call_single_gemini_instance(client, i, gemini_payload, api_key)
-            ) 
+            )
             for i in range(PARALLEL_INSTANCE_COUNT)
         ]
 
@@ -170,18 +164,18 @@ async def call_gemini_race(
             # as_completed yields tasks as they finish
             for completed in asyncio.as_completed(tasks, timeout=global_timeout):
                 result = await completed
-                
+
                 if result.get("ok"):
                     # We have a winner!
                     # Cancel remaining tasks to save bandwidth/processing
                     for t in tasks:
                         if not t.done():
                             t.cancel()
-                    
+
                     # Return the winner
                     return {
                         "model": GEMINI_MODEL,
-                        "winner_instance": result["instance_id"], # Debug info
+                        "winner_instance": result["instance_id"],  # Debug info
                         "content": result["content"],
                         "latency": result["latency"],
                         "usage": result["usage"],
@@ -212,7 +206,8 @@ async def call_gemini_race(
                 status_code=504,
                 detail="Global timeout while waiting for Gemini race.",
             )
-        
+
+
 # TESTING CODE
 
 # async def main():
