@@ -114,5 +114,5 @@ async def main():
     print(f"Total Wall Time (Gemini): {gemini_results['total_wall_time']:.2f}s")
 
 
-if __name__ == "__main__":
-    asyncio.run(main())
+# if __name__ == "__main__":
+#     asyncio.run(main())
