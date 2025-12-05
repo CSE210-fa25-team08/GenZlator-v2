@@ -23,7 +23,7 @@ class LoadTester:
         self.base_url = base_url
         self.target_qps = target_qps
         self.results: List[TestResult] = []
-        self.request_times: List[float] = []  # 记录请求发送时间
+        self.request_times: List[float] = []
 
     async def make_request(
         self,
@@ -40,7 +40,6 @@ class LoadTester:
         try:
             url = f"{self.base_url}{endpoint}"
 
-            # 设置超时，避免请求无限等待
             timeout_obj = aiohttp.ClientTimeout(total=timeout)
 
             if method.upper() == "POST":
@@ -160,19 +159,16 @@ class LoadTester:
         scenarios: List[Dict],
         duration_seconds: int,
     ):
-        """
-        生成请求任务，控制QPS速率
-        按照目标QPS的速率生成任务，不等待响应
-        """
+        """ """
         start_time = time.time()
         request_count = 0
 
         while time.time() - start_time < duration_seconds:
-            # 计算应该在这个时刻发送的请求总数
+            #
             elapsed = time.time() - start_time
             expected_count = int(elapsed * self.target_qps)
 
-            # 发送缺少的请求
+            #
             while request_count < expected_count:
                 scenario = self.select_scenario(scenarios)
 
@@ -186,20 +182,17 @@ class LoadTester:
                     )
                 )
 
-                # 将任务与回调关联
+                #
                 task.add_done_callback(self._handle_result)
 
                 self.request_times.append(time.time())
                 request_count += 1
 
-                # 短暂睡眠，避免 CPU 过度消耗
                 await asyncio.sleep(0.001)
 
-            # 每 100ms 检查一次是否需要发送更多请求
             await asyncio.sleep(0.1)
 
     def _handle_result(self, task: asyncio.Task):
-        """处理单个请求的结果"""
         try:
             result = task.result()
             self.results.append(result)
@@ -227,18 +220,14 @@ class LoadTester:
         start_time = time.time()
 
         async with aiohttp.ClientSession() as session:
-            # 启动请求生成器（控制QPS）
             generator_task = asyncio.create_task(
                 self.request_generator(session, scenarios, duration_seconds)
             )
 
-            # 定期打印进度
             last_report_time = start_time
-            while (
-                time.time() - start_time < duration_seconds + 5
-            ):  # 额外等待5秒让请求完成
+            while time.time() - start_time < duration_seconds + 5:
                 current_time = time.time()
-                if current_time - last_report_time >= 10:  # 每10秒报告一次
+                if current_time - last_report_time >= 10:  #
                     elapsed = current_time - start_time
                     sent_requests = len(self.request_times)
                     completed_requests = len(self.results)
@@ -251,13 +240,11 @@ class LoadTester:
 
                 await asyncio.sleep(1)
 
-                # 如果生成器任务完成且所有请求都已完成，则退出
                 if generator_task.done() and len(self.request_times) == len(
                     self.results
                 ):
                     break
 
-            # 等待所有未完成的请求
             pending_tasks = asyncio.all_tasks()
             if pending_tasks:
                 print(
@@ -307,7 +294,6 @@ class LoadTester:
             print(f"   P95: {p95:.3f}s")
             print(f"   P99: {p99:.3f}s")
 
-        # 按场景分析
         print(f"\n📋 Results by Scenario:")
         scenario_stats = {}
         for result in self.results:
@@ -332,7 +318,6 @@ class LoadTester:
                 f"({success_rate:.1%}) - Avg: {avg_time:.3f}s"
             )
 
-        # 错误分析
         errors = [r for r in self.results if not r.success]
         if errors:
             print(f"\n❌ Error Analysis:")
