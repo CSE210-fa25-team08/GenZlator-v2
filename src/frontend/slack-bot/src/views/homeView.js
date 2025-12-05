@@ -1,4 +1,4 @@
-const { modelMap } = require("./model");
+const { modelMap } = require("../utils/model");
 
 // --- Helper: build App Home view ---
 // markdown for Slack App Home

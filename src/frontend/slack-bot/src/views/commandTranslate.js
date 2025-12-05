@@ -1,5 +1,5 @@
 // src/utils/commandTranslate.js
-const { modelMap } = require("./model");
+const { modelMap } = require("../utils/model");
 
 function buildModelOptions() {
   return Object.entries(modelMap).map(([value, text]) => ({

@@ -1,5 +1,5 @@
 const { modelMap, setUserModel } = require("../utils/model");
-const { buildHomeView } = require("../utils/homeView");
+const { buildHomeView } = require("../views/homeView");
 const { sendFeedback } = require("../utils/backendClient");
 const { renderHome } = require("../utils/renderHome");
 
