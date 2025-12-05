@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0", 
+  "prompts": {
+    "system_prompts": {
+      "base_translator": {
+        "content": "You are a bidirectional translator between English text and emoji chains.\n- When direction is '{direction}', convert the original message into a {conversion_description}.\n- Always respond in STRICT JSON with the following structure:\n{{\n  \"translatedMessage\": \"<string>\",\n  \"metadata\": {{\n    \"tone\": \"<short tone phrase like 'Extreme Laughter', 'Mild Sarcasm', 'Neutral'>\"\n  }}\n}}\n- Do not include any extra keys, explanation, or commentary.",
+        "required_variables": {
+          "direction": "Direction of translation (text_to_emoji or emoji_to_text)",
+          "conversion_description": "Description of the conversion task"
+        },
+        "variants": {
+          "text_to_emoji": "concise emoji sequence that preserves meaning and tone",
+          "emoji_to_text": "natural, concise English text"
+        }
+      },
+      "rag_enhanced_translator": {
+        "content": "You are a bidirectional translator between English text and emoji chains.\n- Direction: {direction}\n- Use the provided similar examples as reference for translation style and accuracy.\n- Always respond in STRICT JSON format:\n{{\n  \"translatedMessage\": \"<string>\",\n  \"metadata\": {{\n    \"tone\": \"<tone>\",\n    \"confidence\": \"<high/medium/low>\"\n  }}\n}}\n- Similar examples for reference:\n{similar_examples}",
+        "required_variables": {
+          "direction": "Translation direction",
+          "similar_examples": "RAG retrieved similar examples"
+        }
+      }
+    },
+    "user_prompts": {
+      "basic_translation": {
+        "content": "Direction: {direction}\nOriginal message: {original_message}\nRecent chat history (may be empty or partial):\n{chat_history}\nReturn ONLY the JSON object as specified.",
+        "required_variables": {
+          "direction": "Translation direction (text_to_emoji or emoji_to_text)",
+          "original_message": "The message to translate",
+          "chat_history": "Recent conversation context"
+        }
+      },
+      "rag_enhanced_translation": {
+        "content": "Direction: {direction}\nOriginal message: {original_message}\nRecent chat history:\n{chat_history}\n\nSimilar past translations for reference:\n{similar_translations}\n\nBased on the similar examples above, provide an accurate translation that maintains consistency with past corrections. Return ONLY the JSON object as specified.",
+        "required_variables": {
+          "direction": "Translation direction",
+          "original_message": "Message to translate", 
+          "chat_history": "Recent conversation context",
+          "similar_translations": "RAG retrieved similar examples"
+        }
+      }
+    },
+    "formatting": {
+      "chat_history_empty": "None",
+      "chat_history_format": "- {message}",
+      "similar_example_format": "Original: {original}\nCorrection: {correction}\nSimilarity: {similarity:.2f}",
+      "direction_names": {
+        "text_to_emoji": "text_to_emoji",
+        "emoji_to_text": "emoji_to_text"
+      }
+    }
+  }
+}

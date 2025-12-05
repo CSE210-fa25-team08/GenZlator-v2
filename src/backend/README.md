@@ -1,187 +1,211 @@
-# GenZlator-v2: Emoji Translator Backend
-This directory contains the FastAPI backend for the **Emoji Translator** project.  
-It provides a bidirectional **English ↔ Emoji** translation API and a feedback endpoint.  
-The backend uses **OpenRouter** and races multiple free models in parallel.
+# GenZlator-v2
 
----
+Because sometimes '😭💀🔥' says more than a paragraph — and GenZlator-v2 gets that
 
-## 📁 Project Structure
+## Code Structure
+
+```text
+GenZlator-v2/
+├── src/backend/                     # FASTAPI BACKEND APPLICATION
+│   ├── api/                         # API ROUTE HANDLERS
+│   │   ├── __init__.py             # Router package initialization
+│   │   ├── debug_router.py         # Debug endpoints for RAG system inspection and testing
+│   │   ├── feedback_router.py      # Feedback collection API for user corrections and ratings
+│   │   ├── health_check_router.py  # Health check endpoints for system monitoring
+│   │   ├── models_router.py        # Model information and configuration API
+│   │   └── translation_router.py   # Main translation API (text ↔ emoji conversion)
+│   ├── core/                       # CORE BUSINESS LOGIC
+│   │   ├── models.py               # Pydantic data models and request/response schemas
+│   │   ├── openrouter_client.py    # OpenRouter API client with model racing capability
+│   │   └── rag_lite.py            # RAG system for similarity search using sentence transformers and SQLite
+│   ├── scripts/                    # PERFORMANCE TESTING AND DATABASE UTILITIES
+│   │   └── test_feedback_storage.py # Database storage performance testing script
+│   ├── utils/                      # SHARED UTILITIES
+│   │   └── prompt_manager.py       # Prompt templates and generation for LLM interactions
+│   └── backend_main.py             # FastAPI application entry point
+├── prompts/                        # LLM PROMPT TEMPLATES
+│   └── prompts.json               # JSON file containing structured prompts for different translation scenarios
+├── specs/                          # PROJECT SPECIFICATIONS
+│   ├── pitch/                      # Project pitch materials
+│   ├── BackendProposal.pdf         # Backend architecture proposal document
+│   ├── FrontendProposal.pdf        # Frontend design proposal document
+│   └── StartingPitchPresentation.pdf # Initial project presentation
+└── README.md                       # PROJECT DOCUMENTATION - API examples, setup instructions, and endpoint reference
+```
+
+## Setup
+
+Export the Open Router API key:
 
 ```bash
-src/backend/
-  main.py                # App entrypoint (FastAPI)
-  api/                   # HTTP routes
-    translate.py         # /api/v1/translate
-    feedback.py          # /api/v1/feedback
-  core/                  # Shared models & clients
-    models.py            # Pydantic schemas
-    openrouter_client.py # OpenRouter chat/completions client (model race)
-  vectorization/         # Embedding + RAG utilities
-    embeddings_client.py # Embedding model calls
-    feedback_rag.py      # RAG-style ranking for feedback
+export OPENROUTER_API_KEY="sk-or-v1-..."
 ```
+TODO: Add instructions for Gemini & OpenAI keys if needed.
 
-**main.py**  
-- Creates the FastAPI application
-- Includes the route modules under `/api/v1/...`
-- Exposes /healthz for health checks
 
-**core/models.py**  
-- Defines request/response Pydantic models for Translation and Feedback
-
-**core/openrouter_client.py**  
-- Calls OpenRouter `/chat/completions` endpoint  
-- Races multiple free models and returns the first successful result
-
-**vectorization/embeddings_client.py & vectorization/feedback_rag.py**
-- Reserved for feedback vectorization & RAG-style ranking
-- These exist to support future features like "find similar feedback" or "search feedback by meaning," even if their code is not fully implemented yet
-
----
-
-## ⚙️ Requirements
-
-- Python 3.10+
-- Dependencies:
-  - fastapi  
-  - uvicorn[standard]  
-  - httpx  
-  - pydantic  
-
-Install manually:
+Run the backend server using:
 
 ```bash
-pip install -r requirements.txt
-````
+uvicorn src.backend.main:app --reload --host 0.0.0.0 --port 8000
+```
 
----
+And in another terminal, access the API with examples below.
+After receiving feedback, the system will store it in a SQLite database named `feedback_embeddings.db` in the working directory, and store the logs in `feedback_log.jsonl`.
 
-## 🔧 Environment Variables
 
-The backend uses:
+## Public API Examples
 
-| Variable             | Required | Description                             |
-| -------------------- | -------- | --------------------------------------- |
-| `OPENROUTER_API_KEY` | ✅ Yes    | OpenRouter API key for making LLM calls |
-| `FEEDBACK_LOG_PATH`  | No       | Defaults to `feedback_log.jsonl`        |
-
-Example:
+### Translation API
 
 ```bash
-export OPENROUTER_API_KEY="sk-or-..."
-export FEEDBACK_LOG_PATH="feedback_log.jsonl"
-```
-
----
-
-## 🚀 Running the Server
-Because the code uses `backend.*` imports, it’s best to run from the repo root with `src` on PYTHONPATH.
-
-From the repo root:
-
-```bash
-cd src/backend
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
-
-Server will start at:
-👉 [http://localhost:8000](http://localhost:8000)
-Docs available at:
-👉 [http://localhost:8000/docs](http://localhost:8000/docs)
-
-If you prefer running from `src/backend`, make sure `PYTHONPATH` still points to src:
-
-```bash
-cd <repo-root>/src/backend
-export PYTHONPATH=../..
-export OPENROUTER_API_KEY="sk-or-..."
-uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
-```
-
----
-
-## 📡 API Endpoints
-
-### 1. Health Check
-
-**GET** `/healthz`
-
-**Response:**
-
-```json
-{ "status": "ok" }
-```
-
----
-
-### 2. Translate
-
-**POST** `/api/v1/translate`
-
-Translates English → Emoji or Emoji → English depending on `isToEmoji`.
-
-#### Translate Request Body
-
-```json
-{
-  "originalMessage": "string",
-  "isToEmoji": true,
-  "chatHistory": ["optional", "context"]
-}
-```
-
-#### Response Body
-
-```json
-{
-  "translatedMessage": "string",
-}
-```
-
-#### Example
-
-In Linux/Ubuntu/Mac:
-
-```bash
-curl -X POST http://localhost:8000/api/v1/translate \
+curl -X POST "http://localhost:8000/api/v1/translate" \
   -H "Content-Type: application/json" \
   -d '{
-    "originalMessage": "That meeting was hilarious",
+    "originalMessage": "I am so happy today, everything feels amazing!",
     "isToEmoji": true,
-    "chatHistory": []
+    "chatHistory": [
+      "How was your exam?",
+      "It went really well!"
+    ]
+  }'
+
+curl -X POST "http://localhost:8000/api/v1/translate" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "originalMessage": "I love apple",
+    "isToEmoji": true,
+    "chatHistory": [
+      "Did you enjoy the party?",
+      "Yes, it was fantastic!"
+    ]
   }'
 ```
-In Windows Terminal:
+
+Or, with `Invoke-RestMethod`:
+
+```powershell
+Invoke-RestMethod -Uri "http://localhost:8000/api/v1/translate" -Method POST -ContentType "application/json" -Body '{
+  "originalMessage": "I am so happy today, everything feels amazing!",
+  "isToEmoji": true,
+  "chatHistory": [
+    "How was your exam?",
+    "It went really well!"
+  ]
+}'
+```
+
+### Models API
+
+Get information about available translation models:
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/translate -H "Content-Type: application/json" -d "{ \"originalMessage\": \"That meeting was hilarious\",  \"isToEmoji\": true, \"chatHistory\": [] }"
+# Get all available models
+curl -X GET "http://localhost:8000/api/v1/models"
+
 ```
 
----
+Or, with `Invoke-RestMethod`:
 
-### 3. Feedback
-
-**POST** `/api/v1/feedback`
-
-Used for logging corrections, ratings, and improvement hints.
-
-#### Feedback Request Body
-
-```json
-{
-  "originalInput": "🙂🙂🙂",
-  "correctionText": "Very mildly amused",
-  "anonymousId": "user-1234",
-  "rating": 0
-}
+```powershell
+# Get all available models
+Invoke-RestMethod -Uri "http://localhost:8000/api/v1/models" -Method GET
 ```
 
-#### Response
+### Feedback API
 
-```json
-{ "status": "accepted" }
+```bash
+curl -X POST "http://localhost:8000/api/v1/feedback" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "originalInput": "😄✨🎉",
+    "correctionText": "I'm extremely happy today!",
+    "anonymousId": "user-abc-123",
+    "rating": 0
+  }'
 ```
 
-Logs are appended to `feedback_log.jsonl` (or your custom `FEEDBACK_LOG_PATH`).
+Or, with `Invoke-RestMethod`:
 
----
+```powershell
+Invoke-RestMethod -Uri "http://localhost:8000/api/v1/feedback" -Method POST -ContentType "application/json" -Body '{
+    "originalInput": "😄✨🎉",
+    "correctionText": "I''m extremely happy today!",
+    "anonymousId": "user-abc-123",
+    "rating": 0
+  }'
+```
+
+## Private API Examples (Not for public use)
+
+### Health Check APIs
+
+```bash
+# Basic health check (fast, for load balancers)
+curl -X GET "http://localhost:8000/healthz"
+```
+
+### Debug APIs
+
+```bash
+# Debug RAG system statistics and recent feedback
+curl -X GET "http://localhost:8000/debug/rag"
+
+# Debug RAG similarity search functionality
+curl -X POST "http://localhost:8000/debug/rag/search" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "😭😭😭"
+  }'
+```
+
+Or, with `Invoke-RestMethod`:
+
+```powershell
+# Debug RAG system statistics and recent feedback
+Invoke-RestMethod -Uri "http://localhost:8000/debug/rag" -Method GET
+
+# Debug RAG similarity search functionality
+Invoke-RestMethod -Uri "http://localhost:8000/debug/rag/search" -Method POST -ContentType "application/json" -Body '{
+    "text": "An apple a day"
+  }'
+```
+
+### Root API
+
+```bash
+# Get API information and available endpoints
+curl -X GET "http://localhost:8000/"
+```
+
+### Performance Testing & Database Management
+
+GenZlator-v2 includes comprehensive testing scripts for performance evaluation and database management:
+
+#### profiling
+
+Test the qps with the script:
+
+```bash
+python src/backend/profiling/profiler.py --qps 10 --duration 10 --url "http://your-server:8000"
+
+```
+
+### Database Storage Performance Testing
+
+Test feedback storage performance with large datasets:
+
+```bash
+# Install testing dependencies
+pip install aiohttp
+
+
+# Custom server testing
+python src/backend/scripts/test_feedback_storage.py --records 5000 --batch-size 25 --url "http://your-server:8000"
+```
+
+**Test Features:**
+
+- Generates random emoji sequences and correction text with rating=0
+- Measures database storage throughput (records/second)
+- Analyzes response time distribution (P50, P95, P99)
+- Provides performance optimization recommendations
