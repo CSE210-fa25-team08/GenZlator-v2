@@ -1,14 +1,15 @@
-const { modelMap, modelInfo } = require("../utils/model");
+const model = require("../utils/model");
 // --- Helper: build App Home view ---
 // markdown for Slack App Home
 // I move it here in order to reduce code duplication
 // might change in future
 function buildHomeView(mode, currentModel, historyBlocks) {
-    const selectedModelId = modelMap[currentModel] || modelMap.default;
-    const selectedInfo = modelInfo[currentModel];
+
+    const selectedModel = model.modelMap[currentModel];
+    const selectedInfo = model.modelInfo[selectedModel];
     const isHistory = mode === "history";
     
-    const modelDescriptionsMarkdown = Object.values(modelInfo)
+    const modelDescriptionsMarkdown = Object.values(model.modelInfo)
         .map(m => {
             const strengths = m.strengths?.length
                 ? m.strengths.map(s => `      - ${s}`).join("\n")
@@ -39,7 +40,7 @@ ${strengths ? strengths : ""}
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `Your current default model:\n• *${selectedInfo?.name || selectedModelId}* (\`${selectedModelId}\`)`,
+          text: `Your current default model:\n• *${selectedInfo?.name || selectedModel}* (\`${selectedModel}\`)`,
         },
       },
       {

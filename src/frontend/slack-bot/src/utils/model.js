@@ -2,11 +2,11 @@
 const { getAvailableModels } = require("./backendClient");
 
 // fallback if API fails
-let modelMap = {
-  default: "mistral-7b-instruct",   
-};
+let modelMap = {};
 
 let modelInfo = {};
+
+let defaultModelId = "default";
 
 // simple in-memory store for user default models
 const userDefaultModels = {};
@@ -39,17 +39,17 @@ async function loadModelsFromAPI() {
         };
       });
 
-        // const first = data.models[0];
-        // if (first) {
-        //     const firstId = first.id.includes(":") ? first.id.split(":")[0] : first.id;
-        //     newMap.default = firstId;
-        // }
-
         Object.keys(modelInfo).forEach(k => delete modelInfo[k]);
         Object.assign(modelInfo, newInfo);
 
         Object.keys(modelMap).forEach(k => delete modelMap[k]);
         Object.assign(modelMap, newMap);
+
+        const keys = Object.keys(newMap);
+        if (keys.length > 0) {
+            defaultModelId = keys[0];
+            console.log("Set default model ID to:", defaultModelId);
+        }
         // console.log("[Model] Loaded models:", modelMap);
         // console.log("[ModelInfo] Loaded:", modelInfo);
 
@@ -60,7 +60,8 @@ async function loadModelsFromAPI() {
 
 
 function getUserModel(userId) {
-  return userDefaultModels[userId] || "default";
+  console.log("HI" + defaultModelId);
+  return userDefaultModels[userId] || defaultModelId;
 }
 
 function setUserModel(userId, key) {
@@ -73,4 +74,5 @@ module.exports = {
   loadModelsFromAPI,
   getUserModel,
   setUserModel,
+  defaultModelId
 };
