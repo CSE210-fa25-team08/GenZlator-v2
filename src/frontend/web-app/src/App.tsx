@@ -7,7 +7,7 @@ import SuggestionBox from './components/SuggestionBox'
 import { useState } from 'react';
 
 function App() {
-  const [rating, setRating] = useState(null);
+  const [rating, setRating] = useState<boolean | null>(null);
   const [isTranslated, setTranslated] = useState(false);
   const [lastTranslation, setLastTranslation] = useState({
         text: "",
