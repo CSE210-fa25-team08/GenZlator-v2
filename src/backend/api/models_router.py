@@ -1,7 +1,7 @@
 # src/backend/routers/models_router.py
 from fastapi import APIRouter
 from src.backend.core.models import ModelsResponse, ModelInfo
-from src.backend.core.openrouter_client import FREE_MODELS
+from src.backend.core.openai_client import LIGHT_MODELS
 
 router = APIRouter(prefix="/api/v1", tags=["models"])
 
@@ -70,7 +70,7 @@ async def get_available_models():
         },
     }
 
-    for model_id in FREE_MODELS:
+    for model_id in LIGHT_MODELS:
         details = model_details.get(model_id, {})
         model_name = details.get("name", model_id.split("/")[-1].replace(":free", ""))
         provider = details.get("provider", model_id.split("/")[0])
@@ -99,7 +99,7 @@ async def get_racing_info():
     return {
         "racing_enabled": True,
         "strategy": "first_successful_response",
-        "models_in_race": FREE_MODELS,
+        "models_in_race": LIGHT_MODELS,
         "timeout_settings": {"per_model_timeout": 30.0, "global_timeout": 40.0},
         "description": "The system sends requests to all available models simultaneously and returns the first successful response for optimal speed and reliability.",
     }
@@ -112,7 +112,7 @@ async def get_model_details(model_id: str):
 
     Returns comprehensive information about the requested model if it's supported.
     """
-    if model_id not in FREE_MODELS:
+    if model_id not in LIGHT_MODELS:
         from fastapi import HTTPException
 
         raise HTTPException(
