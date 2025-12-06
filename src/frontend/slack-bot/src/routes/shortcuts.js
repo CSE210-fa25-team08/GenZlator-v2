@@ -36,7 +36,8 @@ module.exports = function registerShortcuts(app) {
             // Public channel → send translation to channel
             await client.chat.postMessage({
                 channel: body.channel.id,
-                text: `*🔅 Translation Result*\n\n` +
+                text: `*🔅 Translation Result* ` +
+                `*by:* <@${body.user.id}>\n` +
                     `• *Original Text:* ${originalText}\n` +
                     `• *Text → Emoji:* ${translated_1}\n` +
                     `• *Emoji → Text:* ${translated_2}\n`,

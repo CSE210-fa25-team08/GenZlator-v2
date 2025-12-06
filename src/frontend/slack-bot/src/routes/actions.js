@@ -101,7 +101,6 @@ module.exports = function registerActions(app) {
     // --- Handle feedback buttons in messages ---
     app.action("feedback_yes", async ({ ack, body, respond }) => {
         await ack();
-      
         const originalInput = body.actions[0].value;
         console.log("User liked the translation, original input " + originalInput);
         await sendFeedback(originalInput, "", body.user.id, 1);

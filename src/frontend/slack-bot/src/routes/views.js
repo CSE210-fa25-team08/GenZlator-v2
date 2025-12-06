@@ -66,7 +66,8 @@ module.exports = function registerViews(app) {
             // Send to whole channel
             await client.chat.postMessage({
                 channel,
-                text: `*🔅 Translation Result*\n\n` +
+                text: `*🔅 Translation Result* ` +
+                `*by:* <@${userId}>\n` +
                     `• *Original Text:* ${input}\n` +
                     `• *Text → Emoji:* ${translated}\n`,
             });
@@ -132,7 +133,8 @@ module.exports = function registerViews(app) {
             // Send to whole channel
             await client.chat.postMessage({
                 channel,
-                text: `*🔅 Translation Result*\n\n` +
+                text: `*🔅 Translation Result* ` +
+                `*by:* <@${userId}>\n` +
                     `• *Original Text:* ${input}\n` +
                     `• *Emoji → Text:* ${translated}\n`,
             });
