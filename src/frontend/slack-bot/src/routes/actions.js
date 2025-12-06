@@ -1,4 +1,4 @@
-const { modelMap, setUserModel } = require("../utils/model");
+const { modelMap } = require("../utils/model");
 const { buildHomeView } = require("../views/homeView");
 const { sendFeedback } = require("../utils/backendClient");
 const { renderHome } = require("../utils/renderHome");
@@ -7,6 +7,7 @@ module.exports = function registerActions(app) {
     // --- Handle modal submission for default style setting ---
     app.action("open_default_setting", async ({ ack, body, client }) => {
         await ack();
+        console.log(modelMap);
         const modal = {
             type: "modal",
             callback_id: "default_style_modal",

@@ -1,35 +1,27 @@
-const { modelMap } = require("../utils/model");
-
+const { modelMap, modelInfo } = require("../utils/model");
 // --- Helper: build App Home view ---
 // markdown for Slack App Home
 // I move it here in order to reduce code duplication
 // might change in future
 function buildHomeView(mode, currentModel, historyBlocks) {
-    const selected = modelMap[currentModel] || modelMap.default;
+    const selectedModelId = modelMap[currentModel] || modelMap.default;
+    const selectedInfo = modelInfo[currentModel];
     const isHistory = mode === "history";
-    const modelDescriptions = `
-    *Model Overview*
-
-    • *mistralai/mistral-7b-instruct*  
-      A lightweight, fast model suitable for most general text-to-emoji or emoji-to-text conversions.  
-      It performs well for everyday messages and delivers stable, predictable outputs with low latency.
-
-    • *deepseek/deepseek-r1*  
-      A reasoning-focused model.  
-      It tends to analyze the text more deeply and can produce more accurate translations for longer or more context-heavy inputs.
-
-    • *deepseek/deepseek-r1-distill-llama-70b*  
-      A distilled version of a larger reasoning model.  
-      It preserves much of the high-quality output of a 70B model but reduces inference time, making it a strong choice when accuracy matters.
-
-    • *cognitivecomputations/dolphin3.0-mistral-24b*  
-      A larger, instruction-tuned model designed for nuanced text understanding.  
-      It often produces richer interpretations of meaning and is suitable if you want more expressive conversions.
-
-    • *cognitivecomputations/dolphin-mistral-24b-venice-edition*  
-      A variant optimized for polished and stylistically consistent responses.  
-      It emphasizes clarity and coherence, making it helpful when translating content that needs to be clearer or more refined.
-    `;
+    
+    const modelDescriptionsMarkdown = Object.values(modelInfo)
+        .map(m => {
+            const strengths = m.strengths?.length
+                ? m.strengths.map(s => `      - ${s}`).join("\n")
+                : "";
+            return `
+• *${m.name}* — \`${m.id}\`
+  - ${m.description || "No description available."}
+  - Provider: *${m.provider || "Unknown"}*
+  - Max tokens: ${m.max_tokens || "N/A"}
+${strengths ? strengths : ""}
+`;
+        })
+        .join("\n");
 
     const overviewBlocks = [
       {
@@ -47,7 +39,7 @@ function buildHomeView(mode, currentModel, historyBlocks) {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `Your current default model: *${selected}*`,
+          text: `Your current default model:\n• *${selectedInfo?.name || selectedModelId}* (\`${selectedModelId}\`)`,
         },
       },
       {
@@ -95,7 +87,7 @@ If you type the command without arguments, an interactive modal will appear so y
       // --- Model Overview Block ---
       {
         type: "section",
-        text: { type: "mrkdwn", text: modelDescriptions },
+        text: { type: "mrkdwn", text: `*Model Overview*\n${modelDescriptionsMarkdown}` },
       },
 
       { type: "divider" },
