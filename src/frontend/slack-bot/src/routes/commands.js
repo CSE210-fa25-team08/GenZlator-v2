@@ -45,7 +45,8 @@ module.exports = function registerCommands(app) {
                 await client.chat.postMessage({
                     channel: command.channel_id,
                     response_type: "in_channel",
-                    text: `*🔅 Translation Result*\n\n` +
+                    text: `*🔅 Translation Result* ` +
+                    `*by:* <@${command.user_id}>\n` +
                     `• *Original Text:* ${text}\n` +
                     `• *Text → Emoji:* ${translated}\n`,    
                 });
@@ -124,7 +125,8 @@ module.exports = function registerCommands(app) {
                 await client.chat.postMessage({
                     channel: command.channel_id,
                     response_type: "in_channel",
-                    text: `*🔅 Translation Result*\n\n` +
+                    text: `*🔅 Translation Result* ` +
+                    `*by:* <@${command.user_id}>\n` +
                     `• *Original Text:* ${text}\n` +
                     `• *Emoji → Text:* ${translated}\n`,
                 });
