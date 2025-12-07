@@ -4,6 +4,7 @@ const { translate } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
 const { addHistory } = require("../storage/history");
 const { translateToEmojis, translateToWords } = require("../utils/translateFallback");
+const { withTimeout } = require("../utils/withTimeout");
 
 module.exports = function registerShortcuts(app) {
     app.shortcut("translate", async ({ ack, body, client }) => {
@@ -16,8 +17,16 @@ module.exports = function registerShortcuts(app) {
         let translated_1 = "";
         let translated_2 = "";
         try {
-            translated_1 = await translate(originalText, true, chatHistory);  
-            translated_2 = await translate(originalText, false, chatHistory);
+            translated_1 = await withTimeout(
+                translate(originalText, true, chatHistory),
+                3000, 
+                "Translation backend timeout"
+            );
+            translated_2 = await withTimeout(
+                translate(originalText, false, chatHistory),
+                3000, 
+                "Translation backend timeout"
+            );
         } catch (err) {
             console.error("Translate backend error:", err);
             translated_1 = await translateToEmojis(originalText);
@@ -38,7 +47,7 @@ module.exports = function registerShortcuts(app) {
                 channel: body.channel.id,
                 text: `*🔅 Translation Result* ` +
                 `*by:* <@${body.user.id}>\n` +
-                    `• *Original Text:* ${originalText}\n` +
+                    `• *Original Input:* ${originalText}\n` +
                     `• *Text → Emoji:* ${translated_1}\n` +
                     `• *Emoji → Text:* ${translated_2}\n`,
             });
