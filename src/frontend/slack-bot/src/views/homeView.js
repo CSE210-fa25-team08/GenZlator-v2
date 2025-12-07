@@ -69,7 +69,7 @@ ${strengths ? strengths : ""}
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `*User Guide*\nUse these slash commands:\n
+          text: `*🧭 User Guide*\nUse these slash commands:\n
 • \`/text-to-emoji [text]\`
    - With \`[text]\`: convert the text into emojis directly (quick mode)
    - Without arguments: open a *modal* to choose style / options before translating
@@ -84,11 +84,26 @@ If you type the command without arguments, an interactive modal will appear so y
 
 
       { type: "divider" },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text:
+            "*🧭 How to Add Emojize to a Channel*\n" +
+            "To use the bot inside a channel, you need to invite it first:\n" +
+            "1. Go to the channel.\n" +
+            "2. Type `@Emojize` and select the bot from the menu.\n" +
+            "3. Slack will ask if you want to add the app — confirm it.\n\n" +
+            "After that, you can use slash commands in the channel, and Emojize will respond normally!"
+        }
+      },
+
+      { type: "divider" },
 
       // --- Model Overview Block ---
       {
         type: "section",
-        text: { type: "mrkdwn", text: `*Model Overview*\n${modelDescriptionsMarkdown}` },
+        text: { type: "mrkdwn", text: `*🧭 Model Overview*\n${modelDescriptionsMarkdown}` },
       },
 
       { type: "divider" },
