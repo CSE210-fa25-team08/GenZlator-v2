@@ -20,7 +20,6 @@ import type { EmojiClickData } from 'emoji-picker-react';
 
 import { backend_translate, backend_feedback } from '../hooks/backend.tsx'
 
-import Context from './Context.tsx';
 interface TranslationBoxProps {
     lastTranslation: { text: string; toEmoji: boolean };
     setLastTranslation: Dispatch<SetStateAction<{ text: string; toEmoji: boolean }>>;
@@ -35,7 +34,6 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     const [outputText, setOutputText] = useState('');
     const [toEmoji, setToEmoji] = useState(false);
     const [isLoading, setLoading] = useState(false);
-    const [addedContext, setContext] = useState("");
     const [showPicker, setPicker] = useState(false);
     // const [lastTranslation, setLastTranslation] = useState({
     //     text: "",
@@ -49,39 +47,11 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     const emojiButtonRef = useRef<HTMLButtonElement>(null);
     const pickerRef = useRef<HTMLDivElement>(null);
 
-    // Trigger translation if non-empty input is left for 5 seconds
-    // Also waits for added context to not be edited for 5 seconds
-    useEffect(() => {
-        auto_translate_timer.current = setTimeout(() => {
-            if (inputText.trim() != "") { //TODO: more conditionals than this
-                console.log("auto translate triggered");
-                handleTranslation(true);
-            }
-        }, AUTO_TRANSLATE_DELAY);
-
-        return () => {
-            if(auto_translate_timer.current) {
-                clearTimeout(auto_translate_timer.current);
-            }
-        };
-
-    }, [inputText, addedContext]);
-
-    // When the output text changes then cancel the timer
-    useEffect(() => {
-        if(auto_translate_timer.current) {
-            clearTimeout(auto_translate_timer.current);
-        }
-    }, [outputText])
-
-    // Send async translation request to backend and update state
-    const handleTranslation = async(autotranslated: boolean) => {
     // Send async translation request to backend and update state
     const handleTranslation = useCallback(async() => {
         // If this request is the same as the last translation request, ignore
-        if (lastTranslation.text.trim() == inputText.trim() && lastTranslation.toEmoji == toEmoji && (lastTranslation.addedContext.trim() == addedContext.trim() || (autotranslated && addedContext.trim() == ""))){return;}
-        else {setLastTranslation({text:inputText, toEmoji:toEmoji, addedContext:addedContext})};
-        console.log("translation started");
+        if (lastTranslation.text.trim() == inputText.trim() && lastTranslation.toEmoji == toEmoji){return;}
+        else {setLastTranslation({text:inputText, toEmoji:toEmoji})};
         setLoading(true);
         setTranslated(false);
         // If there is a current translation request in progress, abort it
@@ -89,15 +59,12 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
             activeControllerRef.current.abort();
             console.log("Aborting previous request");
         }
-        if(auto_translate_timer.current) {
-            clearTimeout(auto_translate_timer.current);
-        }
         // Set up new controller to allow abortion of this translation request
         const controller = new AbortController();
         activeControllerRef.current = controller;
         const signal = controller.signal;
         try {
-            const translated_output = await backend_translate(toEmoji, inputText, addedContext, signal);
+            const translated_output = await backend_translate(toEmoji, inputText, signal);
             if(!signal.aborted){
                 setOutputText(translated_output);
                 setRating(null);
@@ -266,7 +233,6 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
                     </section>
                 </section>
             </fieldset>
-            <Context addedContext={addedContext} setContext={setContext} isMobile={isMobile}/>
             <Button fullWidth className="translate-btn" loadingPosition="start" loading={isLoading} disabled={inputText.trim()==""} onClick={handleTranslation}>TRANSLATE</Button>
         {showPicker && <section ref={pickerRef} className="emoji-container"><EmojiPicker onEmojiClick={handleEmojiClick}/></section>}
         </section>
