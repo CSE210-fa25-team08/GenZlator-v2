@@ -1,11 +1,12 @@
 // src/routes/views.js
-const { buildHomeView } = require("../utils/homeView");
 const { setUserModel } = require("../utils/model");
-const { buildFeedbackBlocks } = require("../utils/feedback");
+const { buildFeedbackBlocks } = require("../views/feedback");
 const { sendFeedback, translate } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
 const { addHistory } = require("../storage/history");
 const { renderHome } = require("../utils/renderHome");
+const { translateToEmojis, translateToWords } = require("../utils/translateFallback");
+const { withTimeout } = require("../utils/withTimeout");
 
 module.exports = function registerViews(app) {
     // --- View: default_style_modal (from open_default_setting action) ---
@@ -42,80 +43,62 @@ module.exports = function registerViews(app) {
         const visibility =
         body.view.state.values.visibility_select.visibility_choice.selected_option.value;
 
-
         let chatHistory = await getChatHistory(client, channel);
 
-        console.log("📤 Sending to backend:", {
-            originalMessage: input,
-            isToEmoji: true,
-            chatHistory
-        });
-
         let translated = "";
-        let isSuccess = false;
         try {
-            translated = await translate(input, true, chatHistory);
-            isSuccess = true;
+            translated = await withTimeout(
+                translate(input, true, chatHistory),
+                3000, 
+                "Translation backend timeout"
+            );
         } catch (err) {
             console.error("Translate backend error:", err);
-            translated = "‼️ Translation failed. Please try again later.";
+            translated = translateToEmojis(input);
         }
         
-        if (isSuccess) {
-            addHistory(userId, {
-                original: input,
-                translated: translated,
-                direction: "text-to-emoji", 
-                timestamp: new Date().toISOString(),
-                channel: channel
+        addHistory(userId, {
+            original: input,
+            translated: translated,
+            direction: "text-to-emoji", 
+            timestamp: new Date().toISOString(),
+            channel: channel
+        });
+
+        const feedbackBlocks = buildFeedbackBlocks(input);
+
+        if (visibility === "public") {
+            // Send to whole channel
+            await client.chat.postMessage({
+                channel,
+                text: `*🔅 Translation Result* ` +
+                `*by:* <@${userId}>\n` +
+                    `• *Original Input:* ${input}\n` +
+                    `• *Text → Emoji:* ${translated}\n`,
             });
-
-            const feedbackBlocks = buildFeedbackBlocks(input);
-
-            if (visibility === "public") {
-                // Send to whole channel
-                await client.chat.postMessage({
-                    channel,
-                    text: `*🔅 Translation Result*\n\n` +
-                        `• *Original Text:* ${input}\n` +
-                        `• *Text → Emoji:* ${translated}\n`,
-                });
-        
-                await client.chat.postMessage({
-                    channel,
-                    blocks: feedbackBlocks,
-                });
-        
-            } else {
-                // Send ONLY to the user
-                await client.chat.postEphemeral({
-                    channel,
-                    user: body.user.id,
-                    text: `*🔅 Translation Result*\n\n` +
-                        `• *Original Text:* ${input}\n` +
-                        `• *Text → Emoji:* ${translated}\n`,
-                });
-        
-                await client.chat.postEphemeral({
-                    channel,
-                    user: body.user.id,
-                    blocks: feedbackBlocks,
-                });
-            }
+    
+            await client.chat.postMessage({
+                channel,
+                blocks: feedbackBlocks,
+            });
+    
         } else {
-            if (visibility === "public") {
-                await client.chat.postMessage({
-                    channel,
-                    text: translated,
-                });
-            } else {
-                await client.chat.postEphemeral({
-                    channel,
-                    user: body.user.id,
-                    text: translated,
-                });
-            }
+            // Send ONLY to the user
+            await client.chat.postEphemeral({
+                channel,
+                user: body.user.id,
+                text: `*🔅 Translation Result*\n\n` +
+                    `• *Original Input:* ${input}\n` +
+                    `• *Text → Emoji:* ${translated}\n`,
+            });
+    
+            await client.chat.postEphemeral({
+                channel,
+                user: body.user.id,
+                blocks: feedbackBlocks,
+            });
         }
+       
         
     });
 
@@ -134,76 +117,57 @@ module.exports = function registerViews(app) {
 
         let chatHistory = await getChatHistory(client, channel);
 
-        console.log("📤 Sending to backend:", {
-            originalMessage: input,
-            isToEmoji: true,
-            chatHistory
-        });
-
-
         let translated = "";
-        let isSuccess = false;
         try {
-            translated = await translate(input, false, chatHistory);
-            isSuccess = true;
+            translated = await withTimeout(
+                translate(input, false, chatHistory),
+                3000, 
+                "Translation backend timeout"
+            );
         } catch (err) {
             console.error("Translate backend error:", err);
-            translated = "‼️ Translation failed. Please try again later.";
+            translated = await translateToWords(input);
         }
 
-        if (isSuccess) {
-            const feedbackBlocks = buildFeedbackBlocks(input);
+        const feedbackBlocks = buildFeedbackBlocks(input);
 
-            addHistory(userId, {
-                original: input,
-                translated: translated,
-                direction: "emoji-to-text", 
-                timestamp: new Date().toISOString(),
-                channel: channel
+        addHistory(userId, {
+            original: input,
+            translated: translated,
+            direction: "emoji-to-text", 
+            timestamp: new Date().toISOString(),
+            channel: channel
+        });
+        if (visibility === "public") {
+            // Send to whole channel
+            await client.chat.postMessage({
+                channel,
+                text: `*🔅 Translation Result* ` +
+                `*by:* <@${userId}>\n` +
+                    `• *Original Input:* ${input}\n` +
+                    `• *Emoji → Text:* ${translated}\n`,
             });
-            if (visibility === "public") {
-                // Send to whole channel
-                await client.chat.postMessage({
-                    channel,
-                    text: `*🔅 Translation Result*\n\n` +
-                        `• *Original Text:* ${input}\n` +
-                        `• *Emoji → Text:* ${translated}\n`,
-                });
 
-                await client.chat.postMessage({
-                    channel,
-                    blocks: feedbackBlocks,
-                });
+            await client.chat.postMessage({
+                channel,
+                blocks: feedbackBlocks,
+            });
 
-            } else {
-                // Send ONLY to the user
-                await client.chat.postEphemeral({
-                    channel,
-                    user: body.user.id,
-                    text: `*🔅 Translation Result*\n\n` +
-                        `• *Original Text:* ${input}\n` +
-                        `• *Emoji → Text:* ${translated}\n`,
-                });
-
-                await client.chat.postEphemeral({
-                    channel,
-                    user: body.user.id,
-                    blocks: feedbackBlocks,
-                });
-            }
         } else {
-            if (visibility === "public") {
-                await client.chat.postMessage({
-                    channel,
-                    text: translated,
-                });
-            } else {
-                await client.chat.postEphemeral({
-                    channel,
-                    user: body.user.id,
-                    text: translated,
-                });
-            }
+            // Send ONLY to the user
+            await client.chat.postEphemeral({
+                channel,
+                user: body.user.id,
+                text: `*🔅 Translation Result*\n\n` +
+                    `• *Original Input:* ${input}\n` +
+                    `• *Emoji → Text:* ${translated}\n`,
+            });
+
+            await client.chat.postEphemeral({
+                channel,
+                user: body.user.id,
+                blocks: feedbackBlocks,
+            });
         }
     });
 

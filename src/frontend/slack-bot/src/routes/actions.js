@@ -1,5 +1,5 @@
-const { modelMap, setUserModel } = require("../utils/model");
-const { buildHomeView } = require("../utils/homeView");
+const { modelMap } = require("../utils/model");
+const { buildHomeView } = require("../views/homeView");
 const { sendFeedback } = require("../utils/backendClient");
 const { renderHome } = require("../utils/renderHome");
 
@@ -7,6 +7,7 @@ module.exports = function registerActions(app) {
     // --- Handle modal submission for default style setting ---
     app.action("open_default_setting", async ({ ack, body, client }) => {
         await ack();
+        console.log(modelMap);
         const modal = {
             type: "modal",
             callback_id: "default_style_modal",
@@ -100,7 +101,6 @@ module.exports = function registerActions(app) {
     // --- Handle feedback buttons in messages ---
     app.action("feedback_yes", async ({ ack, body, respond }) => {
         await ack();
-      
         const originalInput = body.actions[0].value;
         console.log("User liked the translation, original input " + originalInput);
         await sendFeedback(originalInput, "", body.user.id, 1);

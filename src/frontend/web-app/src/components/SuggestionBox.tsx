@@ -7,11 +7,16 @@ import CloseIcon from '@mui/icons-material/Close';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import EmojiPicker from 'emoji-picker-react';
+import type { EmojiClickData } from 'emoji-picker-react';
 
 import { backend_feedback } from '../hooks/backend.tsx';
 
+interface SuggestionBoxProps {
+    lastTranslation: { text: string; toEmoji: boolean };
+    rating: boolean | null;
+}
 
-export default function SuggestionBox ({lastTranslation, rating}) {
+export default function SuggestionBox ({lastTranslation, rating}: SuggestionBoxProps) {
     const [suggestionText, setSuggestionText] = useState('');
     const [showPicker, setPicker] = useState(false);
 
@@ -21,7 +26,7 @@ export default function SuggestionBox ({lastTranslation, rating}) {
     // Send feedback with suggestion to the backend
     const handleSuggestion = async () => {
         try {
-            await backend_feedback(lastTranslation.text, rating, suggestionText)
+            await backend_feedback(lastTranslation.text, rating === false ? 0 : 1, suggestionText)
             toast.dismiss();
             toast.success('Suggestion sent successfully!');
             setSuggestionText("");
@@ -34,8 +39,8 @@ export default function SuggestionBox ({lastTranslation, rating}) {
     }
 
     // Event Handler to close emoji keyboard when click outside of it when it is open
-    const handleClickOutsidePicker = (e) => {
-        if (pickerRef.current && !pickerRef.current.contains(e.target)) {
+    const handleClickOutsidePicker = (e: MouseEvent) => {
+        if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
             setPicker(false);
         }
     }
@@ -58,7 +63,7 @@ export default function SuggestionBox ({lastTranslation, rating}) {
     }, [showPicker]);
 
     // when select emoji add to input
-    const handleEmojiClick = (emoji) => {
+    const handleEmojiClick = (emoji: EmojiClickData) => {
         setSuggestionText(prevText => prevText + emoji.emoji);
     }   
 

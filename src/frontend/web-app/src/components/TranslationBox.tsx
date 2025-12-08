@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, type Dispatch, type SetStateAction } from 'react';
 import toast from 'react-hot-toast';
 
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
@@ -16,12 +16,20 @@ import IconButton from '@mui/material/IconButton';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import EmojiPicker from 'emoji-picker-react';
+import type { EmojiClickData } from 'emoji-picker-react';
 
 import { backend_translate, backend_feedback } from '../hooks/backend.tsx'
 
+interface TranslationBoxProps {
+    lastTranslation: { text: string; toEmoji: boolean };
+    setLastTranslation: Dispatch<SetStateAction<{ text: string; toEmoji: boolean }>>;
+    rating: boolean | null;
+    setRating: Dispatch<SetStateAction<boolean | null>>;
+    isTranslated: boolean;
+    setTranslated: Dispatch<SetStateAction<boolean>>;
+}
 
-
-export default function TranslationBox ({lastTranslation, setLastTranslation, rating, setRating, isTranslated, setTranslated}) {
+export default function TranslationBox ({lastTranslation, setLastTranslation, rating, setRating, isTranslated, setTranslated}: TranslationBoxProps) {
     const [inputText, setInputText] = useState('');
     const [outputText, setOutputText] = useState('');
     const [toEmoji, setToEmoji] = useState(false);
@@ -39,32 +47,8 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     const emojiButtonRef = useRef<HTMLButtonElement>(null);
     const pickerRef = useRef<HTMLDivElement>(null);
 
-    // Trigger translation if non-empty input is left for 5 seconds
-    useEffect(() => {
-        auto_translate_timer.current = setTimeout(() => {
-            if (inputText.trim() != "") { //TODO: more conditionals than this
-                console.log("auto translate triggered");
-                handleTranslation();
-            }
-        }, AUTO_TRANSLATE_DELAY);
-
-        return () => {
-            if(auto_translate_timer.current) {
-                clearTimeout(auto_translate_timer.current);
-            }
-        };
-
-    }, [inputText]);
-
-    // When the output text changes then cancel the timer
-    useEffect(() => {
-        if(auto_translate_timer.current) {
-            clearTimeout(auto_translate_timer.current);
-        }
-    }, [outputText])
-
     // Send async translation request to backend and update state
-    const handleTranslation = async() => {
+    const handleTranslation = useCallback(async() => {
         // If this request is the same as the last translation request, ignore
         if (lastTranslation.text.trim() == inputText.trim() && lastTranslation.toEmoji == toEmoji){return;}
         else {setLastTranslation({text:inputText, toEmoji:toEmoji})};
@@ -88,7 +72,7 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
                 activeControllerRef.current = null;
             }
         } catch (err) {
-            if (err.name === 'AbortError') {
+            if (err instanceof Error && err.name === 'AbortError') {
                 console.log("Request was aborted");
             } else {
                 // notify user if translation failed
@@ -99,7 +83,31 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
             activeControllerRef.current = null;
         }
         setLoading(false);
-    }
+    }, [lastTranslation, inputText, toEmoji, setLastTranslation, setLoading, setTranslated, setOutputText, setRating]);
+
+    // Trigger translation if non-empty input is left for 5 seconds
+    useEffect(() => {
+        auto_translate_timer.current = setTimeout(() => {
+            if (inputText.trim() != "") { //TODO: more conditionals than this
+                console.log("auto translate triggered");
+                handleTranslation();
+            }
+        }, AUTO_TRANSLATE_DELAY);
+
+        return () => {
+            if(auto_translate_timer.current) {
+                clearTimeout(auto_translate_timer.current);
+            }
+        };
+
+    }, [inputText, handleTranslation]);
+
+    // When the output text changes then cancel the timer
+    useEffect(() => {
+        if(auto_translate_timer.current) {
+            clearTimeout(auto_translate_timer.current);
+        }
+    }, [outputText])
 
     // Copy text to clipboard and notify user if successful or not
     const handleCopy = async (copiedText:string) => {
@@ -115,7 +123,7 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     }
 
     // Adjust current rating and if is new rating, send feedback on backend and notify user if successful or not
-    const handleRating = async(val:Boolean) => {
+    const handleRating = async(val: boolean) => {
         console.log(`rating ${val} clicked`);
         // If removing rating, then unselect and early return
         if (rating == val){
@@ -124,7 +132,7 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
         }
         setRating(val);
         try {
-            await backend_feedback(lastTranslation.text, val, "")
+            await backend_feedback(lastTranslation.text, val ? 1 : 0, "")
             toast.dismiss();
             toast.success('Feedback sent successfully!');
         } catch (err) {
@@ -139,7 +147,7 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     const handleSwap = () => {
         console.log(`Swapping input from ${toEmoji ? 'plain text':'emojis'} to ${toEmoji ? 'emojis':'plain text'}`);
         setToEmoji(!toEmoji);
-        let temp = inputText;
+        const temp = inputText;
         setInputText(outputText);
         setOutputText(temp);
         // Clear rating and translation status
@@ -153,8 +161,8 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     } 
 
     // Event Handler to close emoji keyboard when click outside of it when it is open
-    const handleClickOutsidePicker = (e) => {
-        if (pickerRef.current && !pickerRef.current.contains(e.target)) {
+    const handleClickOutsidePicker = (e: MouseEvent) => {
+        if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
             setPicker(false);
         }
     }
@@ -177,7 +185,7 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     }, [showPicker]);
 
     // when select emoji add to input
-    const handleEmojiClick = (emoji) => {
+    const handleEmojiClick = (emoji: EmojiClickData) => {
         setInputText(prevText => prevText + emoji.emoji);
     }   
 
