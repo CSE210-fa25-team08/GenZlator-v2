@@ -88,11 +88,6 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
                 setOutputText(localOutput);
                 setRating(null);
                 setTranslated(true);
-
-                toast.dismiss();
-                toast('Backend offline: Using basic local translation', {
-                    icon: '⚠️',
-                });
             }
             activeControllerRef.current = null;
         }
