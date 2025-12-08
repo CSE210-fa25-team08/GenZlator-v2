@@ -6,6 +6,7 @@ const { getChatHistory } = require("../utils/chatHistory");
 const { addHistory } = require("../storage/history");
 const { renderHome } = require("../utils/renderHome");
 const { translateToEmojis, translateToWords } = require("../utils/translateFallback");
+const { withTimeout } = require("../utils/withTimeout");
 
 module.exports = function registerViews(app) {
     // --- View: default_style_modal (from open_default_setting action) ---
@@ -46,7 +47,11 @@ module.exports = function registerViews(app) {
 
         let translated = "";
         try {
-            translated = await translate(input, true, chatHistory);
+            translated = await withTimeout(
+                translate(input, true, chatHistory),
+                3000, 
+                "Translation backend timeout"
+            );
         } catch (err) {
             console.error("Translate backend error:", err);
             translated = translateToEmojis(input);
@@ -68,7 +73,7 @@ module.exports = function registerViews(app) {
                 channel,
                 text: `*🔅 Translation Result* ` +
                 `*by:* <@${userId}>\n` +
-                    `• *Original Text:* ${input}\n` +
+                    `• *Original Input:* ${input}\n` +
                     `• *Text → Emoji:* ${translated}\n`,
             });
     
@@ -83,7 +88,7 @@ module.exports = function registerViews(app) {
                 channel,
                 user: body.user.id,
                 text: `*🔅 Translation Result*\n\n` +
-                    `• *Original Text:* ${input}\n` +
+                    `• *Original Input:* ${input}\n` +
                     `• *Text → Emoji:* ${translated}\n`,
             });
     
@@ -114,7 +119,11 @@ module.exports = function registerViews(app) {
 
         let translated = "";
         try {
-            translated = await translate(input, false, chatHistory);
+            translated = await withTimeout(
+                translate(input, false, chatHistory),
+                3000, 
+                "Translation backend timeout"
+            );
         } catch (err) {
             console.error("Translate backend error:", err);
             translated = await translateToWords(input);
@@ -135,7 +144,7 @@ module.exports = function registerViews(app) {
                 channel,
                 text: `*🔅 Translation Result* ` +
                 `*by:* <@${userId}>\n` +
-                    `• *Original Text:* ${input}\n` +
+                    `• *Original Input:* ${input}\n` +
                     `• *Emoji → Text:* ${translated}\n`,
             });
 
@@ -150,7 +159,7 @@ module.exports = function registerViews(app) {
                 channel,
                 user: body.user.id,
                 text: `*🔅 Translation Result*\n\n` +
-                    `• *Original Text:* ${input}\n` +
+                    `• *Original Input:* ${input}\n` +
                     `• *Emoji → Text:* ${translated}\n`,
             });
 

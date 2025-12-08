@@ -3,7 +3,6 @@ const { getAvailableModels } = require("./backendClient");
 
 // fallback if API fails
 let modelMap = {};
-
 let modelInfo = {};
 
 let defaultModelId = "default";
@@ -18,38 +17,43 @@ async function loadModelsFromAPI() {
         const newInfo = {};
 
         data.models.forEach(m => {
-      const modelId = m.id.split(":")[0];
+            // backend now provides `model_id` (no colon)
+            const modelId = m.model_id;
 
-      // create simplified key (used by your app)
-      const key = m.name.toLowerCase()
-        .replace(/\s+/g, "")
-        .replace(/[^a-z0-9]/g, "");
+            // simplified key (same rule as before)
+            const key = m.name.toLowerCase()
+                .replace(/\s+/g, "")
+                .replace(/[^a-z0-9]/g, "");
 
-        newMap[key] = modelId;
+            // map simplified key → actual model_id
+            newMap[key] = modelId;
 
-        // store complete metadata for home view
-        newInfo[modelId] = {
-          id: modelId,
-          name: m.name,
-          description: m.description,
-          provider: m.provider,
-          max_tokens: m.max_tokens,
-          strengths: m.strengths,
-          is_free: m.is_free
-        };
-      });
+            // store metadata
+            newInfo[modelId] = {
+                id: modelId,
+                name: m.name,
+                description: m.description,
+                provider: m.provider,
+                max_tokens: m.max_tokens,
+                strengths: m.strengths,
+                is_free: m.is_free
+            };
+        });
 
+        // reset and replace
         Object.keys(modelInfo).forEach(k => delete modelInfo[k]);
         Object.assign(modelInfo, newInfo);
 
         Object.keys(modelMap).forEach(k => delete modelMap[k]);
         Object.assign(modelMap, newMap);
 
+        // set default model to the first available key
         const keys = Object.keys(newMap);
         if (keys.length > 0) {
             defaultModelId = keys[0];
             console.log("Set default model ID to:", defaultModelId);
         }
+
         // console.log("[Model] Loaded models:", modelMap);
         // console.log("[ModelInfo] Loaded:", modelInfo);
 
@@ -60,7 +64,6 @@ async function loadModelsFromAPI() {
 
 
 function getUserModel(userId) {
-  console.log("HI" + defaultModelId);
   return userDefaultModels[userId] || defaultModelId;
 }
 

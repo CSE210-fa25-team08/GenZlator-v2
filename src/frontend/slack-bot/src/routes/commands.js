@@ -6,6 +6,7 @@ const { translate } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
 const { addHistory, getHistory } = require("../storage/history");
 const { translateToEmojis, translateToWords } = require("../utils/translateFallback");
+const { withTimeout } = require("../utils/withTimeout");
 
 module.exports = function registerCommands(app) {
     // --- /text-to-emoji ---
@@ -24,7 +25,11 @@ module.exports = function registerCommands(app) {
 
             let translated = "";
             try {
-                translated = await translate(text, true, chatHistory);  
+                translated = await withTimeout(
+                    translate(text, true, chatHistory),
+                    3000, 
+                    "Translation backend timeout"
+                );
             } catch (err) {
                 console.error("Translate backend error:", err);
                 translated = await translateToEmojis(text);
@@ -47,7 +52,7 @@ module.exports = function registerCommands(app) {
                     response_type: "in_channel",
                     text: `*🔅 Translation Result* ` +
                     `*by:* <@${command.user_id}>\n` +
-                    `• *Original Text:* ${text}\n` +
+                    `• *Original Input:* ${text}\n` +
                     `• *Text → Emoji:* ${translated}\n`,    
                 });
     
@@ -71,7 +76,7 @@ module.exports = function registerCommands(app) {
                                 text: {
                                     type: "mrkdwn",
                                     text: `*🔅 Translation Result*\n\n` +
-                    `• *Original Text:* ${text}\n` +
+                    `• *Original Input:* ${text}\n` +
                     `• *Text → Emoji:* ${translated}\n`,
                                 },
                             },
@@ -104,7 +109,11 @@ module.exports = function registerCommands(app) {
 
             let translated = "";
             try {
-                translated = await translate(text, false, chatHistory); 
+                translated = await withTimeout(
+                    translate(text, false, chatHistory),
+                    3000, 
+                    "Translation backend timeout"
+                );
             } catch (err) {
                 console.error("Translate backend error:", err);
                 translated = await translateToWords(text);
@@ -127,7 +136,7 @@ module.exports = function registerCommands(app) {
                     response_type: "in_channel",
                     text: `*🔅 Translation Result* ` +
                     `*by:* <@${command.user_id}>\n` +
-                    `• *Original Text:* ${text}\n` +
+                    `• *Original Emoji:* ${text}\n` +
                     `• *Emoji → Text:* ${translated}\n`,
                 });
 
@@ -152,7 +161,7 @@ module.exports = function registerCommands(app) {
                                 text: {
                                     type: "mrkdwn",
                                     text: `*🔅 Translation Result*\n\n` +
-                    `• *Original Text:* ${text}\n` +
+                    `• *Original Input:* ${text}\n` +
                     `• *Emoji → Text:* ${translated}\n`
                                 },
                             },
@@ -220,7 +229,7 @@ module.exports = function registerCommands(app) {
                     type: "mrkdwn",
                     text:
                         `${num}  *${h.direction}*   \`${h.timestamp}\`\n` +
-                        `• *Original Text:* ${h.original}\n` +
+                        `• *Original Input:* ${h.original}\n` +
                         `• *Translated:* ${h.translated}`
                 }
             });
