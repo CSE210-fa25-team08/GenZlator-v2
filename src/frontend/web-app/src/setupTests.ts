@@ -20,7 +20,7 @@ if (!globalThis.ResizeObserver) {
     unobserve() {}
     disconnect() {}
   }
-  // @ts-expect-error: jsdom does not implement ResizeObserver yet
+  // @ts-ignore: jsdom does not implement ResizeObserver yet
   globalThis.ResizeObserver = ResizeObserverMock;
 }
 
