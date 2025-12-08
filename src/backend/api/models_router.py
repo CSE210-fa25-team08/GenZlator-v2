@@ -73,8 +73,16 @@ async def get_available_models():
             "description": "Compact version of GPT-4o with excellent performance-to-speed ratio",
             "provider": "OpenAI",
             "max_tokens": 4096,
-            "strengths": ["Fast response times", "Good instruction following", "Excellent emoji understanding"],
-            "use_cases": ["Real-time emoji translation", "Quick conversational context", "High-volume translation requests"],
+            "strengths": [
+                "Fast response times",
+                "Good instruction following",
+                "Excellent emoji understanding",
+            ],
+            "use_cases": [
+                "Real-time emoji translation",
+                "Quick conversational context",
+                "High-volume translation requests",
+            ],
             "performance_notes": "Best balance of speed and quality for production use",
         },
         "gpt-3.5-turbo": {
@@ -82,8 +90,16 @@ async def get_available_models():
             "description": "Reliable and fast model for general-purpose translation",
             "provider": "OpenAI",
             "max_tokens": 4096,
-            "strengths": ["Fast inference", "Reliable performance", "Good contextual understanding"],
-            "use_cases": ["Standard emoji translation", "Contextual understanding", "Multilingual support"],
+            "strengths": [
+                "Fast inference",
+                "Reliable performance",
+                "Good contextual understanding",
+            ],
+            "use_cases": [
+                "Standard emoji translation",
+                "Contextual understanding",
+                "Multilingual support",
+            ],
             "performance_notes": "Proven workhorse model with consistent performance",
         },
         "gpt-4.1-mini": {
@@ -91,8 +107,16 @@ async def get_available_models():
             "description": "Lightweight GPT-4.1 variant maintaining high quality accuracy",
             "provider": "OpenAI",
             "max_tokens": 8192,
-            "strengths": ["Better reasoning", "Improved accuracy", "Efficient token usage"],
-            "use_cases": ["Complex emoji sequences", "Nuanced translations", "Context-rich scenarios"],
+            "strengths": [
+                "Better reasoning",
+                "Improved accuracy",
+                "Efficient token usage",
+            ],
+            "use_cases": [
+                "Complex emoji sequences",
+                "Nuanced translations",
+                "Context-rich scenarios",
+            ],
             "performance_notes": "Higher quality translations with improved reasoning capability",
         },
         "gpt-4.1-nano": {
@@ -101,7 +125,11 @@ async def get_available_models():
             "provider": "OpenAI",
             "max_tokens": 4096,
             "strengths": ["Extremely fast", "Lowest latency", "High throughput"],
-            "use_cases": ["High-volume requests", "Real-time applications", "Throughput-critical scenarios"],
+            "use_cases": [
+                "High-volume requests",
+                "Real-time applications",
+                "Throughput-critical scenarios",
+            ],
             "performance_notes": "Fastest option, optimized for throughput over complexity",
         },
     }
@@ -110,7 +138,9 @@ async def get_available_models():
         details = model_details.get(model_id, {})
         model_name = details.get("name", model_id.split("/")[-1].replace(":free", ""))
         provider = details.get("provider", model_id.split("/")[0])
-        model_description = details.get("performance_notes", f"Free model from {provider}")
+        model_description = details.get(
+            "performance_notes", f"Free model from {provider}"
+        )
 
         models.append(
             ModelInfo(
@@ -157,7 +187,7 @@ async def get_model_details(model_id: int):
         )
 
     actual_model_id = LIGHT_MODELS[model_id]
-    
+
     model_details = {
         "mistralai/mistral-7b-instruct:free": {
             "name": "Mistral 7B Instruct",
@@ -215,21 +245,33 @@ async def get_model_details(model_id: int):
             "description": "Compact version of GPT-4o with excellent performance-to-speed ratio",
             "provider": "OpenAI",
             "max_tokens": 4096,
-            "strengths": ["Fast response times", "Good instruction following", "Excellent emoji understanding"],
+            "strengths": [
+                "Fast response times",
+                "Good instruction following",
+                "Excellent emoji understanding",
+            ],
         },
         "gpt-3.5-turbo": {
             "name": "GPT-3.5 Turbo",
             "description": "Reliable and fast model for general-purpose translation",
             "provider": "OpenAI",
             "max_tokens": 4096,
-            "strengths": ["Fast inference", "Reliable performance", "Good contextual understanding"],
+            "strengths": [
+                "Fast inference",
+                "Reliable performance",
+                "Good contextual understanding",
+            ],
         },
         "gpt-4.1-mini": {
             "name": "GPT-4.1 Mini",
             "description": "Lightweight GPT-4.1 variant maintaining high quality accuracy",
             "provider": "OpenAI",
             "max_tokens": 8192,
-            "strengths": ["Better reasoning", "Improved accuracy", "Efficient token usage"],
+            "strengths": [
+                "Better reasoning",
+                "Improved accuracy",
+                "Efficient token usage",
+            ],
         },
         "gpt-4.1-nano": {
             "name": "GPT-4.1 Nano",
