@@ -11,6 +11,7 @@ This is the frontend web app for GenZlator-v2, scaffolded with Vite, React, and 
 - `npm run build` — type-check and build production assets
 - `npm run preview` — preview the production build locally
 - `npm run lint` — run ESLint checks
+- `npm run test` — execute Vitest in CI mode
 
 ## Project Structure
 - `src/` — application source (entry: `src/main.tsx`, root component: `src/App.tsx`)

@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@slack/bolt": "^4.6.0",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "emoji-dictionary": "^1.0.12"
   }
 }

@@ -1,5 +1,5 @@
 const { app } = require("./app");
-
+const { loadModelsFromAPI } = require("./utils/model");
 const registerCommands = require("./routes/commands");
 const registerActions = require("./routes/actions");
 const registerViews = require("./routes/views");
@@ -17,4 +17,5 @@ registerShortcuts(app);
   const port = process.env.PORT || 3000;
   await app.start(port);
   console.log(`Slack app running on port ${port}`);
+  await loadModelsFromAPI();
 })();

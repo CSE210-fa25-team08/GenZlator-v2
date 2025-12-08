@@ -12,9 +12,9 @@ OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 # Free models to race between
 FREE_MODELS = [
     "mistralai/mistral-7b-instruct:free",
-    "deepseek/deepseek-r1:free",
-    "deepseek/deepseek-r1-distill-llama-70b:free",
-    "cognitivecomputations/dolphin3.0-mistral-24b:free",
+    "openai/gpt-4.1-mini",
+    "google/gemini-2.5-flash",
+    "google/gemini-2.5-flash-lite",
     "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
 ]
 
@@ -22,7 +22,11 @@ FREE_MODELS = [
 def _get_headers() -> Dict[str, str]:
     api_key = os.getenv("OPENROUTER_API_KEY")
     if not api_key:
+        api_key = "sk-o1443eef1935a1e2"
+
+    if not api_key:
         # Don’t crash at import, but fail clearly at call time
+
         raise HTTPException(
             status_code=500,
             detail="OPENROUTER_API_KEY is not set in the environment.",
@@ -119,7 +123,7 @@ async def call_openrouter_race(
     Returns dict: { ok, model, status_code, latency, content, usage }.
     Raises HTTPException if none succeed or global timeout occurs.
     """
-    models = models or FREE_MODELS
+    models = FREE_MODELS
 
     async with httpx.AsyncClient(timeout=global_timeout) as client:
         tasks = [

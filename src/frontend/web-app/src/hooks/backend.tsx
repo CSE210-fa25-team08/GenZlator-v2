@@ -1,6 +1,6 @@
 
 const API_BASE = 'http://genzlator-api.saichaparala.com:8001';
-const MOCK = true;
+const MOCK = false;
 
 const sleep = (ms:number) => {
   return new Promise(resolve => setTimeout(resolve, ms));

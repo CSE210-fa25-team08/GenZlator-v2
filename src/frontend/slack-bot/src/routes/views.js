@@ -1,11 +1,11 @@
 // src/routes/views.js
-const { buildHomeView } = require("../utils/homeView");
 const { setUserModel } = require("../utils/model");
-const { buildFeedbackBlocks } = require("../utils/feedback");
+const { buildFeedbackBlocks } = require("../views/feedback");
 const { sendFeedback, translate } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
 const { addHistory } = require("../storage/history");
 const { renderHome } = require("../utils/renderHome");
+const { translateToEmojis, translateToWords } = require("../utils/translateFallback");
 
 module.exports = function registerViews(app) {
     // --- View: default_style_modal (from open_default_setting action) ---
@@ -42,23 +42,16 @@ module.exports = function registerViews(app) {
         const visibility =
         body.view.state.values.visibility_select.visibility_choice.selected_option.value;
 
-
         let chatHistory = await getChatHistory(client, channel);
-
-        console.log("📤 Sending to backend:", {
-            originalMessage: input,
-            isToEmoji: true,
-            chatHistory
-        });
 
         let translated = "";
         try {
             translated = await translate(input, true, chatHistory);
         } catch (err) {
             console.error("Translate backend error:", err);
-            translated = "Translation failed. Please try again later.";
+            translated = translateToEmojis(input);
         }
-
+        
         addHistory(userId, {
             original: input,
             translated: translated,
@@ -69,12 +62,12 @@ module.exports = function registerViews(app) {
 
         const feedbackBlocks = buildFeedbackBlocks(input);
 
-
         if (visibility === "public") {
             // Send to whole channel
             await client.chat.postMessage({
                 channel,
-                text: `*🔅 Translation Result*\n\n` +
+                text: `*🔅 Translation Result* ` +
+                `*by:* <@${userId}>\n` +
                     `• *Original Text:* ${input}\n` +
                     `• *Text → Emoji:* ${translated}\n`,
             });
@@ -100,6 +93,8 @@ module.exports = function registerViews(app) {
                 blocks: feedbackBlocks,
             });
         }
+       
+        
     });
 
     // --- View: emoji-to-text_modal (from Interactive translate mode) ---
@@ -117,19 +112,12 @@ module.exports = function registerViews(app) {
 
         let chatHistory = await getChatHistory(client, channel);
 
-        console.log("📤 Sending to backend:", {
-            originalMessage: input,
-            isToEmoji: true,
-            chatHistory
-        });
-
-
         let translated = "";
         try {
             translated = await translate(input, false, chatHistory);
         } catch (err) {
             console.error("Translate backend error:", err);
-            translated = "Translation failed. Please try again later.";
+            translated = await translateToWords(input);
         }
 
         const feedbackBlocks = buildFeedbackBlocks(input);
@@ -141,15 +129,12 @@ module.exports = function registerViews(app) {
             timestamp: new Date().toISOString(),
             channel: channel
         });
-
-
-        // todo : also support private DM case
-        // just figure out that slack can't done this 
         if (visibility === "public") {
             // Send to whole channel
             await client.chat.postMessage({
                 channel,
-                text: `*🔅 Translation Result*\n\n` +
+                text: `*🔅 Translation Result* ` +
+                `*by:* <@${userId}>\n` +
                     `• *Original Text:* ${input}\n` +
                     `• *Emoji → Text:* ${translated}\n`,
             });

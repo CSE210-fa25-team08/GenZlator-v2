@@ -1,14 +1,11 @@
 // src/routes/commands.js
-const { buildFeedbackBlocks } = require("../utils/feedback");
+const { buildFeedbackBlocks } = require("../views/feedback");
 const { modelMap } = require("../utils/model");
-const { openTranslateModal } = require("../utils/commandTranslate");
+const { openTranslateModal } = require("../views/commandTranslate");
 const { translate } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
 const { addHistory, getHistory } = require("../storage/history");
-
-
-// currently, the response can be viewed by all members in the channel
-// future work: if in a public channel, add setting to make response visible to only the command user
+const { translateToEmojis, translateToWords } = require("../utils/translateFallback");
 
 module.exports = function registerCommands(app) {
     // --- /text-to-emoji ---
@@ -30,10 +27,8 @@ module.exports = function registerCommands(app) {
                 translated = await translate(text, true, chatHistory);  
             } catch (err) {
                 console.error("Translate backend error:", err);
-                translated = "Translation failed. Please try again later.";
+                translated = await translateToEmojis(text);
             }
-    
-            const feedbackBlocks = buildFeedbackBlocks(text);
 
             addHistory(command.user_id, {
                 original: text,
@@ -43,12 +38,15 @@ module.exports = function registerCommands(app) {
                 channel: command.channel_id
             });
     
+            const feedbackBlocks = buildFeedbackBlocks(text);
+    
             try {
                 // Public channel → send translation to channel
                 await client.chat.postMessage({
                     channel: command.channel_id,
                     response_type: "in_channel",
-                    text: `*🔅 Translation Result*\n\n` +
+                    text: `*🔅 Translation Result* ` +
+                    `*by:* <@${command.user_id}>\n` +
                     `• *Original Text:* ${text}\n` +
                     `• *Text → Emoji:* ${translated}\n`,    
                 });
@@ -109,7 +107,7 @@ module.exports = function registerCommands(app) {
                 translated = await translate(text, false, chatHistory); 
             } catch (err) {
                 console.error("Translate backend error:", err);
-                translated = "Translation failed. Please try again later.";
+                translated = await translateToWords(text);
             }
 
             const feedbackBlocks = buildFeedbackBlocks(text);
@@ -127,7 +125,8 @@ module.exports = function registerCommands(app) {
                 await client.chat.postMessage({
                     channel: command.channel_id,
                     response_type: "in_channel",
-                    text: `*🔅 Translation Result*\n\n` +
+                    text: `*🔅 Translation Result* ` +
+                    `*by:* <@${command.user_id}>\n` +
                     `• *Original Text:* ${text}\n` +
                     `• *Emoji → Text:* ${translated}\n`,
                 });
@@ -164,7 +163,6 @@ module.exports = function registerCommands(app) {
                     console.error(err);
                 }
             }
-
         } else {
             // --- If no emoji typed → open interactive modal ---
             await openTranslateModal(
@@ -222,7 +220,7 @@ module.exports = function registerCommands(app) {
                     type: "mrkdwn",
                     text:
                         `${num}  *${h.direction}*   \`${h.timestamp}\`\n` +
-                        `• *Original:* ${h.original}\n` +
+                        `• *Original Text:* ${h.original}\n` +
                         `• *Translated:* ${h.translated}`
                 }
             });

@@ -1,8 +1,9 @@
 // src/routes/shortcuts.js
-const { buildFeedbackBlocks } = require("../utils/feedback");
+const { buildFeedbackBlocks } = require("../views/feedback");
 const { translate } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
 const { addHistory } = require("../storage/history");
+const { translateToEmojis, translateToWords } = require("../utils/translateFallback");
 
 module.exports = function registerShortcuts(app) {
     app.shortcut("translate", async ({ ack, body, client }) => {
@@ -19,8 +20,8 @@ module.exports = function registerShortcuts(app) {
             translated_2 = await translate(originalText, false, chatHistory);
         } catch (err) {
             console.error("Translate backend error:", err);
-            translated_1 = "Translation failed.";
-            translated_2 = "Translation failed.";
+            translated_1 = await translateToEmojis(originalText);
+            translated_2 = await translateToWords(originalText);
         }
 
         addHistory(body.user.id, {
@@ -35,7 +36,8 @@ module.exports = function registerShortcuts(app) {
             // Public channel → send translation to channel
             await client.chat.postMessage({
                 channel: body.channel.id,
-                text: `*🔅 Translation Result*\n\n` +
+                text: `*🔅 Translation Result* ` +
+                `*by:* <@${body.user.id}>\n` +
                     `• *Original Text:* ${originalText}\n` +
                     `• *Text → Emoji:* ${translated_1}\n` +
                     `• *Emoji → Text:* ${translated_2}\n`,
@@ -51,11 +53,7 @@ module.exports = function registerShortcuts(app) {
     
         } catch (err) {
             // just figure out that slack can't done this 
-            if (err.data?.error === "channel_not_found") {
-                
-            } else {
-                console.error(err);
-            }
+            console.error(err);
         }
     });
 };

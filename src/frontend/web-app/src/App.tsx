@@ -7,7 +7,7 @@ import SuggestionBox from './components/SuggestionBox'
 import { useState } from 'react';
 
 function App() {
-  const [rating, setRating] = useState(null);
+  const [rating, setRating] = useState<boolean | null>(null);
   const [isTranslated, setTranslated] = useState(false);
   const [lastTranslation, setLastTranslation] = useState({
         text: "",
@@ -17,7 +17,7 @@ function App() {
 
   const feedbackFormUrl =
     import.meta.env.VITE_FEEDBACK_FORM_URL ||
-    'https://forms.gle/your-form-id';
+    'https://docs.google.com/forms/d/e/1FAIpQLSfJ0s5Kx6UI-ybN-ilu1q8qRXnHn4S_5yuxcQ_lOXqcjirllQ/viewform?usp=sharing&ouid=117444302010550394548';
 
   return (
     <div className="layout">
