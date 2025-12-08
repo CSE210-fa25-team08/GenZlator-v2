@@ -6,7 +6,10 @@ const sleep = (ms:number) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-export async function backend_translate (toEmoji:boolean, inputText:string, signal: AbortSignal) {
+export async function backend_translate (toEmoji:boolean, inputText:string, addedContext:string, signal: AbortSignal) {
+    
+    const parsed_context = addedContext.split(/\r\n|\r|\n/);
+
     if (MOCK) {
 
         await sleep(2000); //testing purposes
@@ -14,6 +17,7 @@ export async function backend_translate (toEmoji:boolean, inputText:string, sign
         signal.throwIfAborted();
         
         console.log(`Translation of ${inputText} ${toEmoji ? 'to emojis': 'to plain text'} triggered`);
+        console.log(parsed_context);
         return `${inputText} but like as ${toEmoji ? 'emojis':'plain text'}`;
     }
 
@@ -25,7 +29,7 @@ export async function backend_translate (toEmoji:boolean, inputText:string, sign
         body: JSON.stringify({
             originalMessage: inputText,
             isToEmoji: toEmoji,
-            chatHistory: [] //TODO
+            chatHistory: parsed_context
         }),
         signal: signal
     });
