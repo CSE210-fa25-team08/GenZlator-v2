@@ -23,23 +23,24 @@ async function sendFeedback(originalInput, correctionText, anonymousId, rating) 
 }
 
 async function getAvailableModels() {
-  // const resp = await axios.get(`${API_BASE}/api/v1/models`);
-  // return resp.data;
-  let temp = {
-    "models": [
-      {
-        "id": "mistralai/mistral-7b-instruct:free",
-        "name": "Mistral 7B Instruct",
-        "description": "Efficient instruction-following model, good for general tasks including translation",
-        "is_free": true,
-        "provider": "Mistral AI",
-        "max_tokens": 4096,
-        "strengths": ["Fast response", "Good instruction following", "Multilingual support"]
-      },
-    ],
-    "total_count": 5
-  };
-  return temp;
+  const resp = await axios.get(`${API_BASE}/api/v1/models`);
+  //console.log("Available models from backend:", resp.data);
+  return resp.data;
+  // let temp = {
+  //   "models": [
+  //     {
+  //       "id": "mistralai/mistral-7b-instruct:free",
+  //       "name": "Mistral 7B Instruct",
+  //       "description": "Efficient instruction-following model, good for general tasks including translation",
+  //       "is_free": true,
+  //       "provider": "Mistral AI",
+  //       "max_tokens": 4096,
+  //       "strengths": ["Fast response", "Good instruction following", "Multilingual support"]
+  //     },
+  //   ],
+  //   "total_count": 5
+  // };
+  // return temp;
 }
 
 module.exports = { translate, sendFeedback, getAvailableModels };
