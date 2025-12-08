@@ -41,7 +41,7 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     // });
 
     const AUTO_TRANSLATE_DELAY = 5000;
-    const auto_translate_timer = useRef<number>(null); //consistent timer id
+    const auto_translate_timer = useRef<ReturnType<typeof setTimeout> | null>(null); //consistent timer id
 
     const activeControllerRef = useRef<AbortController>(null); //so we can abort translate requests that are overridden
     const emojiButtonRef = useRef<HTMLButtonElement>(null);
