@@ -1,5 +1,5 @@
 
-const API_BASE = 'http://genzlator-api.saichaparala.com:8001';
+const API_BASE = 'https://genzlator-api.saichaparala.com';
 const MOCK = false;
 
 const sleep = (ms:number) => {
