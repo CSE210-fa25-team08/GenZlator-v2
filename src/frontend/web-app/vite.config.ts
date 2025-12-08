@@ -5,22 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          // Separate libraries into chunks
-          'react-vendor': ['react', 'react-dom'],
-          'mui-vendor': [
-            '@mui/material',
-            '@mui/icons-material',
-            '@emotion/react',
-            '@emotion/styled',
-          ],
-          'emoji-picker': ['emoji-picker-react'],
-          'toast': ['react-hot-toast'],
-        },
-      },
-    },
+    chunkSizeWarningLimit: 700,
   },
   test: {
     environment: 'jsdom',
