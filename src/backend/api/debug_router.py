@@ -97,7 +97,9 @@ async def debug_rag_search(request: DebugRAGSearchRequest):
                 "similar_feedbacks": serialized_feedbacks,
                 "rag_config": {
                     "max_examples": rag_system.max_similar_examples,
-                    "database_path": rag_system.store.get_config().get("database_path", "unknown"),
+                    "database_path": rag_system.store.get_config().get(
+                        "database_path", "unknown"
+                    ),
                 },
             }
         )

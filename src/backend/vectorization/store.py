@@ -6,7 +6,13 @@ class VectorStore(ABC):
     """Abstract interface of vector storage implementations"""
 
     @abstractmethod
-    def add(self, text: str, correction_text: str, embedding: List[float], metadata: Dict[str, Any]) -> bool:
+    def add(
+        self,
+        text: str,
+        correction_text: str,
+        embedding: List[float],
+        metadata: Dict[str, Any],
+    ) -> bool:
         """Store a vector record"""
         pass
 

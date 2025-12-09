@@ -4,6 +4,7 @@ import numpy as np
 from typing import List, Dict, Any
 from ..store import VectorStore
 
+
 class SQLiteVectorStore(VectorStore):
     def __init__(self, db_path: str):
         self.db_path = db_path
@@ -35,11 +36,17 @@ class SQLiteVectorStore(VectorStore):
         conn.commit()
         conn.close()
 
-    def add(self, text: str, correction_text: str, embedding: List[float], metadata: Dict[str, Any]) -> bool:
+    def add(
+        self,
+        text: str,
+        correction_text: str,
+        embedding: List[float],
+        metadata: Dict[str, Any],
+    ) -> bool:
         try:
             # Convert embedding to bytes
             embedding_blob = np.array(embedding, dtype=np.float32).tobytes()
-            
+
             # Extract metadata
             timestamp = metadata.get("timestamp")
             anonymous_id = metadata.get("anonymous_id")
@@ -67,7 +74,7 @@ class SQLiteVectorStore(VectorStore):
             conn.commit()
             conn.close()
             return True
-        
+
         except Exception as e:
             print(f"SQLite Store Error: {e}")
             return False
@@ -78,7 +85,7 @@ class SQLiteVectorStore(VectorStore):
         Returns: (original_inputs, correction_texts, embeddings_matrix, ratings)
         """
         original_inputs, correction_texts, embeddings_list, ratings = [], [], [], []
-        
+
         conn = self._get_conn()
         cursor = conn.cursor()
 
@@ -90,10 +97,10 @@ class SQLiteVectorStore(VectorStore):
             WHERE rating=0 and correction_text != ''
             """
         )
-        
+
         for row in cursor.fetchall():
             original_input, correction_text, embedding_blob, rating = row
-            
+
             original_inputs.append(original_input)
             correction_texts.append(correction_text)
             embeddings_list.append(np.frombuffer(embedding_blob, dtype=np.float32))
@@ -105,7 +112,7 @@ class SQLiteVectorStore(VectorStore):
             return [], [], None, []
 
         embeddings_matrix = np.vstack(embeddings_list)
-        
+
         return original_inputs, correction_texts, embeddings_matrix, ratings
 
     def count(self) -> int:
@@ -113,31 +120,30 @@ class SQLiteVectorStore(VectorStore):
         cursor = conn.cursor()
         count = cursor.execute("SELECT COUNT(*) FROM feedback_embeddings").fetchone()[0]
         conn.close()
-        
+
         return count
 
     def get_recent(self, limit: int = 5) -> List[Dict[str, Any]]:
         conn = self._get_conn()
         cursor = conn.cursor()
-        
+
         cursor.execute(
             """
             SELECT original_input, correction_text, rating 
             FROM feedback_embeddings 
             ORDER BY created_at DESC 
             LIMIT ?
-            """, (limit,)
+            """,
+            (limit,),
         )
-        
+
         recent_records = cursor.fetchall()
         conn.close()
-        
+
         return [
             {"originalInput": r[0], "correctionText": r[1], "rating": r[2]}
             for r in recent_records
         ]
 
     def get_config(self) -> Dict[str, Any]:
-        return {
-            "database_path": self.db_path
-        }
+        return {"database_path": self.db_path}

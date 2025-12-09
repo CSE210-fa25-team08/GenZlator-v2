@@ -36,7 +36,7 @@ prompt_manager = PromptManager("./prompts/prompts.json")
 
 # Initialize RAG system with vector store injection
 vector_store = get_vector_store(RAG_DATABASE_URL)
-rag_system = RAGLiteSystem(store = vector_store)
+rag_system = RAGLiteSystem(store=vector_store)
 
 # Initialize dependencies in routers
 translation.init_dependencies(prompt_manager, rag_system)

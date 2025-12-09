@@ -5,6 +5,7 @@ from typing import List, Dict, Any, Optional
 from ..vectorization.store import VectorStore
 import os
 
+
 class RAGLiteSystem:
     def __init__(
         self,
@@ -37,10 +38,10 @@ class RAGLiteSystem:
         metadata = {
             "timestamp": timestamp,
             "anonymous_id": anonymous_id,
-            "rating": rating
+            "rating": rating,
         }
 
-        self.store.add(original_input, correction_text, embedding_list, metadata) 
+        self.store.add(original_input, correction_text, embedding_list, metadata)
 
     def find_similar_feedbacks(self, query_text: str) -> List[Dict[str, Any]]:
         """Find similar feedbacks"""
@@ -48,17 +49,22 @@ class RAGLiteSystem:
         query_embedding = self.encoder.encode(query_text)
 
         # Fetch all vectors from store
-        original_inputs, correction_texts, embeddings_matrix, ratings = self.store.fetch_all_vectors()
+        (
+            original_inputs,
+            correction_texts,
+            embeddings_matrix,
+            ratings,
+        ) = self.store.fetch_all_vectors()
 
         if embeddings_matrix is None or len(embeddings_matrix) == 0:
             return []
 
         results = []
-        
+
         # Calculate cosine similarity for each stored embeddings
         for i in range(len(original_inputs)):
             stored_embedding = embeddings_matrix[i]
-            
+
             # Calculate cosine similarity
             similarity = self._cosine_similarity(query_embedding, stored_embedding)
 
