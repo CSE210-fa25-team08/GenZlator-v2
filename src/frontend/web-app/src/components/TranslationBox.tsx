@@ -29,6 +29,8 @@ interface TranslationBoxProps {
     setTranslated: Dispatch<SetStateAction<boolean>>;
 }
 
+import { translateToEmojis, translateToWords } from '../utils/localTranslator';
+
 export default function TranslationBox ({lastTranslation, setLastTranslation, rating, setRating, isTranslated, setTranslated}: TranslationBoxProps) {
     const [inputText, setInputText] = useState('');
     const [outputText, setOutputText] = useState('');
@@ -75,10 +77,17 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
             if (err instanceof Error && err.name === 'AbortError') {
                 console.log("Request was aborted");
             } else {
-                // notify user if translation failed
-                toast.dismiss();
-                toast.error('Translation Failed. Please try again later.');
+                // Local translation fallback
                 console.error(`Translation error: ${err}`);
+                console.log("Falling back to local translation");
+                
+                const localOutput = toEmoji 
+                    ? translateToEmojis(inputText) 
+                    : translateToWords(inputText);
+                
+                setOutputText(localOutput);
+                setRating(null);
+                setTranslated(true);
             }
             activeControllerRef.current = null;
         }
