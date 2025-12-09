@@ -1,4 +1,3 @@
-import sqlite3
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -44,24 +43,8 @@ async def debug_rag():
         - System configuration information
     """
     try:
-        conn = sqlite3.connect(rag_system.db_path)
-        cursor = conn.cursor()
-
-        # Get total count of feedback records
-        cursor.execute("SELECT COUNT(*) FROM feedback_embeddings")
-        total_records = cursor.fetchone()[0]
-
-        # Get recent feedback entries (use created_at instead of timestamp)
-        cursor.execute(
-            """
-            SELECT original_input, correction_text, rating 
-            FROM feedback_embeddings 
-            ORDER BY created_at DESC 
-            LIMIT 5
-        """
-        )
-        recent_records = cursor.fetchall()
-        conn.close()
+        total_records = rag_system.store.count()
+        recent_records = rag_system.store.get_recent(limit=5)
 
         return JSONResponse(
             {
@@ -69,10 +52,7 @@ async def debug_rag():
                 "total_feedbacks": total_records,
                 "similarity_threshold": rag_system.similarity_threshold,
                 "max_similar_examples": rag_system.max_similar_examples,
-                "recent_feedbacks": [
-                    {"originalInput": r[0], "correctionText": r[1], "rating": r[2]}
-                    for r in recent_records
-                ],
+                "recent_feedbacks": recent_records,
             }
         )
     except Exception as e:
@@ -117,7 +97,7 @@ async def debug_rag_search(request: DebugRAGSearchRequest):
                 "similar_feedbacks": serialized_feedbacks,
                 "rag_config": {
                     "max_examples": rag_system.max_similar_examples,
-                    "database_path": rag_system.db_path,
+                    "database_path": rag_system.store.get_config().get("database_path", "unknown"),
                 },
             }
         )

@@ -1,52 +1,24 @@
 import numpy as np
 import json
-import sqlite3
-from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
-from typing import List, Dict, Any, Tuple, Optional
+from typing import List, Dict, Any, Optional
+from ..vectorization.store import VectorStore
 import os
-
 
 class RAGLiteSystem:
     def __init__(
         self,
-        db_path: str = "feedback_embeddings.db",
+        store: VectorStore,
         model_name: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",  # A model can at least distinguish emojis and multilingual texts
         similarity_threshold: float = 0.7,
         max_similar_examples: int = 3,
     ):
-        self.db_path = db_path
+        self.store = store
         self.similarity_threshold = similarity_threshold
         self.max_similar_examples = max_similar_examples
 
         # Initialize the sentence transformer model for embedding generation
         self.encoder = SentenceTransformer(model_name)
-
-        # Initialize the database
-        self._init_database()
-
-    def _init_database(self):
-        """Initialize SQLite database and create necessary tables"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute(
-            """
-            CREATE TABLE IF NOT EXISTS feedback_embeddings (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                original_input TEXT NOT NULL,
-                correction_text TEXT NOT NULL,
-                embedding BLOB NOT NULL,
-                timestamp TEXT NOT NULL,
-                anonymous_id TEXT,
-                rating INTEGER,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
-
-        conn.commit()
-        conn.close()
 
     def add_feedback(
         self,
@@ -59,67 +31,46 @@ class RAGLiteSystem:
         """Add feedback to the RAG system"""
         # Generate embedding
         embedding = self.encoder.encode(original_input)
-        embedding_blob = embedding.tobytes()
+        # Prepared for storage interface
+        embedding_list = embedding.tolist()
 
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        metadata = {
+            "timestamp": timestamp,
+            "anonymous_id": anonymous_id,
+            "rating": rating
+        }
 
-        cursor.execute(
-            """
-            INSERT INTO feedback_embeddings 
-            (original_input, correction_text, embedding, timestamp, anonymous_id, rating)
-            VALUES (?, ?, ?, ?, ?, ?)
-        """,
-            (
-                original_input,
-                correction_text,
-                embedding_blob,
-                timestamp,
-                anonymous_id,
-                rating,
-            ),
-        )
-
-        conn.commit()
-        conn.close()
+        self.store.add(original_input, correction_text, embedding_list, metadata) 
 
     def find_similar_feedbacks(self, query_text: str) -> List[Dict[str, Any]]:
         """Find similar feedbacks"""
         # Generate query embedding
         query_embedding = self.encoder.encode(query_text)
 
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        # Fetch all vectors from store
+        original_inputs, correction_texts, embeddings_matrix, ratings = self.store.fetch_all_vectors()
 
-        cursor.execute(
-            """
-            SELECT original_input, correction_text, embedding, rating
-            FROM feedback_embeddings
-            WHERE rating=0 and correction_text != ''
-        """
-        )
+        if embeddings_matrix is None or len(embeddings_matrix) == 0:
+            return []
 
         results = []
-        for row in cursor.fetchall():
-            original_input, correction_text, embedding_blob, rating = row
-
-            # Reconstruct embedding
-            stored_embedding = np.frombuffer(embedding_blob, dtype=np.float32)
-
+        
+        # Calculate cosine similarity for each stored embeddings
+        for i in range(len(original_inputs)):
+            stored_embedding = embeddings_matrix[i]
+            
             # Calculate cosine similarity
             similarity = self._cosine_similarity(query_embedding, stored_embedding)
 
             if similarity >= self.similarity_threshold:
                 results.append(
                     {
-                        "originalInput": original_input,
-                        "correctionText": correction_text,
+                        "originalInput": original_inputs[i],
+                        "correctionText": correction_texts[i],
                         "similarity": similarity,
-                        "rating": rating,
+                        "rating": ratings[i],
                     }
                 )
-
-        conn.close()
 
         # Sort by similarity and limit the number of results
         results.sort(key=lambda x: x["similarity"], reverse=True)
