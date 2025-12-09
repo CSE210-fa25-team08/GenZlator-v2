@@ -38,8 +38,18 @@ module.exports = function registerViews(app) {
         const userId = body.user.id;
         const input =
         body.view.state.values.input_text.value_input.value;
+        if (input.length > 1000) {
+            await client.chat.postEphemeral({
+                channel: channel,
+                user: userId,
+                text: `❗ Your input is too long (${input.length} characters). Please keep it under 1000 characters.`,
+            });
+            return; 
+        }
+
         const model =
-        body.view.state.values.model_select.model_choice.selected_option.value;
+            body.view.state.values?.model_select?.model_choice?.selected_option?.value
+            ?? "gpt4omini";
         const visibility =
         body.view.state.values.visibility_select.visibility_choice.selected_option.value;
 
@@ -111,8 +121,18 @@ module.exports = function registerViews(app) {
         const userId = body.user.id;
         const input =
         body.view.state.values.input_text.value_input.value;
+        if (input.length > 1000) {
+            await client.chat.postEphemeral({
+                channel: channel,
+                user: userId,
+                text: `❗ Your input is too long (${input.length} characters). Please keep it under 1000 characters.`,
+            });
+            return; 
+        }
+        
         const model =
-        body.view.state.values.model_select.model_choice.selected_option.value;
+            body.view.state.values?.model_select?.model_choice?.selected_option?.value
+            ?? "gpt4omini";
         const visibility =
         body.view.state.values.visibility_select.visibility_choice.selected_option.value;
 

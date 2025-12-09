@@ -13,6 +13,13 @@ module.exports = function registerCommands(app) {
     app.command("/text-to-emoji", async ({ command, ack, respond, client }) => {
         await ack();
         const text = command.text.trim();
+        if (text.length > 1000) {
+            await respond({
+                response_type: "ephemeral",
+                text: `❗ Your input is too long (${text.length} characters). Please keep it under 1000 characters.`,
+            });
+            return; 
+        }
     
         if (text) {
             let chatHistory = await getChatHistory(client, command.channel_id);
@@ -103,6 +110,14 @@ module.exports = function registerCommands(app) {
     app.command("/emoji-to-text", async ({ command, ack, respond, client }) => {
         await ack();
         const text = command.text.trim();
+
+        if (text.length > 1000) {
+            await respond({
+                response_type: "ephemeral",
+                text: `❗ Your input is too long (${text.length} characters). Please keep it under 1000 characters.`,
+            });
+            return; 
+        }
 
         if (text) {
             let chatHistory = await getChatHistory(client, command.channel_id);

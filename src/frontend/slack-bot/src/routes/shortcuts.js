@@ -10,6 +10,16 @@ module.exports = function registerShortcuts(app) {
     app.shortcut("translate", async ({ ack, body, client }) => {
         await ack();
         const originalText = body.message?.text || "(no text)";
+
+        if (originalText.length > 1000) {
+            await client.chat.postEphemeral({
+                channel: body.channel.id,
+                user: body.user.id,
+                text: `❗ Your input is too long (${originalText.length} characters). Please keep it under 1000 characters.`,
+            });
+            return; 
+        }
+
         const feedbackBlocks = buildFeedbackBlocks(originalText);
 
         let chatHistory = await getChatHistory(client, body.channel.id);

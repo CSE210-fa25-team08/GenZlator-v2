@@ -7,33 +7,52 @@ module.exports = function registerActions(app) {
     // --- Handle modal submission for default style setting ---
     app.action("open_default_setting", async ({ ack, body, client }) => {
         await ack();
-        console.log(modelMap);
+        const hasModels = Object.keys(modelMap).length > 0;
+        const blocks = [];
+        if (!hasModels) {
+            blocks.push({
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: "⚠️ *Backend model information is unavailable.*\nA default translation model will be used.",
+                },
+            });
+        } else {
+            // normal UI with model selector
+            blocks.push({
+                type: "input",
+                block_id: "style_select",
+                label: {
+                    type: "plain_text",
+                    text: "Choose your default model",
+                },
+                element: {
+                    type: "static_select",
+                    action_id: "style_choice",
+                    options: Object.entries(modelMap).map(([value, text]) => ({
+                        text: { type: "plain_text", text },
+                        value,
+                    })),
+                },
+            });
+        }
+
+        // --- Build the final modal ---
         const modal = {
             type: "modal",
             callback_id: "default_style_modal",
             title: { type: "plain_text", text: "Default Model Setting" },
-            submit: { type: "plain_text", text: "Save" },
-            close: { type: "plain_text", text: "Cancel" },
-            blocks: [
-            {
-                type: "input",
-                block_id: "style_select",
-                label: {
-                type: "plain_text",
-                text: "Choose your default model",
-                },
-                element: {
-                type: "static_select",
-                action_id: "style_choice",
-                options: Object.entries(modelMap).map(([value, text]) => ({
-                    text: { type: "plain_text", text },
-                    value,
-                })),
-                },
-            },
-            ],
+            submit: hasModels
+                ? { type: "plain_text", text: "Save" }
+                : undefined, 
+            close: { type: "plain_text", text: "Close" },
+            blocks,
         };
-        await client.views.open({ trigger_id: body.trigger_id, view: modal });
+
+        await client.views.open({
+            trigger_id: body.trigger_id,
+            view: modal
+        });
     });
 
     // --- Handle feedback modal in the App Home ---

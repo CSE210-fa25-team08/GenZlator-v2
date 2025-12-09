@@ -5,7 +5,7 @@ const { getAvailableModels } = require("./backendClient");
 let modelMap = {};
 let modelInfo = {};
 
-let defaultModelId = "default";
+let defaultModelId = "gpt4omini";
 
 // simple in-memory store for user default models
 const userDefaultModels = {};
@@ -59,6 +59,9 @@ async function loadModelsFromAPI() {
 
     } catch (err) {
         console.error("Failed to load models from API:", err);
+        Object.keys(modelInfo).forEach(k => delete modelInfo[k]);
+        Object.keys(modelMap).forEach(k => delete modelMap[k]);
+        defaultModelId = "gpt4omini";
     }
 }
 
