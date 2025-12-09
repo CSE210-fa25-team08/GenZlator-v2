@@ -11,7 +11,8 @@ function App() {
   const [isTranslated, setTranslated] = useState(false);
   const [lastTranslation, setLastTranslation] = useState({
         text: "",
-        toEmoji: false
+        toEmoji: false,
+        context: ""
     });
 
   const feedbackFormUrl =
