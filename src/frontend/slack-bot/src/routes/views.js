@@ -49,7 +49,7 @@ module.exports = function registerViews(app) {
 
         const model =
             body.view.state.values?.model_select?.model_choice?.selected_option?.value
-            ?? "gpt4omini";
+            ?? "gpt-4o-mini";
         const visibility =
         body.view.state.values.visibility_select.visibility_choice.selected_option.value;
 
@@ -132,7 +132,7 @@ module.exports = function registerViews(app) {
         
         const model =
             body.view.state.values?.model_select?.model_choice?.selected_option?.value
-            ?? "gpt4omini";
+            ?? "gpt-4o-mini";
         const visibility =
         body.view.state.values.visibility_select.visibility_choice.selected_option.value;
 
