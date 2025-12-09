@@ -77,8 +77,9 @@ module.exports = function registerViews(app) {
                     `• *Text → Emoji:* ${translated}\n`,
             });
     
-            await client.chat.postMessage({
+            await client.chat.postEphemeral({
                 channel,
+                user: body.user.id,
                 blocks: feedbackBlocks,
             });
     
@@ -148,8 +149,9 @@ module.exports = function registerViews(app) {
                     `• *Emoji → Text:* ${translated}\n`,
             });
 
-            await client.chat.postMessage({
+            await client.chat.postEphemeral({
                 channel,
+                user: body.user.id,
                 blocks: feedbackBlocks,
             });
 
