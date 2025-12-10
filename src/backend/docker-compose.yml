@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   backend:
     build:
@@ -7,10 +5,12 @@ services:
       dockerfile: src/backend/Dockerfile  # Path to Dockerfile from root
     ports:
       - "8003:8003"
+    env_file:
+      - .env  # Load .env from same directory as docker-compose.yml (src/backend/)
     environment:
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - FEEDBACK_LOG_PATH=${FEEDBACK_LOG_PATH:-feedback_log.jsonl}
-    volumes:
-      # Mount feedback log directory for persistence
-      - ./api:/app/src/backend/api  
+      - RAG_DATABASE_URL=${RAG_DATABASE_URL:-sqlite:///feedback_embeddings.db}
     restart: unless-stopped

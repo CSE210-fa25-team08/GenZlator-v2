@@ -1,11 +1,18 @@
 # Use Python 3.10 slim image
 FROM python:3.10-slim
 
+# Install build dependencies for sentence-transformers and other packages
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    make \
+    && rm -rf /var/lib/apt/lists/*
+
 # Set working directory
 WORKDIR /app
 
-# Set PYTHONPATH to include src directory (needed for backend.* imports)
-ENV PYTHONPATH=/app/src
+# Set PYTHONPATH to /app so that 'src' is a top-level module
+ENV PYTHONPATH=/app
 
 # Copy requirements first for better caching
 COPY src/backend/requirements.txt /app/src/backend/requirements.txt
