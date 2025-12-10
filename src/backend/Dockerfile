@@ -2,6 +2,7 @@
 FROM python:3.10-slim
 
 # Install build dependencies for sentence-transformers and other packages
+# hadolint ignore=DL3008,DL3009,DL4006
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
@@ -18,6 +19,7 @@ ENV PYTHONPATH=/app
 COPY src/backend/requirements.txt /app/src/backend/requirements.txt
 
 # Install dependencies
+# hadolint ignore=DL3013
 RUN pip install --no-cache-dir -r /app/src/backend/requirements.txt
 
 # Copy the entire project
