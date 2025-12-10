@@ -53,15 +53,27 @@ async function openTranslateModal(client, trigger_id, channel_id, mode) {
           },
         },
         {
-          type: "input",
-          block_id: "model_select",
-          label: { type: "plain_text", text: "Choose Model" },
-          element: {
-            type: "static_select",
-            action_id: "model_choice",
-            options: buildModelOptions(),
-          },
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: Object.keys(modelMap).length === 0
+              ? "⚠️ *Backend model information is unavailable.*\nA default translation model will be used."
+              : "Select a model to use for translation:"
+          }
         },
+        ...(Object.keys(modelMap).length === 0
+          ? []
+          : [{
+              type: "input",
+              block_id: "model_select",
+              label: { type: "plain_text", text: "Choose Model" },
+              element: {
+                type: "static_select",
+                action_id: "model_choice",
+                options: buildModelOptions(),
+              },
+            }]
+        ),
         {
           type: "input",
           block_id: "visibility_select",

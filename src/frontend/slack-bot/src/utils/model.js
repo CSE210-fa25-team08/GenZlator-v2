@@ -5,7 +5,7 @@ const { getAvailableModels } = require("./backendClient");
 let modelMap = {};
 let modelInfo = {};
 
-let defaultModelId = "default";
+let defaultModelId = "0";
 
 // simple in-memory store for user default models
 const userDefaultModels = {};
@@ -19,14 +19,7 @@ async function loadModelsFromAPI() {
         data.models.forEach(m => {
             // backend now provides `model_id` (no colon)
             const modelId = m.model_id;
-
-            // simplified key (same rule as before)
-            const key = m.name.toLowerCase()
-                .replace(/\s+/g, "")
-                .replace(/[^a-z0-9]/g, "");
-
-            // map simplified key → actual model_id
-            newMap[key] = modelId;
+            newMap[modelId] = m.name;
 
             // store metadata
             newInfo[modelId] = {
@@ -35,7 +28,6 @@ async function loadModelsFromAPI() {
                 description: m.description,
                 provider: m.provider,
                 max_tokens: m.max_tokens,
-                strengths: m.strengths,
                 is_free: m.is_free
             };
         });
@@ -59,6 +51,9 @@ async function loadModelsFromAPI() {
 
     } catch (err) {
         console.error("Failed to load models from API:", err);
+        Object.keys(modelInfo).forEach(k => delete modelInfo[k]);
+        Object.keys(modelMap).forEach(k => delete modelMap[k]);
+        defaultModelId = "0";
     }
 }
 

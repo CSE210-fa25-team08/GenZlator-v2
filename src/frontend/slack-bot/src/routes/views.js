@@ -38,8 +38,18 @@ module.exports = function registerViews(app) {
         const userId = body.user.id;
         const input =
         body.view.state.values.input_text.value_input.value;
+        if (input.length > 1000) {
+            await client.chat.postEphemeral({
+                channel: channel,
+                user: userId,
+                text: `❗ Your input is too long (${input.length} characters). Please keep it under 1000 characters.`,
+            });
+            return; 
+        }
+
         const model =
-        body.view.state.values.model_select.model_choice.selected_option.value;
+            body.view.state.values?.model_select?.model_choice?.selected_option?.value
+            ?? "0";
         const visibility =
         body.view.state.values.visibility_select.visibility_choice.selected_option.value;
 
@@ -48,7 +58,7 @@ module.exports = function registerViews(app) {
         let translated = "";
         try {
             translated = await withTimeout(
-                translate(input, true, chatHistory),
+                translate(input, true, chatHistory, model),
                 3000, 
                 "Translation backend timeout"
             );
@@ -77,8 +87,9 @@ module.exports = function registerViews(app) {
                     `• *Text → Emoji:* ${translated}\n`,
             });
     
-            await client.chat.postMessage({
+            await client.chat.postEphemeral({
                 channel,
+                user: body.user.id,
                 blocks: feedbackBlocks,
             });
     
@@ -110,8 +121,18 @@ module.exports = function registerViews(app) {
         const userId = body.user.id;
         const input =
         body.view.state.values.input_text.value_input.value;
+        if (input.length > 1000) {
+            await client.chat.postEphemeral({
+                channel: channel,
+                user: userId,
+                text: `❗ Your input is too long (${input.length} characters). Please keep it under 1000 characters.`,
+            });
+            return; 
+        }
+        
         const model =
-        body.view.state.values.model_select.model_choice.selected_option.value;
+            body.view.state.values?.model_select?.model_choice?.selected_option?.value
+            ?? "0";
         const visibility =
         body.view.state.values.visibility_select.visibility_choice.selected_option.value;
 
@@ -120,7 +141,7 @@ module.exports = function registerViews(app) {
         let translated = "";
         try {
             translated = await withTimeout(
-                translate(input, false, chatHistory),
+                translate(input, false, chatHistory, model),
                 3000, 
                 "Translation backend timeout"
             );
@@ -148,8 +169,9 @@ module.exports = function registerViews(app) {
                     `• *Emoji → Text:* ${translated}\n`,
             });
 
-            await client.chat.postMessage({
+            await client.chat.postEphemeral({
                 channel,
+                user: body.user.id,
                 blocks: feedbackBlocks,
             });
 

@@ -11,18 +11,16 @@ function buildHomeView(mode, currentModel, historyBlocks) {
     
     const modelDescriptionsMarkdown = Object.values(model.modelInfo)
         .map(m => {
-            const strengths = m.strengths?.length
-                ? m.strengths.map(s => `      - ${s}`).join("\n")
-                : "";
             return `
-• *${m.name}* — \`${m.id}\`
-  - ${m.description || "No description available."}
-  - Provider: *${m.provider || "Unknown"}*
-  - Max tokens: ${m.max_tokens || "N/A"}
-${strengths ? strengths : ""}
-`;
+        • *${m.name}* — \`${m.id}\`
+          - ${m.description || "No description available."}
+          - Provider: *${m.provider || "Unknown"}*
+          - Max tokens: ${m.max_tokens || "N/A"}
+        `;
         })
-        .join("\n");
+        .join("");
+
+    const backendAvailable = Object.keys(model.modelMap).length > 0;
 
     const overviewBlocks = [
       {
@@ -40,7 +38,9 @@ ${strengths ? strengths : ""}
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `Your current default model:\n• *${selectedInfo?.name || selectedModel}* (\`${selectedModel}\`)`,
+          text: backendAvailable
+            ? `Your current default model:\n• *${selectedInfo?.name || selectedModel}* (\`${currentModel}\`)`
+            : `⚠️ *Backend model information is unavailable.*\nA default translation model will be used.`,
         },
       },
       {

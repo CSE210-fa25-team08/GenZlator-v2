@@ -17,5 +17,8 @@ registerShortcuts(app);
   const port = process.env.PORT || 3000;
   await app.start(port);
   console.log(`Slack app running on port ${port}`);
-  await loadModelsFromAPI();
+  try {
+    await loadModelsFromAPI();
+  } catch (err) {
+  }
 })();

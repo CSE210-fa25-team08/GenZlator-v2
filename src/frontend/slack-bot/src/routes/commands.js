@@ -1,6 +1,6 @@
 // src/routes/commands.js
 const { buildFeedbackBlocks } = require("../views/feedback");
-const { modelMap } = require("../utils/model");
+const { modelMap, getUserModel } = require("../utils/model");
 const { openTranslateModal } = require("../views/commandTranslate");
 const { translate } = require("../utils/backendClient");
 const { getChatHistory } = require("../utils/chatHistory");
@@ -13,6 +13,13 @@ module.exports = function registerCommands(app) {
     app.command("/text-to-emoji", async ({ command, ack, respond, client }) => {
         await ack();
         const text = command.text.trim();
+        if (text.length > 1000) {
+            await respond({
+                response_type: "ephemeral",
+                text: `❗ Your input is too long (${text.length} characters). Please keep it under 1000 characters.`,
+            });
+            return; 
+        }
     
         if (text) {
             let chatHistory = await getChatHistory(client, command.channel_id);
@@ -24,9 +31,10 @@ module.exports = function registerCommands(app) {
             });
 
             let translated = "";
+            let userModel = getUserModel(command.user_id);
             try {
                 translated = await withTimeout(
-                    translate(text, true, chatHistory),
+                    translate(text, true, chatHistory, userModel),
                     3000, 
                     "Translation backend timeout"
                 );
@@ -104,13 +112,22 @@ module.exports = function registerCommands(app) {
         await ack();
         const text = command.text.trim();
 
+        if (text.length > 1000) {
+            await respond({
+                response_type: "ephemeral",
+                text: `❗ Your input is too long (${text.length} characters). Please keep it under 1000 characters.`,
+            });
+            return; 
+        }
+
         if (text) {
             let chatHistory = await getChatHistory(client, command.channel_id);
 
             let translated = "";
+            let userModel = getUserModel(command.user_id);
             try {
                 translated = await withTimeout(
-                    translate(text, false, chatHistory),
+                    translate(text, false, chatHistory, userModel),
                     3000, 
                     "Translation backend timeout"
                 );
