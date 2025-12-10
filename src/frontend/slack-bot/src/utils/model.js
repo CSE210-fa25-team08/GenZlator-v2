@@ -5,7 +5,7 @@ const { getAvailableModels } = require("./backendClient");
 let modelMap = {};
 let modelInfo = {};
 
-let defaultModelId = "gpt-4o-mini";
+let defaultModelId = "0";
 
 // simple in-memory store for user default models
 const userDefaultModels = {};
@@ -19,8 +19,7 @@ async function loadModelsFromAPI() {
         data.models.forEach(m => {
             // backend now provides `model_id` (no colon)
             const modelId = m.model_id;
-            const key = m.name;
-            newMap[key] = modelId;
+            newMap[modelId] = m.name;
 
             // store metadata
             newInfo[modelId] = {
@@ -29,7 +28,6 @@ async function loadModelsFromAPI() {
                 description: m.description,
                 provider: m.provider,
                 max_tokens: m.max_tokens,
-                strengths: m.strengths,
                 is_free: m.is_free
             };
         });
@@ -55,7 +53,7 @@ async function loadModelsFromAPI() {
         console.error("Failed to load models from API:", err);
         Object.keys(modelInfo).forEach(k => delete modelInfo[k]);
         Object.keys(modelMap).forEach(k => delete modelMap[k]);
-        defaultModelId = "gpt-4o-mini";
+        defaultModelId = "0";
     }
 }
 

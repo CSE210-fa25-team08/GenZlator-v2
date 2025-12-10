@@ -5,6 +5,7 @@ const { getChatHistory } = require("../utils/chatHistory");
 const { addHistory } = require("../storage/history");
 const { translateToEmojis, translateToWords } = require("../utils/translateFallback");
 const { withTimeout } = require("../utils/withTimeout");
+const { getUserModel } = require("../utils/model");
 
 module.exports = function registerShortcuts(app) {
     app.shortcut("translate", async ({ ack, body, client }) => {
@@ -23,17 +24,18 @@ module.exports = function registerShortcuts(app) {
         const feedbackBlocks = buildFeedbackBlocks(originalText);
 
         let chatHistory = await getChatHistory(client, body.channel.id);
-
+        let userModel = getUserModel(body.user.id);
+        console.log(userModel);
         let translated_1 = "";
         let translated_2 = "";
         try {
             translated_1 = await withTimeout(
-                translate(originalText, true, chatHistory),
+                translate(originalText, true, chatHistory, userModel),
                 3000, 
                 "Translation backend timeout"
             );
             translated_2 = await withTimeout(
-                translate(originalText, false, chatHistory),
+                translate(originalText, false, chatHistory, userModel),
                 3000, 
                 "Translation backend timeout"
             );

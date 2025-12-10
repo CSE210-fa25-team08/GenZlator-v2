@@ -7,12 +7,14 @@ async function translate(originalMessage, isToEmoji, chatHistory, modelId) {
   const resp = await axios.post(`${API_BASE}/api/v1/translate`, {
     originalMessage,
     isToEmoji,
-    chatHistory: chatHistory || []
+    chatHistory: chatHistory || [],
+    model_id: modelId
   });
   return resp.data.translatedMessage;
 }
 
 async function sendFeedback(originalInput, correctionText, anonymousId, rating) {
+  console.log("Calling backend:", `${API_BASE}/api/v1/feedback`);
   const resp = await axios.post(`${API_BASE}/api/v1/feedback`, {
     originalInput,
     correctionText,
@@ -23,8 +25,9 @@ async function sendFeedback(originalInput, correctionText, anonymousId, rating) 
 }
 
 async function getAvailableModels() {
+  console.log("Calling backend:", `${API_BASE}/api/v1/models`);
   const resp = await axios.get(`${API_BASE}/api/v1/models`);
-  //console.log("Available models from backend:", resp.data);
+  // console.log("Available models from backend:", resp.data);
   return resp.data;
 }
 
