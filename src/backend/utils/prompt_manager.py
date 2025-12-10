@@ -4,7 +4,7 @@ from typing import Dict, List, Any, Optional
 
 
 class PromptManager:
-    def __init__(self, prompts_file: str = "./prompts/prompts.json"):
+    def __init__(self, prompts_file: str = "src/backend/prompts/prompts.json"):
         self.prompts_file = prompts_file
         self.prompts = self._load_prompts()
 

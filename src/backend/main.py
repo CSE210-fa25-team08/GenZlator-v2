@@ -29,7 +29,7 @@ app.add_middleware(
 )
 
 # Initialize shared components
-prompt_manager = PromptManager("./prompts/prompts.json")
+prompt_manager = PromptManager("src/backend/prompts/prompts.json")
 rag_system = RAGLiteSystem()
 
 # Initialize dependencies in routers
