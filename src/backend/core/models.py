@@ -14,7 +14,7 @@ class TranslateRequest(BaseModel):
     )
     model_id: Optional[str] = Field(
         default=None,
-        description="Optional model ID to be passed for translate model selection"
+        description="Optional model ID to be passed for translate model selection",
     )
     chatHistory: Optional[List[str]] = Field(
         default=None,

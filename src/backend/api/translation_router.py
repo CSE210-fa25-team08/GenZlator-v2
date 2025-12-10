@@ -119,13 +119,17 @@ async def translate(req: TranslateRequest):
         # Normalize possible numeric values
         try:
             # Pydantic may coerce numeric input to int/str; handle both
-            if isinstance(preferred, int) or (isinstance(preferred, str) and preferred.isdigit()):
+            if isinstance(preferred, int) or (
+                isinstance(preferred, str) and preferred.isdigit()
+            ):
                 idx = int(preferred)
                 # map index to OpenAI LIGHT_MODELS
                 from src.backend.core.openai_client import LIGHT_MODELS
 
                 if idx < 0 or idx >= len(LIGHT_MODELS):
-                    raise HTTPException(status_code=400, detail="Invalid model index provided")
+                    raise HTTPException(
+                        status_code=400, detail="Invalid model index provided"
+                    )
 
                 actual_model = LIGHT_MODELS[idx]
                 race_result = await call_openai_race(messages, models=[actual_model])
@@ -134,7 +138,9 @@ async def translate(req: TranslateRequest):
                 model_str = str(preferred)
                 # Heuristic: if it contains a slash or a colon assume OpenRouter-style model id
                 if "/" in model_str or ":" in model_str:
-                    race_result = await call_openrouter_race(messages, models=[model_str])
+                    race_result = await call_openrouter_race(
+                        messages, models=[model_str]
+                    )
                 else:
                     # Default to OpenAI client for simple ids like 'gpt-4o-mini'
                     race_result = await call_openai_race(messages, models=[model_str])
