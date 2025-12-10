@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from core.models import (
+from src.backend.core.models import (
     TranslateRequest,
     TranslateResponse,
     FeedbackRequest,

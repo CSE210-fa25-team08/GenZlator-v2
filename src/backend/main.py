@@ -32,7 +32,7 @@ app.add_middleware(
 )
 
 # Initialize shared components
-prompt_manager = PromptManager("./prompts/prompts.json")
+prompt_manager = PromptManager("src/backend/prompts/prompts.json")
 
 # Initialize RAG system with vector store injection
 vector_store = get_vector_store(RAG_DATABASE_URL)
