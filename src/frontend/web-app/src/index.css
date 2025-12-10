@@ -168,6 +168,47 @@ body {
   padding: 16px;
 }
 
+.model-select {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0 14px;
+  align-self: center;
+  width: 50%;
+}
+
+.model-select-row {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
+.model-select label {
+  font-weight: 700;
+}
+
+.model-select select {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  flex: 1;
+  font-size: 1rem;
+  padding: 10px 12px;
+  background: var(--accent-bg);
+}
+
+.model-description {
+  color: var(--text);
+  margin: 0;
+  opacity: 0.8;
+}
+
+@media (max-width: 600px) {
+  .model-select {
+    width: 100%;
+  }
+}
+
 .boxes-container {
   border: none;
   display: flex;

@@ -20,9 +20,16 @@ import type { EmojiClickData } from 'emoji-picker-react';
 
 import { backend_translate, backend_feedback } from '../hooks/backend.tsx'
 
+const AVAILABLE_MODELS = [
+    { model_id: 'gpt-4o-mini', name: 'gpt-4o-mini', description: '', is_free: true, max_tokens: null, provider: 'gpt-4o-mini' },
+    { model_id: 'gpt-3.5-turbo', name: 'gpt-3.5-turbo', description: '', is_free: true, max_tokens: null, provider: 'gpt-3.5-turbo' },
+    { model_id: 'gpt-4.1-mini', name: 'gpt-4.1-mini', description: '', is_free: true, max_tokens: null, provider: 'gpt-4.1-mini' },
+    { model_id: 'gpt-4.1-nano', name: 'gpt-4.1-nano', description: '', is_free: true, max_tokens: null, provider: 'gpt-4.1-nano' },
+];
+
 interface TranslationBoxProps {
-    lastTranslation: { text: string; toEmoji: boolean };
-    setLastTranslation: Dispatch<SetStateAction<{ text: string; toEmoji: boolean }>>;
+    lastTranslation: { text: string; toEmoji: boolean; modelId?: string };
+    setLastTranslation: Dispatch<SetStateAction<{ text: string; toEmoji: boolean; modelId?: string }>>;
     rating: boolean | null;
     setRating: Dispatch<SetStateAction<boolean | null>>;
     isTranslated: boolean;
@@ -37,6 +44,7 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     const [toEmoji, setToEmoji] = useState(false);
     const [isLoading, setLoading] = useState(false);
     const [showPicker, setPicker] = useState(false);
+    const [selectedModel, setSelectedModel] = useState<string>(AVAILABLE_MODELS[0]?.model_id ?? 'gpt-4o-mini');
     // const [lastTranslation, setLastTranslation] = useState({
     //     text: "",
     //     toEmoji: false
@@ -52,8 +60,8 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     // Send async translation request to backend and update state
     const handleTranslation = useCallback(async() => {
         // If this request is the same as the last translation request, ignore
-        if (lastTranslation.text.trim() == inputText.trim() && lastTranslation.toEmoji == toEmoji){return;}
-        else {setLastTranslation({text:inputText, toEmoji:toEmoji})};
+        if (lastTranslation.text.trim() == inputText.trim() && lastTranslation.toEmoji == toEmoji && lastTranslation.modelId === selectedModel){return;}
+        else {setLastTranslation({text:inputText, toEmoji:toEmoji, modelId: selectedModel})};
         setLoading(true);
         setTranslated(false);
         // If there is a current translation request in progress, abort it
@@ -66,7 +74,7 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
         activeControllerRef.current = controller;
         const signal = controller.signal;
         try {
-            const translated_output = await backend_translate(toEmoji, inputText, signal);
+            const translated_output = await backend_translate(toEmoji, inputText, signal, selectedModel);
             if(!signal.aborted){
                 setOutputText(translated_output);
                 setRating(null);
@@ -92,7 +100,7 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
             activeControllerRef.current = null;
         }
         setLoading(false);
-    }, [lastTranslation, inputText, toEmoji, setLastTranslation, setLoading, setTranslated, setOutputText, setRating]);
+    }, [lastTranslation, inputText, toEmoji, setLastTranslation, setLoading, setTranslated, setOutputText, setRating, selectedModel]);
 
     // Trigger translation if non-empty input is left for 5 seconds
     useEffect(() => {
@@ -205,6 +213,8 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
         return <Button className="copy-btn" variant="contained" disabled={text.trim()==""} onClick={() => handleCopy(text)} startIcon={<ContentCopyIcon/>}>Copy</Button>
     }
 
+    const selectedModelInfo = AVAILABLE_MODELS.find((model) => model.model_id === selectedModel);
+
     return(
         <section className="translation-container">
             <fieldset className="boxes-container">
@@ -242,6 +252,26 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
                     </section>
                 </section>
             </fieldset>
+            <section className="model-select">
+                <div className="model-select-row">
+                    <label htmlFor="model-select">Model</label>
+                    <select
+                        id="model-select"
+                        value={selectedModel}
+                        onChange={(e)=>setSelectedModel(e.target.value)}
+                        aria-label="Select translation model"
+                    >
+                        {AVAILABLE_MODELS.map((model) => (
+                            <option key={model.model_id} value={model.model_id}>
+                                {model.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                {selectedModelInfo?.description && (
+                    <p className="model-description">{selectedModelInfo.description}</p>
+                )}
+            </section>
             <Button fullWidth className="translate-btn" loadingPosition="start" loading={isLoading} disabled={inputText.trim()==""} onClick={handleTranslation}>TRANSLATE</Button>
         {showPicker && <section ref={pickerRef} className="emoji-container"><EmojiPicker onEmojiClick={handleEmojiClick}/></section>}
         </section>

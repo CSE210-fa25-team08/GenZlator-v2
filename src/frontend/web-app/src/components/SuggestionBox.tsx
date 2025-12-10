@@ -12,7 +12,7 @@ import type { EmojiClickData } from 'emoji-picker-react';
 import { backend_feedback } from '../hooks/backend.tsx';
 
 interface SuggestionBoxProps {
-    lastTranslation: { text: string; toEmoji: boolean };
+    lastTranslation: { text: string; toEmoji: boolean; modelId?: string };
     rating: boolean | null;
 }
 

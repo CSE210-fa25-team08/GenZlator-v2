@@ -6,7 +6,7 @@ const sleep = (ms:number) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-export async function backend_translate (toEmoji:boolean, inputText:string, signal: AbortSignal) {
+export async function backend_translate (toEmoji:boolean, inputText:string, signal: AbortSignal, modelId?: string) {
     if (MOCK) {
 
         await sleep(2000); //testing purposes
@@ -25,7 +25,8 @@ export async function backend_translate (toEmoji:boolean, inputText:string, sign
         body: JSON.stringify({
             originalMessage: inputText,
             isToEmoji: toEmoji,
-            chatHistory: [] //TODO
+            chatHistory: [], //TODO
+            model: modelId,
         }),
         signal: signal
     });
