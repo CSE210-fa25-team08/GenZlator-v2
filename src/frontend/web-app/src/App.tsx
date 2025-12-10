@@ -12,10 +12,12 @@ function App() {
   const [lastTranslation, setLastTranslation] = useState<{
     text: string;
     toEmoji: boolean;
+    context: string;
     modelId?: string;
   }>({
     text: '',
     toEmoji: false,
+    context: '',
     modelId: 'gpt-4o-mini',
   });
 

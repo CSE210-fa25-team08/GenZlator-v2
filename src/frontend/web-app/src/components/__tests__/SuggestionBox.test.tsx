@@ -35,7 +35,7 @@ describe('SuggestionBox', () => {
     const user = userEvent.setup();
     backendFeedbackMock.mockResolvedValue(undefined);
 
-    render(<SuggestionBox lastTranslation={{ text: 'hello', toEmoji: false }} rating={false} />);
+    render(<SuggestionBox lastTranslation={{ text: 'hello', toEmoji: false, context: '' }} rating={false} />);
 
     const submitButton = screen.getByRole('button', { name: /submit/i });
     expect(submitButton).toBeDisabled();

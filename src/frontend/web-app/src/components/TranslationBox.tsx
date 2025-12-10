@@ -28,8 +28,8 @@ const AVAILABLE_MODELS = [
 ];
 
 interface TranslationBoxProps {
-    lastTranslation: { text: string; toEmoji: boolean; modelId?: string };
-    setLastTranslation: Dispatch<SetStateAction<{ text: string; toEmoji: boolean; modelId?: string }>>;
+    lastTranslation: { text: string; toEmoji: boolean; context: string; modelId?: string };
+    setLastTranslation: Dispatch<SetStateAction<{ text: string; toEmoji: boolean; context: string; modelId?: string }>>;
     rating: boolean | null;
     setRating: Dispatch<SetStateAction<boolean | null>>;
     isTranslated: boolean;
@@ -41,6 +41,8 @@ import { translateToEmojis, translateToWords } from '../utils/localTranslator';
 export default function TranslationBox ({lastTranslation, setLastTranslation, rating, setRating, isTranslated, setTranslated}: TranslationBoxProps) {
     const [inputText, setInputText] = useState('');
     const [outputText, setOutputText] = useState('');
+    const [contextText, setContextText] = useState('');
+    const [showContext, setShowContext] = useState(false);
     const [toEmoji, setToEmoji] = useState(false);
     const [isLoading, setLoading] = useState(false);
     const [showPicker, setPicker] = useState(false);
@@ -60,8 +62,15 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     // Send async translation request to backend and update state
     const handleTranslation = useCallback(async() => {
         // If this request is the same as the last translation request, ignore
-        if (lastTranslation.text.trim() == inputText.trim() && lastTranslation.toEmoji == toEmoji && lastTranslation.modelId === selectedModel){return;}
-        else {setLastTranslation({text:inputText, toEmoji:toEmoji, modelId: selectedModel})};
+        if (
+            lastTranslation.text.trim() == inputText.trim() &&
+            lastTranslation.toEmoji == toEmoji &&
+            lastTranslation.context.trim() == contextText.trim() &&
+            lastTranslation.modelId === selectedModel
+        ){
+            return;
+        }
+        else {setLastTranslation({text:inputText, toEmoji:toEmoji, context:contextText, modelId: selectedModel})};
         setLoading(true);
         setTranslated(false);
         // If there is a current translation request in progress, abort it
@@ -74,7 +83,8 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
         activeControllerRef.current = controller;
         const signal = controller.signal;
         try {
-            const translated_output = await backend_translate(toEmoji, inputText, signal, selectedModel);
+            const chatHistory = contextText.trim().split('\n').filter(line => line.trim() !== "");
+            const translated_output = await backend_translate(toEmoji, inputText, chatHistory, signal, selectedModel);
             if(!signal.aborted){
                 setOutputText(translated_output);
                 setRating(null);
@@ -100,7 +110,7 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
             activeControllerRef.current = null;
         }
         setLoading(false);
-    }, [lastTranslation, inputText, toEmoji, setLastTranslation, setLoading, setTranslated, setOutputText, setRating, selectedModel]);
+    }, [lastTranslation, inputText, toEmoji, contextText, setLastTranslation, setLoading, setTranslated, setOutputText, setRating, selectedModel]);
 
     // Trigger translation if non-empty input is left for 5 seconds
     useEffect(() => {
@@ -252,6 +262,16 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
                     </section>
                 </section>
             </fieldset>
+            {showContext && (
+                <section className="context-box">
+                    <textarea 
+                        className="text-input context-input"
+                        value={contextText}
+                        onChange={(e)=>setContextText(e.target.value)}
+                        placeholder="Paste chat history here. Each line will be treated as a separate message."
+                    />
+                </section>
+            )}
             <section className="model-select">
                 <div className="model-select-row">
                     <label htmlFor="model-select">Model</label>
@@ -272,7 +292,16 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
                     <p className="model-description">{selectedModelInfo.description}</p>
                 )}
             </section>
-            <Button fullWidth className="translate-btn" loadingPosition="start" loading={isLoading} disabled={inputText.trim()==""} onClick={handleTranslation}>TRANSLATE</Button>
+            <div className="action-buttons">
+                <Button 
+                    className="context-btn" 
+                    variant="outlined" 
+                    onClick={() => setShowContext(!showContext)}
+                >
+                    {showContext ? "Hide Context" : "Add Context"}
+                </Button>
+                <Button className="translate-btn" loadingPosition="start" loading={isLoading} disabled={inputText.trim()==""} onClick={handleTranslation}>TRANSLATE</Button>
+            </div>
         {showPicker && <section ref={pickerRef} className="emoji-container"><EmojiPicker onEmojiClick={handleEmojiClick}/></section>}
         </section>
     )

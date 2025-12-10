@@ -329,3 +329,40 @@ textarea[readonly] {
   position: absolute;
   z-index: 1000;
 }
+
+/* Context Box CSS */
+.context-box {
+  margin-top: 10px;
+  background-color: var(--accent-bg);
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.context-input {
+  min-height: 80px;
+  font-size: 100%;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  justify-content: center;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.action-buttons .translate-btn.MuiButton-root {
+  width: auto;
+  flex: 2;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.action-buttons .context-btn.MuiButton-root {
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  color: var(--text);
+  font-weight: bold;
+  min-height: 40px;
+  flex: 1;
+}
