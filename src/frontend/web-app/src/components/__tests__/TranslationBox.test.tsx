@@ -25,7 +25,7 @@ vi.mock('emoji-picker-react', () => ({
 }));
 
 const createProps = () => ({
-  lastTranslation: { text: '', toEmoji: false },
+  lastTranslation: { text: '', toEmoji: false, context: '' },
   setLastTranslation: vi.fn(),
   rating: null,
   setRating: vi.fn(),
@@ -63,6 +63,7 @@ describe('TranslationBox', () => {
       expect(backendTranslateMock).toHaveBeenCalledWith(
         false,
         'Hello',
+        [],
         expect.any(AbortSignal),
       ),
     );

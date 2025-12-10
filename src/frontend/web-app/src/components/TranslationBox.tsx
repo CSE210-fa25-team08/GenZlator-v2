@@ -21,8 +21,8 @@ import type { EmojiClickData } from 'emoji-picker-react';
 import { backend_translate, backend_feedback } from '../hooks/backend.tsx'
 
 interface TranslationBoxProps {
-    lastTranslation: { text: string; toEmoji: boolean };
-    setLastTranslation: Dispatch<SetStateAction<{ text: string; toEmoji: boolean }>>;
+    lastTranslation: { text: string; toEmoji: boolean; context: string };
+    setLastTranslation: Dispatch<SetStateAction<{ text: string; toEmoji: boolean; context: string }>>;
     rating: boolean | null;
     setRating: Dispatch<SetStateAction<boolean | null>>;
     isTranslated: boolean;
@@ -34,6 +34,8 @@ import { translateToEmojis, translateToWords } from '../utils/localTranslator';
 export default function TranslationBox ({lastTranslation, setLastTranslation, rating, setRating, isTranslated, setTranslated}: TranslationBoxProps) {
     const [inputText, setInputText] = useState('');
     const [outputText, setOutputText] = useState('');
+    const [contextText, setContextText] = useState('');
+    const [showContext, setShowContext] = useState(false);
     const [toEmoji, setToEmoji] = useState(false);
     const [isLoading, setLoading] = useState(false);
     const [showPicker, setPicker] = useState(false);
@@ -52,8 +54,8 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
     // Send async translation request to backend and update state
     const handleTranslation = useCallback(async() => {
         // If this request is the same as the last translation request, ignore
-        if (lastTranslation.text.trim() == inputText.trim() && lastTranslation.toEmoji == toEmoji){return;}
-        else {setLastTranslation({text:inputText, toEmoji:toEmoji})};
+        if (lastTranslation.text.trim() == inputText.trim() && lastTranslation.toEmoji == toEmoji && lastTranslation.context.trim() == contextText.trim()){return;}
+        else {setLastTranslation({text:inputText, toEmoji:toEmoji, context:contextText})};
         setLoading(true);
         setTranslated(false);
         // If there is a current translation request in progress, abort it
@@ -66,7 +68,8 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
         activeControllerRef.current = controller;
         const signal = controller.signal;
         try {
-            const translated_output = await backend_translate(toEmoji, inputText, signal);
+            const chatHistory = contextText.trim().split('\n').filter(line => line.trim() !== "");
+            const translated_output = await backend_translate(toEmoji, inputText, chatHistory, signal);
             if(!signal.aborted){
                 setOutputText(translated_output);
                 setRating(null);
@@ -92,7 +95,7 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
             activeControllerRef.current = null;
         }
         setLoading(false);
-    }, [lastTranslation, inputText, toEmoji, setLastTranslation, setLoading, setTranslated, setOutputText, setRating]);
+    }, [lastTranslation, inputText, toEmoji, contextText, setLastTranslation, setLoading, setTranslated, setOutputText, setRating]);
 
     // Trigger translation if non-empty input is left for 5 seconds
     useEffect(() => {
@@ -242,7 +245,26 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
                     </section>
                 </section>
             </fieldset>
-            <Button fullWidth className="translate-btn" loadingPosition="start" loading={isLoading} disabled={inputText.trim()==""} onClick={handleTranslation}>TRANSLATE</Button>
+            {showContext && (
+                <section className="context-box">
+                    <textarea 
+                        className="text-input context-input"
+                        value={contextText}
+                        onChange={(e)=>setContextText(e.target.value)}
+                        placeholder="Paste chat history here. Each line will be treated as a separate message."
+                    />
+                </section>
+            )}
+            <div className="action-buttons">
+                <Button 
+                    className="context-btn" 
+                    variant="outlined" 
+                    onClick={() => setShowContext(!showContext)}
+                >
+                    {showContext ? "Hide Context" : "Add Context"}
+                </Button>
+                <Button className="translate-btn" loadingPosition="start" loading={isLoading} disabled={inputText.trim()==""} onClick={handleTranslation}>TRANSLATE</Button>
+            </div>
         {showPicker && <section ref={pickerRef} className="emoji-container"><EmojiPicker onEmojiClick={handleEmojiClick}/></section>}
         </section>
     )
