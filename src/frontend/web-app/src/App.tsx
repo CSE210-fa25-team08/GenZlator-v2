@@ -9,11 +9,17 @@ import { useState } from 'react';
 function App() {
   const [rating, setRating] = useState<boolean | null>(null);
   const [isTranslated, setTranslated] = useState(false);
-  const [lastTranslation, setLastTranslation] = useState({
-        text: "",
-        toEmoji: false,
-        context: ""
-    });
+  const [lastTranslation, setLastTranslation] = useState<{
+    text: string;
+    toEmoji: boolean;
+    context: string;
+    modelId?: string;
+  }>({
+    text: '',
+    toEmoji: false,
+    context: '',
+    modelId: 'gpt-4o-mini',
+  });
 
   const feedbackFormUrl =
     import.meta.env.VITE_FEEDBACK_FORM_URL ||

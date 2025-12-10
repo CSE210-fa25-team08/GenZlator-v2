@@ -25,7 +25,7 @@ vi.mock('emoji-picker-react', () => ({
 }));
 
 const createProps = () => ({
-  lastTranslation: { text: '', toEmoji: false, context: '' },
+  lastTranslation: { text: '', toEmoji: false, context: '', modelId: 'gpt-4o-mini' },
   setLastTranslation: vi.fn(),
   rating: null,
   setRating: vi.fn(),
@@ -65,6 +65,7 @@ describe('TranslationBox', () => {
         'Hello',
         [],
         expect.any(AbortSignal),
+        'gpt-4o-mini',
       ),
     );
 
