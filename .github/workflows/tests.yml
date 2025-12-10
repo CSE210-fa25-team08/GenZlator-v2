@@ -1,0 +1,133 @@
+name: Unit Tests
+
+on:
+  pull_request:
+    branches: [master, main]
+  push:
+    branches: [master, main]
+
+permissions:
+  contents: read
+
+jobs:
+  backend-tests:
+    name: Backend Unit Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r src/backend/requirements.txt
+      
+      - name: Run backend tests
+        run: |
+          cd src/backend
+          pytest tests/ -v --cov=. --cov-report=xml || true
+        env:
+          PYTHONPATH: ${{ github.workspace }}/src
+      
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        if: always()
+        with:
+          file: ./src/backend/coverage.xml
+          flags: backend
+          name: backend-coverage
+          
+  build-and-push:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    needs: backend-tests  # Only run if tests pass
+    if: github.event_name == 'push' 
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      
+      - name: Authenticate GCloud
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{secrets.GCP_SA_KEY}}
+
+      
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          export_default_credentials: true
+      
+      - name: Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev --quiet
+      
+      - name: Build Docker image
+        run: |
+          IMAGE_TAG=${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REPO_NAME }}/genzlator-backend
+          docker build -f src/backend/Dockerfile -t $IMAGE_TAG:${{ github.sha }} .
+          docker tag $IMAGE_TAG:${{ github.sha }} $IMAGE_TAG:latest
+      
+      - name: Push Docker image
+        run: |
+          IMAGE_TAG=${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REPO_NAME }}/genzlator-backend
+          docker push $IMAGE_TAG:${{ github.sha }}
+          docker push $IMAGE_TAG:latest
+
+  # web-app-tests:
+  #   name: Web App Unit Tests
+  #   runs-on: ubuntu-latest
+    
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v3
+      
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '20.17.0'
+  #         cache: 'npm'
+  #         cache-dependency-path: src/frontend/web-app/package-lock.json
+      
+  #     - name: Install dependencies
+  #       run: |
+  #         cd src/frontend/web-app
+  #         npm ci
+      
+  #     - name: Run web-app tests
+  #       run: |
+  #         cd src/frontend/web-app
+  #         npm test -- --coverage --watchAll=false
+
+  # slack-bot-tests:
+  #   name: Slack Bot Unit Tests
+  #   runs-on: ubuntu-latest
+    
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v3
+      
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '20.17.0'
+  #         cache: 'npm'
+  #         cache-dependency-path: src/frontend/slack-bot/package-lock.json
+      
+  #     - name: Install dependencies
+  #       run: |
+  #         cd src/frontend/slack-bot
+  #         npm ci
+      
+  #     - name: Run slack-bot tests
+  #       run: |
+  #         cd src/frontend/slack-bot
+  #         npm test -- --coverage --watchAll=false 
