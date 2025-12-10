@@ -2,6 +2,8 @@ import os
 from fastapi import FastAPI
 from src.backend.utils.prompt_manager import PromptManager
 from src.backend.core.rag_lite import RAGLiteSystem
+from src.backend.vectorization.store_factory import get_vector_store
+from src.backend.config import get_database_url, get_feedback_log_path
 
 # Import routers
 from src.backend.api import translation_router as translation
@@ -11,7 +13,8 @@ from src.backend.api import health_check_router as health
 from src.backend.api import models_router as models
 from fastapi.middleware.cors import CORSMiddleware
 
-FEEDBACK_LOG_PATH = os.getenv("FEEDBACK_LOG_PATH", "feedback_log.jsonl")
+FEEDBACK_LOG_PATH = get_feedback_log_path()
+RAG_DATABASE_URL = get_database_url()
 
 # Create FastAPI app
 app = FastAPI(
@@ -29,8 +32,11 @@ app.add_middleware(
 )
 
 # Initialize shared components
-prompt_manager = PromptManager("src/backend/prompts/prompts.json")
-rag_system = RAGLiteSystem()
+prompt_manager = PromptManager("./prompts/prompts.json")
+
+# Initialize RAG system with vector store injection
+vector_store = get_vector_store(RAG_DATABASE_URL)
+rag_system = RAGLiteSystem(store=vector_store)
 
 # Initialize dependencies in routers
 translation.init_dependencies(prompt_manager, rag_system)
