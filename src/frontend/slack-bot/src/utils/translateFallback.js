@@ -77,8 +77,13 @@ function translateToEmojis(text) {
       if (wordToEmoji[cleanPhrase]) {
         const emojiList = wordToEmoji[cleanPhrase];
         const chosen = Array.isArray(emojiList) ? emojiList[0] : emojiList;
+
         result.push(chosen + punctuation[0]);
+        i += phraseLength;    // EXACT SAME BEHAVIOR AS SUBSET/FUZZY
+        matched = true;       // MARK AS MATCHED
+        break;                // STOP FURTHER MATCHING!!
       }
+
 
       // 2. subset match
       const subsetMatch = findSubsetEmoji(cleanPhrase);

@@ -4,11 +4,15 @@
   "description": "A Slack app that translates text to emojis and emojis to text.",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "test": "jest"
   },
   "dependencies": {
     "@slack/bolt": "^4.6.0",
     "dotenv": "^17.2.3",
     "emoji-dictionary": "^1.0.12"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0"
   }
 }
