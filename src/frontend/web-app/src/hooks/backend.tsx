@@ -25,8 +25,8 @@ export async function backend_translate (toEmoji:boolean, inputText:string, chat
         body: JSON.stringify({
             originalMessage: inputText,
             isToEmoji: toEmoji,
-            chatHistory: chatHistory
-            model: modelId,
+            chatHistory: chatHistory,
+            model_id: modelId,
         }),
         signal: signal
     });
