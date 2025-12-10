@@ -110,9 +110,51 @@ async def translate(req: TranslateRequest):
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
     ]
+    if req.model_id:
+        # If frontend provided a preferred model, honor it.
+        # model_id can be an index (int or numeric string) that maps to OpenAI LIGHT_MODELS,
+        # or it can be a model id string like 'gpt-4o-mini' or an OpenRouter id like 'mistralai/..:free'.
+        preferred = req.model_id
 
+        # Normalize possible numeric values
+        try:
+            # Pydantic may coerce numeric input to int/str; handle both
+            if isinstance(preferred, int) or (
+                isinstance(preferred, str) and preferred.isdigit()
+            ):
+                idx = int(preferred)
+                # map index to OpenAI LIGHT_MODELS
+                from src.backend.core.openai_client import LIGHT_MODELS
+
+                if idx < 0 or idx >= len(LIGHT_MODELS):
+                    raise HTTPException(
+                        status_code=400, detail="Invalid model index provided"
+                    )
+
+                actual_model = LIGHT_MODELS[idx]
+                race_result = await call_openai_race(messages, models=[actual_model])
+            else:
+                # Non-numeric string model id
+                model_str = str(preferred)
+                # Heuristic: if it contains a slash or a colon assume OpenRouter-style model id
+                if "/" in model_str or ":" in model_str:
+                    race_result = await call_openrouter_race(
+                        messages, models=[model_str]
+                    )
+                else:
+                    # Default to OpenAI client for simple ids like 'gpt-4o-mini'
+                    race_result = await call_openai_race(messages, models=[model_str])
+
+        except HTTPException:
+            # Re-raise HTTPExceptions from above
+            raise
+        except Exception as e:
+            # Fall back to racing default models but surface an error when appropriate
+            raise HTTPException(status_code=500, detail=str(e))
+    else:
+        # Race multiple OpenAI models for fastest response
+        race_result = await call_openai_race(messages)
     # Race multiple OpenRouter models for fastest response
-    race_result = await call_openai_race(messages)
     raw_content = race_result["content"]
 
     # Extract structured response

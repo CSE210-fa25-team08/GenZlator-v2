@@ -144,7 +144,7 @@ async def get_available_models():
 
         models.append(
             ModelInfo(
-                model_id=i,
+                model_id=str(i),
                 name=model_name,
                 description=model_description,
                 is_free=True,
