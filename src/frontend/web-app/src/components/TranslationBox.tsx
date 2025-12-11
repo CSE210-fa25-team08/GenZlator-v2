@@ -223,8 +223,6 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
         return <Button className="copy-btn" variant="contained" disabled={text.trim()==""} onClick={() => handleCopy(text)} startIcon={<ContentCopyIcon/>}>Copy</Button>
     }
 
-    const selectedModelInfo = AVAILABLE_MODELS.find((model) => model.model_id === selectedModel);
-
     return(
         <section className="translation-container">
             <fieldset className="boxes-container">
@@ -288,9 +286,6 @@ export default function TranslationBox ({lastTranslation, setLastTranslation, ra
                         ))}
                     </select>
                 </div>
-                {selectedModelInfo?.description && (
-                    <p className="model-description">{selectedModelInfo.description}</p>
-                )}
             </section>
             <div className="action-buttons">
                 <Button 
