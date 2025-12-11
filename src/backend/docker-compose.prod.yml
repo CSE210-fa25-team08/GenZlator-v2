@@ -1,7 +1,7 @@
 services:
   backend:
     # Pull image from Google Artifact Registry
-    image: us-west1-docker.pkg.dev/genzlator-478301/genzimage/genzlator-backend:latest
+    image: ${DOCKER_IMAGE_ADDRESS}
     
     ports:
       - "8003:8003"
