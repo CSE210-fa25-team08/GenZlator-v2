@@ -59,7 +59,7 @@ function buildHomeView(mode, currentModel, historyBlocks) {
           {
             type: "button",
             text: { type: "plain_text", text: "Our Website" },
-            action_id: "tmp",
+            url: "https://genzlator.saichaparala.com/",
           },
         ],
       },
