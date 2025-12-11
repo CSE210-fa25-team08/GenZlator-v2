@@ -6,3 +6,6 @@ pytest
 pytest-cov
 pytest-asyncio
 httpx
+numpy
+python-dotenv
+sentence-transformers
