@@ -2,6 +2,21 @@
 
 Because sometimes '😭💀🔥' says more than a paragraph — and GenZlator-v2 gets that
 
+Website: https://genzlator.saichaparala.com/
+
+Videos:
+Show off Video:
+1. https://youtu.be/gxjxsSPzPHc
+2. https://www.youtube.com/shorts/zh04ivnPDe4
+3. https://www.youtube.com/shorts/L8cv86S8QsY
+(The 3 videos add up to 3 minutes)
+
+Lessons Video:
+https://www.youtube.com/watch?v=MlIfhhl83tQ
+
+Technical Video:
+https://www.youtube.com/watch?v=E0iUeeYsTRA
+
 ## Code Structure
 
 ```text
