@@ -1,0 +1,32 @@
+services:
+  backend:
+    # Pull image from Google Artifact Registry
+    image: ${DOCKER_IMAGE_ADDRESS}
+    
+    ports:
+      - "8003:8003"
+    
+    env_file:
+      - .env
+    
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - FEEDBACK_LOG_PATH=${FEEDBACK_LOG_PATH:-feedback_log.jsonl}
+      - RAG_DATABASE_URL=${RAG_DATABASE_URL:-sqlite:///feedback_embeddings.db}
+    
+    restart: unless-stopped
+
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_POLL_INTERVAL=300
+      - WATCHTOWER_CLEANUP=true          # Remove old images after update
+      - WATCHTOWER_REMOVE_VOLUMES=false  
+      - WATCHTOWER_LABEL_ENABLE=true
+      - WATCHTOWER_INCLUDE_STOPPED=false # Only update running containers
+    restart: unless-stopped
+    command: --label-enable --interval 300 --cleanup
